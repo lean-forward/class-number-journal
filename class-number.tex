@@ -227,15 +227,11 @@ class is_number_field (K : Type*) [field K] : Prop :=
 \end{lstlisting}
 The \emph{class} keyword declares a structure type (in other words, a type of records) and enables typeclass inference for terms of this type.
 Round brackets mark parameters explicitly supplied by the user, such as \lean{(K : Type*)},
-square brackets mark instance parameters inferred by the typeclass system, such as \lean{[field K]}. The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
+square brackets mark instance parameters inferred by the typeclass system, such as \lean{[field K]}; .
+The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
 This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass instance search), endowing $K$ with the $\Q$-vector space structure used in the hypothesis \mbox{\lean{[fd : finite\_dimensional ℚ K]}}.
 
-Typeclasses were originally introduced in Haskell as a mechanism for operator overloading~\cite{typeclasses-haskell},
-and are used throughout Lean's core library and \mathlib to endow types with mathematical structures consisting of both operators and their properties~\cite{mathlib}.
-The typeclass system will automatically infer values for instance parameters,
-by searching for values of the appropriate type among the local parameters or declarations marked as an \emph{instance}~\cite[\S 10]{theorem-proving-in-lean}.
-
-We defined the function field $K$ over a finite field $\Fq$ using the following typeclass:
+Similarly, we defined the function field $K$ over a finite field $\Fq$ using the following typeclass:
 \begin{lstlisting}
 class is_function_field_over ($\Fq$ F K : Type*)
   [field $\Fq$] [fintype $\Fq$] [field F] [field K]
@@ -247,7 +243,21 @@ class is_function_field_over ($\Fq$ F K : Type*)
 The typeclass parameter \lean{[is\_fraction\_ring (polynomial $\Fq$) F]} witnesses that $F$ is a fraction field of the polynomial ring $\Fq[q][t]$.
 We present a more detailed analysis of \lean{is\_fraction\_ring} in Section \ref{subsection : fields of fractions}.
 
-\subsection{Field extensions}
+\subsection{Use of typeclasses} \label{sec:typeclasses}
+Typeclasses were originally introduced in Haskell as a mechanism for operator overloading~\cite{typeclasses-haskell},
+and are used throughout Lean's core library and \mathlib to endow types with mathematical structures consisting of both operators and their properties~\cite{mathlib}.
+When the elaborator sees a function with an instance parameter being applied, such as the \lean{[field K]} parameter of \lean{is\_number\_field K}, a Prolog-like search is started to automatically infer a suitable value for this parameter.
+Each of the local parameters and the declarations marked as \emph{instance} are tested to see if their type matches the expected type of the instance search.
+Any instance parameters of candidate instances are themselves recursively inferred, until either a suitable term is constructed or no more candidates remain; an error is raised in the latter case~\cite[\S 10]{theorem-proving-in-lean}.
+Compared to Haskell, Lean's typeclasses have few structural restrictions: notably, classes and instances can depend on any term, classes can apply to multiple types and can have functional dependencies.
+
+In our development, we followed the common practice in \mathlib of providing structure on a type,
+whenever such a structure exists canonically, through typeclasses.
+Typeclasses provided us a way to treat uniformly situations that are informally considered the same, as we discuss in Sections \ref{sec:field_extension} and \ref{sec:scalar_tower}.
+Our reliance on typeclasses did not cause any noticeable slowness in proof checking:
+there was no instance that should be found but could not due to timeouts.
+
+\subsection{Field extensions} \label{sec:field_extension}
 
 The definition of \lean{is\_number\_field} illustrates our treatment of field extensions.
 A field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
@@ -290,8 +300,6 @@ Common \lean{is\_scalar\_tower} instances are declared in \mathlib,
 such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $A$.
 The effect is that almost all coherence proof obligations are automated through typeclass instance search.
 Only when defining a new algebra structure were we required to supply the \lean{is\_scalar\_tower} instances ourselves.
-Our reliance on typeclasses did not cause any noticeable slowness in proof checking:
-there was no instance that should be found but could not due to timeouts.
 
 \subsection{Rings of integers} \label{sec:ring-of-integers}
 
