@@ -223,25 +223,29 @@ We refer the reader to Section~\ref{sec math background} for the mathematical ba
 We formalized number fields as the following typeclass:
 \begin{lstlisting}
 class is_number_field (K : Type*) [field K] : Prop :=
-[cz : char_zero K] [fd : finite_dimensional ℚ K]
+[to_char_zero : char_zero K]
+[to_finite_dimensional : finite_dimensional ℚ K]
 \end{lstlisting}
 The \emph{class} keyword declares a structure type (in other words, a type of records) and enables typeclass inference for terms of this type.
 Round brackets mark parameters explicitly supplied by the user, such as \lean{(K : Type*)},
-square brackets mark instance parameters inferred by the typeclass system, such as \lean{[field K]}; .
-The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
-This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass instance search), endowing $K$ with the $\Q$-vector space structure used in the hypothesis \mbox{\lean{[fd : finite\_dimensional ℚ K]}}.
+square brackets mark instance parameters inferred by the typeclass system, such as \mbox{\lean{[field K]}}.
+The condition \lean{[to\_char\_zero : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
+This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass instance search), endowing $K$ with the $\Q$-vector space structure used in the hypothesis \mbox{\lean{[to\_finite\_dimensional : finite\_dimensional ℚ K]}}.
 
-Similarly, we defined the function field $K$ over a finite field $\Fq$ using the following typeclass:
+Similarly, we defined the function field $F$ over a finite field $\Fq$ using the following typeclass:
 \begin{lstlisting}
-class is_function_field_over ($\Fq$ F K : Type*)
-  [field $\Fq$] [fintype $\Fq$] [field F] [field K]
-  [algebra (polynomial $\Fq$) F] [algebra F K]
-  [is_fraction_ring (polynomial $\Fq$) F] : Prop :=
-[fd : finite_dimensional F K]
+class function_field (Fq F : Type*) [field Fq] [field F] :
+  Prop :=
+[to_algebra : algebra (fraction_ring (polynomial Fq)) F]
+[to_finite_dimensional : finite_dimensional
+  (fraction_ring (polynomial Fq)) F]
 \end{lstlisting}
-% Curly brackets mark implicit parameters inferred through unification, such as \lean{\{$\Fq$ F : Type*\}}.
-The typeclass parameter \lean{[is\_fraction\_ring (polynomial $\Fq$) F]} witnesses that $F$ is a fraction field of the polynomial ring $\Fq[q][t]$.
-We present a more detailed analysis of \lean{is\_fraction\_ring} in Section \ref{subsection : fields of fractions}.
+The hypothesis \lean{[to\_algebra : algebra (fraction\_ring (polynomial $\Fq$)) F]} witnesses that $F$ is a field extension of the fraction field $\Fq[q](t)$ of the polynomial ring $\Fq[q][t]$, where $\Fq[q]$ is a finite field.
+Again, the condition that this extension is finite is written using the \lean{finite\_dimensional} typeclass.
+We present a more detailed analysis of \lean{algebra} in Section \ref{sec:field_extension} and of \lean{fraction\_ring} in Section \ref{subsection : fields of fractions}.
+For now, we point out that there are many fields $K$ that are isomorphic to the field of rational polynomials $\Fq[q](t)$; we provide a theorem \lean{is\_fraction\_field\_iff} that shows the choice of $K$ does not matter.
+Note that there is no requirement that the field \lean{Fq} is finite, since this is not needed to state the conditions on \lean{F}.
+We instead add a \lean{[fintype Fq]} hypothesis only to those results that require finiteness.
 
 \subsection{Use of typeclasses} \label{sec:typeclasses}
 Typeclasses were originally introduced in Haskell as a mechanism for operator overloading~\cite{typeclasses-haskell},
@@ -297,7 +301,8 @@ For example, if $R$ is a ring, $A$ is an $R$-algebra and $M$ an $A$-module, we c
 Since \lean{x~$\cdot$~y} for an $R$-algebra $A$ is defined as \lean{algebra\_map R A x * y}, applying \lean{smul\_assoc} for each $x : K$ with $y = (1 : L)$ and $z = (1 : F)$ shows that the \lean{algebra\_map}\kern-.3em s indeed commute.
 
 Common \lean{is\_scalar\_tower} instances are declared in \mathlib,
-such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $A$.
+such as for the maps $R \to S \to B$ when $S$ is a $R$-subalgebra of $A$ and $B$ is an $A$-algebra such that \lean{is\_scalar\_tower R A B};
+this also implies that the maps $R \to S \to A$ form a tower.
 The effect is that almost all coherence proof obligations are automated through typeclass instance search.
 Only when defining a new algebra structure were we required to supply the \lean{is\_scalar\_tower} instances ourselves.
 
@@ -324,7 +329,8 @@ Bundled subobjects provide similar benefits as bundled morphisms; the choice for
 
 Two new subobjects that we defined in our development were \lean{subfield} as well as \lean{intermediate\_field}. We defined a subfield of a field $K$ as a subset of $K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication and taking inverses.
 If $L$ is a field extension of~$K$, we defined an intermediate field as a subfield that is also a $K$-subalgebra: a subfield that contains the image of $\lean{algebra\_map K L}$.
-Other examples of subobjects available in \mathlib are submonoids, subgroups and submodules (with ideals as a special case of submodules).
+Other examples of subobjects available in \mathlib are submonoids, subgroups and submodules (with ideals as a special case of submodules);
+all of these are provided with an instance of the \lean{set\_like} typeclass that supplies notation such as a membership relation ``$x \in S$''.
 
 The new definitions found immediate use:
 soon after we contributed our definition of \lean{intermediate\_field} to \mathlib,
@@ -334,8 +340,8 @@ we used it in our development of the trace form.
 This anecdote illustrates the decentralized development style of \mathlib,
 with different groups and people building on each other's results in a collaborative process.
 
-By providing a coercion from subobjects to types, sending a subobject $S$ to the subtype of all elements of $S$,
-and putting typeclass instances on this subtype,
+Through the \lean{set\_like} typeclass, subobjects can be coerced to types, sending a subobject $S$ to the subtype of all elements of $S$.
+By putting typeclass instances on this subtype,
 we could reason about inductively defined rings such as $\Z$ and subrings such as \lean{integral\_closure $\Z$ K} uniformly.
 If $S : \lean{subfield}\ K$, there is a canonical ring embedding, the map that sends $x : S$ to $K$ by ``forgetting'' that $x \in S$,
 and we registered this map as an \lean{algebra S K} instance, also allowing us to treat field extensions of the form $\Q \to \C$ and subfields uniformly.
@@ -486,7 +492,7 @@ We also formalized that these operations give a commutative semiring structure o
 For example, multiplication of fractional ideals is defined as
 \begin{lstlisting}
 lemma fractional_mul (I J : fractional_ideal R F) :
-  is_fractional f (I * J : submodule R F) := _ -- proof omitted
+  is_fractional R (I * J : submodule R F) := _ -- proof omitted
 
 instance : has_mul (fractional_ideal R F) :=
 ⟨λ I J, ⟨I * J : submodule R F, fractional_mul I J⟩⟩
@@ -503,8 +509,8 @@ lemma submodule.mem_div_iff_forall_mul_mem {x : A}
 Beware that the notation $1/I$ might be misleading here: indeed, for general integral domains, the equality $I\ast 1/I=1$ might not hold. As an example, one can consider the ideal $(X,Y)$ in $\C[X,Y]$.
 On the other hand, we formalized that this equality holds for Dedekind domains (Section~\ref{sec:equivalence}) as the following lemma:
 \begin{lstlisting}
-lemma fractional_ideal.is_unit [is_dedekind_domain D]
-  (I : fractional_ideal R F) (hne : I ≠ ⊥) : is_unit I
+theorem fractional_ideal.mul_inv_cancel [is_dedekind_domain D]
+  {I : fractional_ideal D F} (hne : I ≠ 0) : I * (1 / I) = 1
 \end{lstlisting}
 This justifies the notation $I^{-1}=1/I$. In fact, we define this notation even for the ideal $0$, by declaring that $0^{-1}=0$. This reflects the existence of the typeclass \lean{group\_with\_zero} in \mathlib, consisting of groups endowed with an extra element \lean{0} whose inverse is again \lean{0}.
 
@@ -596,7 +602,7 @@ An important classical result in algebraic number theory is that the ring of int
 Our approach was adapted from Neukirch \cite[Theorem~3.1]{Neukirch}.
 Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$, $K$ a finite, separable field extension of~$F$ and let $S$ denote the integral closure of $D$ in $K$.
 
-The first step was to show that $K$ is a field of fractions for the integral closure, namely, there is an instance \lean{is\_fraction\_ring\_of\_finite\_extension R F K : is\_fraction\_ring S K}.
+The first step was to show that $K$ is a field of fractions for the integral closure, namely, there is an instance \lean{is\_fraction\_ring\_of\_finite\_extension D F K : is\_fraction\_ring S K}.
 The main content of \lean{is\_fraction\_ring\_\-of\-\_finite\-\_extension} consisted of showing that all elements $x : K$ can be written as $y / z$ for elements $y \in S$, $z \in D \subseteq S$;
 the standard proof of this fact (see~\cite[Theorem~15.29]{Dummit-and-Foote}) formalized readily.
 
@@ -631,7 +637,8 @@ linear_map.comp (linear_map.trace F K)
   (to_linear_map (lmul F K))
 \end{lstlisting}
 This definition was marked noncomputable since \lean{linear\_map.trace} makes a case distinction on the existence of a finite basis,
-choosing an arbitrary finite basis if one exists and returning $0$ otherwise.
+choosing an arbitrary finite basis if one exists (since the value of \lean{linear\_map.trace} does not depend on this choice)
+and returning $0$ otherwise.
 This latter case did not occur in our development.
 
 We defined the \emph{trace form} to be an $F$-bilinear form on $K$, mapping $x, y : K$ to $\Tr_{K/F}(xy)$.
@@ -642,30 +649,30 @@ noncomputable def trace_form : bilin_form F K :=
 
 In the following, let $L / K / F$ be a tower of finite extensions of fields, namely we assumed \lean{[algebra F K] [algebra K L] [algebra F L] [is\_scalar\_tower F K L]}, as described in Section~\ref{sec:scalar_tower}.
 
-The value of the trace depends on the choice of $F$ and $K$; we formalized this as lemmas \lean{trace\_algebra\_map x $:$ trace F K (algebra\_map F K x) = findim F K • x} as well as \lean{trace\_comp K x $:$ trace F L x = trace F K (trace K L x)}.
+The value of the trace depends on the choice of $F$ and $K$; we formalized this as lemmas \lean{trace\_algebra\_map x $:$ trace F K (algebra\_map F K x) = finrank F K * x} as well as \lean{trace\_trace x $:$ trace F K (trace (K L x)) = trace F L x}.
 These results followed by direct computation.
 
 To compute $\Tr_{K/F}(x)$, it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $F$, which is the monogenic extension $F(x)$ discussed in Section \ref{sec:monogenic-field-extension}.
 There is a nice formula for the trace in $F(x)$, although the terms in this formula are elements in a larger field $L$
-(such as the \emph{splitting field} of the minimal polynomial of $x$).
+(such as the \emph{splitting field} of \lean{minpoly F x}, the minimal polynomial of $x$ over $F$).
 In formalizing this formula, we first mapped the trace to $L$ using the canonical embedding $\lean{algebra\_map F L}$,
 which gave the following lemma statement:
 \begin{lstlisting}
 lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis F K)
-  (h : polynomial.splits (algebra_map F L) pb.minpoly_gen) :
+  (h : polynomial.splits (algebra_map F L) (minpoly F pb.gen)) :
   algebra_map F L (trace F K pb.gen) =
-    sum (roots (map (algebra_map F L) pb.minpoly_gen))
+    sum (roots (map (algebra_map F L) (minpoly F pb.gen)))
 \end{lstlisting}
 We formulated the lemma in terms of the power basis, since we needed to use it for $F(x)$ here
 and for an arbitrary finite separable extension $L / K$ later in the proof.
 
-The elements of \lean{(pb.minpoly\_gen.map (algebra\_map F L)).roots} are called \emph{conjugates} of $x$ in $L$.
+The elements of \lean{roots (map (algebra\_map F L) (minpoly F pb.gen))} are called \emph{conjugates} of $x$ in $L$.
 Each conjugate of $x$ is integral since it is a root of (the same) monic polynomial,
 and integer multiples and sums of integral elements are integral.
 Combining \lean{trace\_gen\_eq\_sum\_roots} and \lean{trace\_algebra\_map} showed that the trace of $x$ is an integer multiple (namely \lean{findim F(x) L}) of a sum of conjugate roots, hence we concluded that the trace (and trace form) of an integral element is also integral.
 
-Finally, we showed that the trace form is nondegenerate, following Neukirch~\cite[Proposition~2.8]{Neukirch}.
-Since $K / F$ is a finite, separable field extension, it has a power basis \lean{pb} generated by $x$.
+Finally, we showed that the trace form is nondegenerate, following Neu\-kirch~\cite[Proposition~2.8]{Neukirch}.
+Since $K / F$ is a finite, separable field extension, it has a power basis \lean{pb} generated by an element $x : K$.
 Letting $x_k$ denote the $k$-th conjugate of $x$ in an algebraically closed field $L / K / F$,
 the main difficulty was in checking the equality $\sum_k x_k^{i + j} = \Tr_{K / F} (x^{i + j})$.
 Directly applying \lean{trace\_gen\_eq\_sum\_roots} was tempting, since we had a sum over conjugates of powers on both sides.
