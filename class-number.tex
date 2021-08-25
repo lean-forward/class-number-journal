@@ -350,6 +350,7 @@ in \mathlib this construction is called \mbox{\lean{fraction\_ring R}}.
 When $R=\Z$, this yields the traditional description of $\Q$ as the set of equivalence classes of fractions, where $\frac{2}{3}=\frac{-4}{-6}$, etc.
 The drawback of this construction is that there are many other fields that can serve as the field of fractions for the same ring.
 Consider the field $\{z \in \C : \Re z \in \Q, \Im z\in\Q\}$, which is isomorphic to $\Frac (\Z[i])$ but not definitionally equal to it.
+Indeed, the \mathlib definition of the rational numbers $\Q$ is a product type, not a quotient type, so it would not be considered the field of fractions of $\Z$ in this setup.
 
 The strategy used in \mathlib is to rather allow for many different \emph{fraction fields} of our given integral domain $R$,
 as fields $K$ with a suitable \lean{[algebra R K]} instance, where the canonical map \lean{algebra\_map R K} witnesses that all elements $K$ are ``fractions'' of elements of $R$,
@@ -364,7 +365,35 @@ it can be extended uniquely to a map $K \to A$ compatible with \lean{algebra\_ma
 In particular, given \lean{is\_fraction\_ring R K₁} and \lean{is\_fraction\_ring R K₂}, we can derive an isomorphism $K_1 \simeq K_2$.
 The construction of $\Frac R$ then results in \emph{a} field of fractions (with an instance \lean{is\_fraction\_ring R (fraction\_ring R)}) rather than \emph{the} field of fractions.
 
-TODO: compare with the previous state of affairs where this information was bundled in a fraction map $f : R \to K$?
+The above description of fraction fields is the third such formalization in \mathlib. The first version
+%\footnote{Source code available at \url{https://github.com/leanprover-community/mathlib/blob/a012d76d5034d587924f23ccd0cdefa11569d5d9/src/ring_theory/localization.lean}}
+consisted of a quotient type \lean{quotient\_ring R},
+constructed similarly to the current definition of \lean{fraction\_ring R}.
+Due to the aforementioned drawback,
+that this provided no easy way to view e.g. $\Q$ as the field of fractions of $\Z$,
+this was refactored to use a characteristic predicate instead.
+
+The second version
+%\footnote{Source code available at \url{https://github.com/leanprover-community/mathlib/blob/80ad9edc9a6d6d2971dd044f6079cc770e755020/src/ring_theory/localization.lean}}
+defined $K$ to be the field of fractions of $R$ if there existed an injective \emph{fraction map} $f : R \to K$, which is a ring homomorphism witnessing that all elements of $K$ are ``fractions'' of elements of $R$;
+the map and its properties were bundled as a type \lean{fraction\_map R K}.
+Results on fraction fields were parametrized over a choice of fraction map $f$.
+This made it possible to view $\Q$ as the fraction field of $\Z$, by providing a suitable map \lean{int.fraction\_map : fraction\_map ℤ ℚ}.
+This came at a price:
+informally, at any given stage of one's reasoning, the field $K$ is fixed and the map $f\colon R\to K$ is applied implicitly, just viewing every $x:R$ as $x:K$.
+It is now impossible to view $f(R) \leq K$ as an inclusion of subalgebras,
+because the map $f$ is needed explicitly to give the $R$-algebra structure on $K$.
+As a workaround, \mathlib used a type synonym \lean{codomain f := K} and instantiated the $R$-algebra structure given by $f$ on this synonym.
+Again we encountered a distinction between $\Q$ ``itself'' and $\Frac(\Z) = \lean{codomain int.fraction\_map}$,
+still requiring the transfer of results such as typeclass instances.
+% The pain was alleviated by having a definitional equality between the types.
+
+The most recent version is the one described above.
+Inspired by our success in using the \lean{algebra} typeclass to denote inclusions of rings,
+we unbundled the explicit \lean{(f : fraction\_map R K)} parameters into
+an instance parameter \lean{[algebra R K]} that specifies the map,
+and an instance parameter \lean{[is\_fraction\_ring R K]} that specifies the conditions satisfied by the map.
+Separating out these parameters finally allowed us to painlessly view $\Q$ as the fraction ring of $\Z$ while preserving the original $\Z$-algebra structure on $\Q$.
 
 \subsection{Representing monogenic field extensions} \label{sec:monogenic-field-extension}
 
