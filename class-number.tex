@@ -153,10 +153,10 @@ This paper is an extended version of a paper publishes in the ITP 2021 conferenc
 %TODO Rewrite/clean up list below.
 A (sub)section on the use of typeclasses; see Section~\ref{sec:typeclasses}.
 The evolution of fraction rings in \mathlib at the end of Section~\ref{subsection : fields of fractions}.
-A brief description of class groups for general domains, instead of only considering these for Dedekind domains; see the end of Section~\ref{sec math background} and Section~\ref{sec:class-number}. %TODO  
-Elaboration on future directions in Section~\ref{sec:future_directions}. %TODO
+A brief description of class groups for general domains, instead of only considering these for Dedekind domains; see the ends of Section~\ref{sec math background} and Section~\ref{subsec:class_group}.
+Elaboration on unique factorization of ideals in Dedekind domains in Section~\ref{subsec:unique_ideal_factorization}.
 More details on the finiteness of the class number in Section~\ref{sec:class-number}. %TODO
-More details on properties of Dedekind domains in Sections... % TODO
+Elaboration on future directions in Section~\ref{sec:future_directions}. %TODO
 Effective bounds on the class number? %TODO?
 
 \section{Mathematical background}\label{sec math background}
@@ -563,6 +563,26 @@ The dimension condition shows its full force when applying this lemma:
 each prime ideal in the product, being nonzero, will be maximal because the Krull dimension of $D$ is at most $1$; from this, \lean{exists\_not\_mem\_one\_of\_ne\_bot} follows easily. Having the above lemma at our disposal,
 we were able to prove that every ideal $I\ne 0$ is invertible by arguing by contradiction: if $I\ast I\inv \lneq D$, we can find an element $x\in K\setminus D$ which is in $(I\ast I\inv)\inv$ thanks to \lean{exists\_not\_mem\_one\_of\_ne\_bot} and some easy algebraic manipulation will imply that $x$ is actually integral over $D$. Since $D$ is integrally closed, $x \in D$, contradicting the construction of $x$. Combining these results gives the equivalence between the two conditions for being a Dedekind domain.
 
+\subsection{Unique ideal factorization}\label{subsec:unique_ideal_factorization}
+
+As briefly indicated before, we also formalized a proof that in a Dedekind domain every nonzero ideal can be expressed as a product of prime ideals in a unique way up to the order of the factors. It is actually known that for an integral domain this ideal factorization property is again equivalent to being a Dedekind domain, even when the uniqueness is dropped (which then follows as a property). We did not (yet) formalize these equivalent definitions, but instead formalized the unique ideal factorization property of a Dedekind domain \lean{D} by instantiating a unique factorization monoid structure on its ideals:
+
+\begin{lstlisting}
+instance ideal.unique_factorization_monoid :
+  unique_factorization_monoid (ideal D) := -- proof omitted
+\end{lstlisting}
+For a brief general description of unique factorization monoids we refer the reader to the next section.
+%TODO? perhaps move the (brief) description of unique factorization monoids from the next section to this point.
+With much of the necessary definitions and properties already formalized, the formalization of the proof of this unique factorization result has been done in well under 100 lines of Lean code. One of the main mathematical ingredients (interesting in its own right) is that for ideals in a Dedekind domain, to contain is to divide:
+
+\begin{lstlisting}
+lemma ideal.dvd_iff_le {I J : ideal D} : (I ∣ J) ↔ J ≤ I := -- proof omitted
+\end{lstlisting}
+
+%TODO Anne? Perhaps say a little bit more about the proof (and/or how "smooth" is formalized)
+
+We note that the unique factorization result, or actually a quick corollary thereof, is an important ingredient in our finiteness proof for the class group of global fields, as we will elaborate on in Section~\ref{subsec:finiteness}.
+
 \section{Principal ideal domains are Dedekind}
 
 As an example of our definitions, we discuss in some detail our formalization of the fact that a principal ideal domain is a Dedekind domain. There is no explicit definition of PIDs in \mathlib, rather it is split up into two hypotheses.
@@ -699,7 +719,7 @@ so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x
 
 \section{Class group and class number} \label{sec:class-number}
 
-\subsection{The class group}
+\subsection{The class group}\label{subsec:class_group}
 
 Given a Dedekind domain $D$ with fraction field $K$, we formalized the notion of class group in Lean by defining a map \lean{to\_principal\_ideal D $:$ units K → units (fractional\_ideal D K)},
 and defined the class group as
@@ -711,9 +731,9 @@ quotient_group.quotient (range to_principal_ideal)
 Recall from Section~\ref{subsection:frac_ideals} that in the general case of an integral domain $D$ (which need not necessarily be Dedekind) the type of fractional ideals of $D$ is endowed with the structure of a commutative semiring. 
 %TODO Anne?: perhaps add here (or in Section 4.2) something like \lean{instance comm\_semiring : comm\_semiring (fractional\_ideal S P) 
 So also in this more general setting the group of invertible fractional ideals is well defined as \lean{units (fractional\_ideal D K)} and the quotient of this abelian group by the canonical image of the units of the (given) fraction field of $D$ gives rise to an abelian group \lean{class\_group} exactly as in the definition above.
-%TODO Anne?: Elaborate/rewrite a bit?
+%TODO Anne?: Elaborate/rewrite a bit? Put D in the main def?
 
-\subsection{Finiteness results}
+\subsection{Finiteness results}\label{subsec:finiteness}
 
 In general, Dedekind domains can have infinite class groups. However, as discussed in Section~\ref{sec math background}, the rings of integers of global fields have finite class groups.
 
