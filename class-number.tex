@@ -149,6 +149,16 @@ repository%
 \footnote{\url{https://github.com/lean-forward/class-number}}
 containing the source code referred to in this paper.
 
+This paper is an extended version of a paper publishes in the ITP 2021 conference proceedings~\cite{ClassGroupsITP2021}. The additions to this paper, apart from several small local changes throughout the text, mainly concern the following.
+%TODO Rewrite/clean up list below.
+A (sub)section on the use of typeclasses; see Section~\ref{sec:typeclasses}.
+The evolution of fraction rings in \mathlib at the end of Section~\ref{subsection : fields of fractions}.
+A brief description of class groups for general domains, instead of only considering these for Dedekind domains; see the end of Section~\ref{sec math background} and Section~\ref{sec:class-number}. %TODO  
+Elaboration on future directions in Section~\ref{sec:future_directions}. %TODO
+More details on the finiteness of the class number in Section~\ref{sec:class-number}. %TODO
+More details on properties of Dedekind domains in Sections... % TODO
+Effective bounds on the class number? %TODO?
+
 \section{Mathematical background}\label{sec math background}
 
 Let us now introduce some of the main objects we study, described informally. We assume some familiarity with basic ring and field theory.
@@ -798,7 +808,7 @@ and in Mizar by Futa, Mizushima, and Okazaki~\cite{gaussian_integers-mizar}.
 Eberl's Isabelle/HOL formalization deserves special mention in this context since it introduces techniques from algebraic number theory,
 defining the integer-valued norm on $\Z[i]$ and classifying the prime elements of $\Z[i]$.
 
-\subsection{Future directions}
+\subsection{Future directions}\label{sec:future_directions}
 
 Having formalized various basic results of algebraic number theory, there are several natural directions for future work, including formalizing some of the following results.
 \begin{itemize}
