@@ -699,12 +699,22 @@ so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x
 
 \section{Class group and class number} \label{sec:class-number}
 
+\subsection{The class group}
+
 Given a Dedekind domain $D$ with fraction field $K$, we formalized the notion of class group in Lean by defining a map \lean{to\_principal\_ideal D $:$ units K → units (fractional\_ideal D K)},
 and defined the class group as
 \begin{lstlisting}
 def class_group :=
 quotient_group.quotient (range to_principal_ideal)
 \end{lstlisting}
+
+Recall from Section~\ref{subsection:frac_ideals} that in the general case of an integral domain $D$ (which need not necessarily be Dedekind) the type of fractional ideals of $D$ is endowed with the structure of a commutative semiring. 
+%TODO Anne?: perhaps add here (or in Section 4.2) something like \lean{instance comm\_semiring : comm\_semiring (fractional\_ideal S P) 
+So also in this more general setting the group of invertible fractional ideals is well defined as \lean{units (fractional\_ideal D K)} and the quotient of this abelian group by the canonical image of the units of the (given) fraction field of $D$ gives rise to an abelian group \lean{class\_group} exactly as in the definition above.
+%TODO Anne?: Elaborate/rewrite a bit?
+
+\subsection{Finiteness results}
+
 In general, Dedekind domains can have infinite class groups. However, as discussed in Section~\ref{sec math background}, the rings of integers of global fields have finite class groups.
 
 We let $K$ be a number field and $K'$ be a function field, with ring of integers $\OK$ and $\OK[K']$ (w.r.t. a fixed $\Fq[q][t]$), respectively. 
