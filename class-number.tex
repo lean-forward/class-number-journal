@@ -725,17 +725,21 @@ so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x
 
 \subsection{The class group}\label{subsec:class_group}
 
-Given a Dedekind domain $D$ with fraction field $K$, we formalized the notion of class group in Lean by defining a map \lean{to\_principal\_ideal D $:$ units K → units (fractional\_ideal D K)},
+Recall from Section~\ref{sec math background} that the ideal class group $\Cl_D$ of a Dedekind domain $D$ is the quotient of the group of nonzero fractional ideals of $D$ by the nonzero principal ideals.
+More generally, given an integral domain $R$ with fraction field $K$,
+we can define the class group $\Cl_R$ as the quotient of the invertible fractional ideals by the invertible principal ideals.
+We formalized this in Lean by first defining a map \lean{to\_principal\_ideal R K $:$ units K → units (fractional\_ideal R K)},
 and defined the class group as
 \begin{lstlisting}
-def class_group :=
-quotient_group.quotient (range to_principal_ideal)
+def class_group (R K : Type*) [integral_domain R] [field K]
+  [algebra R K] [is_fraction_ring R K] :=
+quotient_group.quotient (range (to_principal_ideal R K))
 \end{lstlisting}
 
-Recall from Section~\ref{subsection:frac_ideals} that in the general case of an integral domain $D$ (which need not necessarily be Dedekind) the type of fractional ideals of $D$ is endowed with the structure of a commutative semiring. 
-%TODO Anne?: perhaps add here (or in Section 4.2) something like \lean{instance comm\_semiring : comm\_semiring (fractional\_ideal S P) 
-So also in this more general setting the group of invertible fractional ideals is well defined as \lean{units (fractional\_ideal D K)} and the quotient of this abelian group by the canonical image of the units of the (given) fraction field of $D$ gives rise to an abelian group \lean{class\_group} exactly as in the definition above.
-%TODO Anne?: Elaborate/rewrite a bit? Put D in the main def?
+Here, \lean{units R} for a semiring $R$ denotes $R^\times$, the multiplicative group of all invertible elements of $R$.
+Recall from Section~\ref{subsection:frac_ideals} that in the general case of an integral domain $R$ (which need not necessarily be Dedekind) the type of fractional ideals of $R$ is endowed with the structure of a commutative semiring.
+Therefore, the quotient of the abelian group \lean{units (fractional\_ideal R K)} by the subgroup of principal fractional ideals is well-defined.
+In the case where $R$ is a Dedekind domain, we provide a map \lean{class\_group.mk0} sending nonzero integral ideals of $R$ to the corresponding class in the class group.
 
 \subsection{Finiteness results}\label{subsec:finiteness}
 
