@@ -301,10 +301,12 @@ def number_field.ring_of_integers (K : Type*) [field K]
 integral_closure ℤ K
 \end{lstlisting}
 where \lean{integral\_closure} was previously defined in \mathlib.
-
 When $K$ is a function field over the finite field $\Fq$, we defined $\OK$ analogously as \lean{integral\_closure (polynomial $\Fq$) K}.
-To treat both definitions of ring of integers on an equal footing,
-we will work with the integral closure of any principal ideal domain when possible.
+
+Since the integers $\Z$ are integrally closed in $\QQ$, this construction of the ring of integers of the number field $\QQ$ is isomorphic, but not definitionally equal, to $\Z$.
+To avoid dealing with these isomorphisms, and also to treat the two definitions of rings of integers on an equal footing,
+we introduced a typeclass \lean{is\_integral\_closure A R B} stating that $A$ is the integral closure of $R$ in $B$,
+and worked with a generic \lean{is\_integral\_closure} instance instead of the specific \lean{ring\_of\_integers} construction when possible.
 
 \subsection{Subobjects} \label{sec:subobjects}
 
