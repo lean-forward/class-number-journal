@@ -864,16 +864,21 @@ defining the integer-valued norm on $\Z[i]$ and classifying the prime elements o
 Having formalized various basic results of algebraic number theory, there are several natural directions for future work, including formalizing some of the following results.
 \begin{itemize}
 
-\item The group of units of the ring of integers in a number field is finitely generated, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch} (and the function field analogue).
+\item The group of units of the ring of integers $\OK^{\times}$ in a number field $K$ is finitely generated, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch}, which gives that $\OK^{\times}$ has rank $r+s-1$ and torsion subgroup consisting of the roots of unity in $K$ (which is cyclic). Here $r$ denotes the number of real embeddings of $K$ and $s$ the number of (conjugate) pairs of complex non-real embeddings of $K$. The finite generation result also holds in the function fields, again with a precise description of the rank (and the torsion of course).
 
 \item Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of finitely many number fields, up to isomorphism,
-with bounded discriminant~\cite[Theorem 2.16]{Neukirch} (and the function field analogue).
+with bounded discriminant~\cite[Theorem 2.16]{Neukirch}. While this could be done without interpreting the primes dividing the discriminant as the primes that \emph{ramify} in the number field, it would certainly be interesting to set up some basic ramification theory (also essential for many other developments) and get the version of Hermite's theorem stating that, up to isomorphism, there are only finitely many number fields with bounded degree and ramification.
+As usual, there are analogue results in the function field setting, though they are less straightforward. One reason being that the nondegenerateness of the trace form from Section~\ref{sec:trace-form} does not hold any more when the separability condition is dropped.
 
-\item Class number computations, say of quadratic number fields.
+\item Class number computations, starting with, say, quadratic number fields.
 This could be part of verifying correctness of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
+Along the same lines, unit group computations would also be of much interest, most notably the explicit computation of $r+s-1$ generators for the free part of $\OK^{\times}$ as mentioned in the first item above.
+Restricting to quadratic fields, we see that the rank is only positive (namely 1) if the field is of the shape $\Q(\sqrt{d})$ for some positive integer $d$ (not a square).
+Finding a generator can then for example be done using continued fractions, of which the basics are already implemented in Lean by Kevin Kappelmann, though certifying that a given (perhaps externally computed) element is indeed a generator could also certainly be done without continued fractions.
 
 \item Applications of algebraic number theory to solving Diophantine equations, such as determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for
-given nonzero $D \in \Z$.
+given nonzero $D \in \Z$. It would be interesting to deal with some values of $D$ where no elementary techniques are available and factorization in the ring of integers of $\Q(\sqrt{D})$, along with class number info, wil resolve the equation.
+
 \end{itemize}
 
 \subsection{Conclusion}
