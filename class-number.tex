@@ -1,48 +1,18 @@
-\documentclass[smallextended]{svjour3}
+\documentclass[sn-mathphys]{sn-jnl}% Math and Physical Sciences Reference Style
 
-\bibliographystyle{spmpsci}
+\jyear{2021}
 
-\title{A formalization of Dedekind domains and class groups of global fields}
-\titlerunning{Dedekind domains and class groups}
+\title[Dedekind domains and class groups]{A formalization of Dedekind domains and class groups of global fields}
 
-\author{Anne Baanen \and Sander R. Dahmen \and Ashvni Narayanan \and Filippo A. E. Nuccio Mortarino Majno di Capriglio}
-% TODO: where to put funding?
+\author*[1]{\fnm{Anne} \sur{Baanen}}\email{t.baanen@vu.nl}
+\author[2]{\fnm{Sander R.} \sur{Dahmen}}\email{s.r.dahmen@vu.nl}
+\author[3]{\fnm{Ashvni} \sur{Narayanan}}\email{a.narayanan20@imperial.ac.uk}
+\author[4]{\fnm{Filippo A. E.} \sur{Nuccio Mortarino Majno di Capriglio}}\email{filippo.nuccio@univ-st-etienne.fr}
 
-%\author{Anne Baanen}{Department of Computer Science, Vrije Universiteit Amsterdam, The Netherlands \and \url{https://cs.vu.nl/~tbn305}}{t.baanen@vu.nl}{https://orcid.org/0000-0001-8497-3683}
-%{NWO Vidi grant No.\ 016.Vidi.189.037, Lean Forward}
-%\author{Sander R. Dahmen}{Department of Mathematics, Vrije Universiteit Amsterdam, The Netherlands \and \url{https://few.vu.nl/~sdn249/}}{s.r.dahmen@vu.nl}{https://orcid.org/0000-0002-0014-0789}{NWO Vidi grant No.\ 639.032.613, New Diophantine Directions}
-%\author{Ashvni Narayanan}{London School of Geometry and Number Theory}{a.narayanan20@imperial.ac.uk}{https://orcid.org/0000-0003-2777-4228}{EPSRC Grant EP/S021590/1 (UK)}
-%\author{Filippo A. E. Nuccio Mortarino Majno di Capriglio}{Univ Lyon, Université Jean Monnet Saint-Étienne, CNRS UMR 5208, Institut Camille Jordan, F-42023 Saint-\'Etienne, France\and\url {https://perso.univ-st-etienne.fr/nf51454h/index.html}}{filippo.nuccio@univ-st-etienne.fr}{https://orcid.org/0000-0002-5318-9869}{\empty}
-
-\authorrunning{T. Baanen, S. R. Dahmen, A. Narayanan, and F. A. E. Nuccio}
-
-\institute{T. Baanen \at
-              Department of Computer Science, Vrije Universiteit Amsterdam, The Netherlands \\
-              \email{t.baanen@vu.nl}
-           \and
-           S. R. Dahmen \at
-              Department of Mathematics, Vrije Universiteit Amsterdam, The Netherlands \\
-              \email{s.r.dahmen@vu.nl}
-            \and
-            A. Narayanan \at
-                London School of Geometry and Number Theory \\
-                \email{a.narayanan20@imperial.ac.uk}
-            \and
-            F. A. E. Nuccio \at
-                Univ Lyon, Université Jean Monnet Saint-Étienne, CNRS UMR 5208, Institut Camille Jordan, F-42023 Saint-\'Etienne, France \\
-                \email{filippo.nuccio@univ-st-etienne.fr}
-}
-
-\journalname{Journal of Automated Reasoning}
-
-\date{Received: date / Accepted: date}
-
-%\ccsdesc[500]{Mathematics of computing~Mathematical software}
-%\ccsdesc[500]{Security and privacy~Logic and verification}
-
-%\supplement{Full source code of the formalization is part of \mathlib. Copies of the source files relevant to this paper are available in a separate repository.}
-%\supplementdetails[swhid={swh:1:dir:3e46fd736dbb76b6e7be7f31ebc973f1a1c0237d}]
-%{Software}{https://github.com/lean-forward/class-number}
+\affil[1]{\orgdiv{Department of Computer Science}, \orgname{Vrije Universiteit Amsterdam}, \orgaddress{\city{Amsterdam}, \country{The Netherlands}}}
+\affil[2]{\orgdiv{Department of Mathematics}, \orgname{Vrije Universiteit Amsterdam}, \orgaddress{\city{Amsterdam}, \country{The Netherlands}}}
+\affil[3]{\orgname{London School of Geometry and Number Theory}, \orgaddress{\city{London}, \country{United Kingdom}}}
+\affil[4]{\orgname{Univ Lyon, Université Jean Monnet Saint-Étienne, CNRS UMR 5208, Institut Camille Jordan}, \postcode{F-42023} \city{Saint-\'Etienne}, \country{France}}
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -58,7 +28,7 @@
 \def\lstlanguagefiles{lstlean.tex}
 \lstset{language=lean}
 
-\newcommand{\C}{\mathbb{C}}
+\renewcommand{\C}{\mathbb{C}}
 \newcommand{\inv}{\ensuremath{{}^{-1}}}
 \newcommand{\lean}[1]{\texttt{#1}\xspace}
 \newcommand*{\OK}[1][K]{\mathcal{O}_{#1}}
@@ -67,10 +37,10 @@
 \DeclareMathOperator{\Tr}{Tr}
 \newcommand{\mathlib}{\textsf{mathlib}\xspace}
 \newcommand{\N}{\mathbb{N}}
-\newcommand{\R}{\mathbb{R}}
+\renewcommand{\R}{\mathbb{R}}
 \newcommand{\pow}{\textasciicircum\xspace}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\renewcommand{\Z}{\mathbb{Z}}
 \DeclareMathOperator{\Frac}{Frac}
 
 \definecolor{keywordcolor}{rgb}{0.7, 0.1, 0.1}   % red
@@ -84,7 +54,7 @@
 \DeclareUnicodeCharacter{2082}{\ensuremath{_2}}
 \DeclareUnicodeCharacter{2090}{\ensuremath{_a}}
 \DeclareUnicodeCharacter{2097}{\ensuremath{_l}}
-\DeclareUnicodeCharacter{211A}{\ensuremath{\Q}}
+\DeclareUnicodeCharacter{211A}{\ensuremath{\QQ}}
 \DeclareUnicodeCharacter{2124}{\ensuremath{\Z}}
 \DeclareUnicodeCharacter{2211}{\ensuremath{\sum}}
 \DeclareUnicodeCharacter{2223}{\ensuremath{\mid}}
@@ -95,23 +65,29 @@
 
 \begin{document}
 
-\maketitle
-
-\begin{abstract}
+\abstract{
 Dedekind domains and their class groups are notions in commutative algebra that are essential in algebraic number theory.
 We formalized these structures and several fundamental properties, including number theoretic finiteness results for class groups, in the Lean prover as part of the \mathlib mathematical library.
 This paper describes the formalization process, noting the idioms we found useful in our development and \mathlib's decentralized collaboration processes involved in this project.
 
+}
 \keywords{formal math \and algebraic number theory \and commutative algebra \and Lean \and mathlib}
-\end{abstract}
+
+\maketitle
+
+\section*{Acknowledgements}
+We would like to thank Jasmin Blanchette and the anonymous reviewers for useful comments on previous versions of the manuscript, which found their way into this paper.\\
+A.~N.~would like to thank Prof.\ Kevin Buzzard for his constant support and encouragement, and for introducing her to the other co-authors.\\
+A.~N.~and F.~N.~wish to express their deepest gratitude to Anne Baanen for the generosity shown along all stages of the project. Without Anne's never-ending patience, it would have been impossible for them to contribute to this project, and to overcome several difficulties.\\
+Finally, we would like to thank the whole \mathlib community for invaluable advice all along the project.
 
 \section{Introduction}
 
 In its basic form, number theory studies properties of the integers $\Z$
-and its fraction field, the rational numbers $\Q$.
-Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\Q$,
-it is worthwhile to study finite extensions of $\Q$, called \emph{number fields}, as well as their \emph{rings of integers} (Section~\ref{sec math background}),
-whose relations mirror the way $\Q$ contains $\Z$ as a subring.
+and its fraction field, the rational numbers $\QQ$.
+Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\QQ$,
+it is worthwhile to study finite extensions of $\QQ$, called \emph{number fields}, as well as their \emph{rings of integers} (Section~\ref{sec math background}),
+whose relations mirror the way $\QQ$ contains $\Z$ as a subring.
 In this paper, we describe our project aiming at formalizing these notions and some of their important properties. Our goal, however, is not to get to the definitions and properties as quickly as possible,
 but rather
 to lay the foundations for future work,
@@ -164,15 +140,15 @@ Effective bounds on the class number? %TODO?
 
 Let us now introduce some of the main objects we study, described informally. We assume some familiarity with basic ring and field theory.
 
-A \emph{number field} $K$ is a finite extension of the field $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$; its dimension is called the \emph{degree} of $K$.
-The easiest example is $\Q$ itself, and the two-dimensional cases are given by the quadratic number fields
-$\Q(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \Q\}$
+A \emph{number field} $K$ is a finite extension of the field $\QQ$, and as such has the structure of a finite dimensional vector space over $\QQ$; its dimension is called the \emph{degree} of $K$.
+The easiest example is $\QQ$ itself, and the two-dimensional cases are given by the quadratic number fields
+$\QQ(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \QQ\}$
 where $d \in \Z$ is not a square.
 For an interesting cubic example, let $\alpha_0$ be the unique real number satisfying $\alpha_0^3 + \alpha_0^2 - 2\alpha_0 + 8=0$.
 It gives rise to the number field
-$\Q(\alpha_0)=\{a+b\alpha_0+c \alpha_0^2: a,b,c \in \Q\}$.
-In general, taking any root $\alpha$ of an irreducible polynomial of degree $n$ over $\Q$ yields a number field of degree $n$:
-$\Q(\alpha)=\{c_0+c_1\alpha+\ldots+c_{n-1} \alpha^{n-1} : c_0,c_1,\ldots,c_{n-1} \in \Q \}$,
+$\QQ(\alpha_0)=\{a+b\alpha_0+c \alpha_0^2: a,b,c \in \QQ\}$.
+In general, taking any root $\alpha$ of an irreducible polynomial of degree $n$ over $\QQ$ yields a number field of degree $n$:
+$\QQ(\alpha)=\{c_0+c_1\alpha+\ldots+c_{n-1} \alpha^{n-1} : c_0,c_1,\ldots,c_{n-1} \in \QQ \}$,
 and, up to isomorphism, these are all the number fields of degree $n$.
 
 The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, namely
@@ -180,11 +156,11 @@ The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integr
   \OK := \left\{x \in K : f(x)=0 \text{ where $f \in \Z[x]$ is a monic polynomial}\right\},\]
 where we recall that a polynomial is called \emph{monic} if its leading coefficient equals $1$.
 While it might not be immediately obvious that $\OK$ is a ring, this follows from general algebraic properties of integral closures.
-Some examples of $\OK$ are the following. Taking $K=\Q$, we get $\OK=\Z$ back.
-For $K=\Q(i)=\Q(\sqrt{-1})$ we get that $\OK$ is the ring of Gaussian integers $\Z[i]=\{a+bi : a,b \in \Z\}$.
-But for $K=\Q(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$; hence by definition, $\varphi \in \OK$.
+Some examples of $\OK$ are the following. Taking $K=\QQ$, we get $\OK=\Z$ back.
+For $K=\QQ(i)=\QQ(\sqrt{-1})$ we get that $\OK$ is the ring of Gaussian integers $\Z[i]=\{a+bi : a,b \in \Z\}$.
+But for $K=\QQ(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$; hence by definition, $\varphi \in \OK$.
 It turns out that $\OK=\Z[\varphi]=\{a+b\varphi : a,b \in \Z\}$.
-Finally, if $K=\Q(\alpha_0)$ with $\alpha_0$ as before, then $\OK=\{a+b \alpha_0+c (\alpha_0+\alpha_0^2)/2 : a,b,c \in \Z\}$, illustrating that explicitly writing down $\OK$ can quickly become complicated.
+Finally, if $K=\QQ(\alpha_0)$ with $\alpha_0$ as before, then $\OK=\{a+b \alpha_0+c (\alpha_0+\alpha_0^2)/2 : a,b,c \in \Z\}$, illustrating that explicitly writing down $\OK$ can quickly become complicated.
 Further well-known rings of integers are
 the Eisenstein integers $\Z[(1+\sqrt{-3})/2]$ and the ring $\Z[\sqrt{2}]$.
 
@@ -194,7 +170,7 @@ still hold in $\OK$ and, when this fails, if a reasonable weakening does.
 An important property of $\Z$ is that it is a principal ideal domain (PID), meaning that every ideal is generated by one element. This implies that every nonzero nonunit element can be written as a
 finite product of prime elements, which is unique up to reordering and multiplying by $\pm 1$: a ring where this holds is called a unique factorization domain, or UFD.
 For example, $6$ can be factored in primes in $4$ equivalent ways, namely $6=2\cdot 3=3\cdot2=(-2)\cdot (-3)=(-3) \cdot (-2)$.
-In fact, the previously mentioned examples of rings of integers are UFDs, but this is certainly not true for all rings of integers. For example, unique factorization \emph{does not} hold in $\mathcal{O}_{\Q(\sqrt{-5})}=\Z[\sqrt{-5}]$
+In fact, the previously mentioned examples of rings of integers are UFDs, but this is certainly not true for all rings of integers. For example, unique factorization \emph{does not} hold in $\mathcal{O}_{\QQ(\sqrt{-5})}=\Z[\sqrt{-5}]$
 : it is easy to prove that $6=2\cdot3$ and $6=(1+\sqrt{-5}) (1-\sqrt{-5})$ provide two essentially different ways to factor $6$ into prime elements of $\Z[\sqrt{-5}]$.
 
 As it turns out, there is a way to remedy this. Namely, by considering factorization of \emph{ideals} instead of elements: given a number field $K$, with ring of integers $\OK$, a beautiful and classical result by Dedekind shows that every nonzero ideal of $\OK$ can be factored as a product of prime ideals in a unique way, up to reordering.
@@ -203,11 +179,11 @@ Although unique factorization in terms of ideals is of great importance, it is s
 necessary, to also consider factorization properties in terms of elements.
 We mentioned that unique factorization in $\Z$ follows from the fact that every ideal is generated by a single element.
 Now, it is convenient to extend the notion of ideals of $\Z$ to that of $\emph{fractional ideals}$. 
-These are additive subgroups of $\Q$ of the form $\frac{1}{d} I$ with $I$ an ideal of $\Z$ and $d$ a nonzero integer.
+These are additive subgroups of $\QQ$ of the form $\frac{1}{d} I$ with $I$ an ideal of $\Z$ and $d$ a nonzero integer.
 When the distinction is important, we refer to an ideal $I \subseteq \Z$ as an \emph{integral ideal}.
 The nonzero fractional ideals of $\Z$ naturally form a multiplicative group (whereas there is no integral ideal $I\subseteq \Z$ such that $I*(2\Z)=(1)$).
 The statement that every ideal is generated by a single element
-translates to the fact that the quotient group of nonzero fractional ideals modulo $\Q^\times$ is trivial (where $\frac{a}{b} \in \Q^\times$ corresponds to $\frac{1}{b} a \Z$, and as usual, the multiplicative group of invertible elements of a ring $R$ is denoted by $R^{\times}$).
+translates to the fact that the quotient group of nonzero fractional ideals modulo $\QQ^\times$ is trivial (where $\frac{a}{b} \in \QQ^\times$ corresponds to $\frac{1}{b} a \Z$, and as usual, the multiplicative group of invertible elements of a ring $R$ is denoted by $R^{\times}$).
 
 It turns out that this quotient group can be defined for every ring of integers $\OK$.
 The fundamental theoretical notion beneath this construction is that of Dedekind domain: these are integral domains $D$ which are Noetherian (every ideal of $D$ is finitely generated), integrally closed (if an element $x$ in $\Frac D$ (the fraction field of $D$) is a root of a monic polynomial with coefficients in $D$, then actually $x \in D$), and of Krull dimension at most $1$ (every nonzero prime ideal of $D$ is maximal).
@@ -244,7 +220,7 @@ The \emph{class} keyword declares a structure type (in other words, a type of re
 Round brackets mark parameters explicitly supplied by the user, such as \lean{(K : Type*)},
 square brackets mark instance parameters inferred by the typeclass system, such as \mbox{\lean{[field K]}}.
 The condition \lean{[to\_char\_zero : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
-This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass instance search), endowing $K$ with the $\Q$-vector space structure used in the hypothesis \mbox{\lean{[to\_finite\_dimensional : finite\_dimensional ℚ K]}}.
+This implies that there is a $\QQ$-algebra structure on $K$ (found by typeclass instance search), endowing $K$ with the $\QQ$-vector space structure used in the hypothesis \mbox{\lean{[to\_finite\_dimensional : finite\_dimensional ℚ K]}}.
 
 Similarly, we defined the function field $F$ over a finite field $\Fq$ using the following typeclass:
 \begin{lstlisting}
@@ -279,11 +255,11 @@ there was no instance that should be found but could not due to timeouts.
 
 The definition of \lean{is\_number\_field} illustrates our treatment of field extensions.
 A field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
-Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\overline{K}$ of $K$, and $\overline{K}$ is contained in $\C$.
-We might formalize this situation by viewing $\Q$, $K$, $L$ and $\overline{K}$ as sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
+Often we encounter towers of field extensions: we might have that $\QQ$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\overline{K}$ of $K$, and $\overline{K}$ is contained in $\C$.
+We might formalize this situation by viewing $\QQ$, $K$, $L$ and $\overline{K}$ as sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
 This way, no coercions need to be inserted in order to map elements of one field into a larger field.
 Unfortunately, we can only avoid coercions as far as we are able to stay within one largest field.
-For example, the definition of complex numbers depends on many results for rational numbers, which would need to be proved again, or transported, for the subfield of $\C$ isomorphic to $\Q$.
+For example, the definition of complex numbers depends on many results for rational numbers, which would need to be proved again, or transported, for the subfield of $\C$ isomorphic to $\QQ$.
 
 Instead, we formalized results about field extensions through parametrization. The fields $K$ and $L$ can be arbitrary types
 and the hypothesis ``$L$ is a field extension of~$K$'' is represented by an instance parameter \lean{[algebra K L]} denoting a $K$-algebra structure on $L$.
@@ -295,10 +271,10 @@ In other words, field extensions are given by their canonical embeddings.
 \subsection{Scalar towers} \label{sec:scalar_tower}
 
 The main drawback of using arbitrary embeddings to represent field extensions is that we need to prove that these maps commute.
-For example, we might start with a field extension $L / \Q$, then define a subfield $K$ of $L$,
-resulting in a tower of extensions $L / K / \Q$.
-In such a tower, the map $\Q \to L$ should be equal to the composition $\Q \to K$ followed by $K \to L$.
-Such an equality cannot always be achieved by defining the map $\Q \to L$ to be this composition: in the example, the map $\Q \to K$ depends on the map $\Q \to L$.
+For example, we might start with a field extension $L / \QQ$, then define a subfield $K$ of $L$,
+resulting in a tower of extensions $L / K / \QQ$.
+In such a tower, the map $\QQ \to L$ should be equal to the composition $\QQ \to K$ followed by $K \to L$.
+Such an equality cannot always be achieved by defining the map $\QQ \to L$ to be this composition: in the example, the map $\QQ \to K$ depends on the map $\QQ \to L$.
 
 The solution in \mathlib is to parametrize over all three maps, as long a there is also a proof of coherence:
 a hypothesis of the form ``$L / K / F$ is a tower of field extensions'' is translated into three instance parameters \lean{[algebra F K]}, \lean{[algebra K L]} and \lean{[algebra F L]},
@@ -358,7 +334,7 @@ Through the \lean{set\_like} typeclass, subobjects can be coerced to types, send
 By putting typeclass instances on this subtype,
 we could reason about inductively defined rings such as $\Z$ and subrings such as \lean{integral\_closure $\Z$ K} uniformly.
 If $S : \lean{subfield}\ K$, there is a canonical ring embedding, the map that sends $x : S$ to $K$ by ``forgetting'' that $x \in S$,
-and we registered this map as an \lean{algebra S K} instance, also allowing us to treat field extensions of the form $\Q \to \C$ and subfields uniformly.
+and we registered this map as an \lean{algebra S K} instance, also allowing us to treat field extensions of the form $\QQ \to \C$ and subfields uniformly.
 Similarly, for $F : \lean{intermediate\_field K L}$, we defined the corresponding \lean{algebra K F}, \lean{algebra F L} and \lean{is\_scalar\_tower K F L} instances.
 
 \subsection{Fields of fractions}\label{subsection : fields of fractions}
@@ -367,10 +343,10 @@ starting from the set of pairs $(a,b)$ with $a,b \in R$ such that $b\neq 0$,
 one quotients by the equivalence relation generated by $(\alpha a, \alpha b) \sim (a,b)$ for all $\alpha \ne 0 : R$, writing the equivalence class of $(a,b)$ as $\frac{a}{b}$.
 It can easily be proved that the ring structure on $R$ extends uniquely to a field structure on $\Frac R$;
 in \mathlib this construction is called \mbox{\lean{fraction\_ring R}}.
-When $R=\Z$, this yields the traditional description of $\Q$ as the set of equivalence classes of fractions, where $\frac{2}{3}=\frac{-4}{-6}$, etc.
+When $R=\Z$, this yields the traditional description of $\QQ$ as the set of equivalence classes of fractions, where $\frac{2}{3}=\frac{-4}{-6}$, etc.
 The drawback of this construction is that there are many other fields that can serve as the field of fractions for the same ring.
-Consider the field $\{z \in \C : \Re z \in \Q, \Im z\in\Q\}$, which is isomorphic to $\Frac (\Z[i])$ but not definitionally equal to it.
-Indeed, the \mathlib definition of the rational numbers $\Q$ is a product type, not a quotient type, so it would not be considered the field of fractions of $\Z$ in this setup.
+Consider the field $\{z \in \C : \Re z \in \QQ, \Im z\in\QQ\}$, which is isomorphic to $\Frac (\Z[i])$ but not definitionally equal to it.
+Indeed, the \mathlib definition of the rational numbers $\QQ$ is a product type, not a quotient type, so it would not be considered the field of fractions of $\Z$ in this setup.
 
 The strategy used in \mathlib is to rather allow for many different \emph{fraction fields} of our given integral domain $R$,
 as fields $K$ with a suitable \lean{[algebra R K]} instance, where the canonical map \lean{algebra\_map R K} witnesses that all elements $K$ are ``fractions'' of elements of $R$,
@@ -390,7 +366,7 @@ The above description of fraction fields is the third such formalization in \mat
 consisted of a quotient type \lean{quotient\_ring R},
 constructed similarly to the current definition of \lean{fraction\_ring R}.
 Due to the aforementioned drawback,
-that this provided no easy way to view e.g. $\Q$ as the field of fractions of $\Z$,
+that this provided no easy way to view e.g. $\QQ$ as the field of fractions of $\Z$,
 this was refactored to use a characteristic predicate instead.
 
 The second version
@@ -398,13 +374,13 @@ The second version
 defined $K$ to be the field of fractions of $R$ if there existed an injective \emph{fraction map} $f : R \to K$, which is a ring homomorphism witnessing that all elements of $K$ are ``fractions'' of elements of $R$;
 the map and its properties were bundled as a type \lean{fraction\_map R K}.
 Results on fraction fields were parametrized over a choice of fraction map $f$.
-This made it possible to view $\Q$ as the fraction field of $\Z$, by providing a suitable map \lean{int.fraction\_map : fraction\_map ℤ ℚ}.
+This made it possible to view $\QQ$ as the fraction field of $\Z$, by providing a suitable map \lean{int.fraction\_map : fraction\_map ℤ ℚ}.
 This came at a price:
 informally, at any given stage of one's reasoning, the field $K$ is fixed and the map $f\colon R\to K$ is applied implicitly, just viewing every $x:R$ as $x:K$.
 It is now impossible to view $f(R) \leq K$ as an inclusion of subalgebras,
 because the map $f$ is needed explicitly to give the $R$-algebra structure on $K$.
 As a workaround, \mathlib used a type synonym \lean{codomain f := K} and instantiated the $R$-algebra structure given by $f$ on this synonym.
-Again we encountered a distinction between $\Q$ ``itself'' and $\Frac(\Z) = \lean{codomain int.fraction\_map}$,
+Again we encountered a distinction between $\QQ$ ``itself'' and $\Frac(\Z) = \lean{codomain int.fraction\_map}$,
 still requiring the transfer of results such as typeclass instances.
 % The pain was alleviated by having a definitional equality between the types.
 
@@ -413,13 +389,13 @@ Inspired by our success in using the \lean{algebra} typeclass to denote inclusio
 we unbundled the explicit \lean{(f : fraction\_map R K)} parameters into
 an instance parameter \lean{[algebra R K]} that specifies the map,
 and an instance parameter \lean{[is\_fraction\_ring R K]} that specifies the conditions satisfied by the map.
-Separating out these parameters finally allowed us to painlessly view $\Q$ as the fraction ring of $\Z$ while preserving the original $\Z$-algebra structure on $\Q$.
+Separating out these parameters finally allowed us to painlessly view $\QQ$ as the fraction ring of $\Z$ while preserving the original $\Z$-algebra structure on $\QQ$.
 
 \subsection{Representing monogenic field extensions} \label{sec:monogenic-field-extension}
 
-In Section~\ref{sec math background} we have informally said that every number field $K$ can be written as $K=\Q(\alpha)$ for a root $\alpha$ of an irreducible polynomial $P\in\Q[X]$. This can be made precise in several ways. For instance, one can consider a large field $L$ (of characteristic $0$) where $P$ splits completely, then choose a root $\alpha\in L$ and let $K = \Q(\alpha)$ be the smallest subfield of $L$ containing $\alpha$. Or, one can consider the quotient ring $\Q[X]/P$ and observe that this is a field where the class $X\pmod{P}$ is a root of $P$. The assignment $\alpha\mapsto X\pmod{P}$ yields an isomorphism of the two fields, but any other choice of a root $\alpha'\in L$ leads to another isomorphism $\Q(\alpha')\cong \Q[X]/P$. Although mathematically we often tacitly identify the constructions, there is no canonical representation of the \emph{monogenic} extensions of $\Q$, those which can be obtained by adjoining a single root of one polynomial.
+In Section~\ref{sec math background} we have informally said that every number field $K$ can be written as $K=\QQ(\alpha)$ for a root $\alpha$ of an irreducible polynomial $P\in\QQ[X]$. This can be made precise in several ways. For instance, one can consider a large field $L$ (of characteristic $0$) where $P$ splits completely, then choose a root $\alpha\in L$ and let $K = \QQ(\alpha)$ be the smallest subfield of $L$ containing $\alpha$. Or, one can consider the quotient ring $\QQ[X]/P$ and observe that this is a field where the class $X\pmod{P}$ is a root of $P$. The assignment $\alpha\mapsto X\pmod{P}$ yields an isomorphism of the two fields, but any other choice of a root $\alpha'\in L$ leads to another isomorphism $\QQ(\alpha')\cong \QQ[X]/P$. Although mathematically we often tacitly identify the constructions, there is no canonical representation of the \emph{monogenic} extensions of $\QQ$, those which can be obtained by adjoining a single root of one polynomial.
 
-The same continues to hold if we replace the base field $\Q$ with another field $F$, thus considering extensions of the form $F(\alpha)$, now requiring that $\alpha$ be a root of some $P\in F[X]$. Various constructions of $F(\alpha)$ have already been formalized in \mathlib. The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$.
+The same continues to hold if we replace the base field $\QQ$ with another field $F$, thus considering extensions of the form $F(\alpha)$, now requiring that $\alpha$ be a root of some $P\in F[X]$. Various constructions of $F(\alpha)$ have already been formalized in \mathlib. The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$.
 
 To find a uniform way to reason about all these definitions,
 we chose to formalize the notion of \emph{power basis} to represent monogenic field extensions: this is a basis of the form $1, x, x^2, \dots, x^{n-1} : K$ (viewing $K$ as a $F$-vector space).
@@ -662,7 +638,7 @@ theorem is_prime.comap (I : ideal S) [hI : is_prime I] :
 The final condition, that the integral closure $S$ of $D$ in $L$ is a Noetherian ring, required the most work.
 We started by following the first half of Dummit and Foote~\cite[Theorem~15.29]{Dummit-and-Foote},
 so that it sufficed to find a nondegenerate bilinear form $B$ such that all integral $x, y : K$ satisfy $B(x, y) \in \lean{integral\_closure}\ D\ K$.
-We then formalized the results in Neukirch \cite[\S\S~2.5--2.8]{Neukirch} to show that the \emph{trace form} is a bilinear form satisfying these requirements.
+We then formalized the results in Neukirch \cite[Sections~2.5--2.8]{Neukirch} to show that the \emph{trace form} is a bilinear form satisfying these requirements.
 
 \subsection{The trace form}\label{sec:trace-form}
 In the notation from the previous section, consider the bilinear map \lean{lmul := $\lambda$ x y $:$ K, x~*~y}.
@@ -820,10 +796,10 @@ Alternatively, one could aim at dropping the separability condition in the forma
 Having a formalization of this generalization would be interesting in its own right.
 This approach would also still need the adaptation of some of the details in the final steps for the finiteness of the class group in the admissible case.
 
-We rounded off our development by determining the class number in the simplest possible case: the rational numbers $\Q$.
+We rounded off our development by determining the class number in the simplest possible case: the rational numbers $\QQ$.
 First, we formalized the theorem \lean{class\_number\_eq\_one\_iff}, stating that the class number of $K$ is $1$ if and only if $\OK$ is a principal ideal domain.
-After defining the isomorphism \lean{rat.ring\_of\_integers\_equiv} showing $\OK[\Q]$ is $\Z$,
-we could use the fact that $\Z$ is a PID to conclude that the class number of $\Q$ is equal to $1$:
+After defining the isomorphism \lean{rat.ring\_of\_integers\_equiv} showing $\OK[\QQ]$ is $\Z$,
+we could use the fact that $\Z$ is a PID to conclude that the class number of $\QQ$ is equal to $1$:
 \begin{lstlisting}
 theorem rat.class_number : number_field.class_number ℚ = 1 :=
 class_number_eq_one_iff.mpr
@@ -874,11 +850,11 @@ As usual, there are analogue results in the function field setting, though they 
 \item Class number computations, starting with, say, quadratic number fields.
 This could be part of verifying correctness of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
 Along the same lines, unit group computations would also be of much interest, most notably the explicit computation of $r+s-1$ generators for the free part of $\OK^{\times}$ as mentioned in the first item above.
-Restricting to quadratic fields, we see that the rank is only positive (namely 1) if the field is of the shape $\Q(\sqrt{d})$ for some positive integer $d$ (not a square).
+Restricting to quadratic fields, we see that the rank is only positive (namely 1) if the field is of the shape $\QQ(\sqrt{d})$ for some positive integer $d$ (not a square).
 Finding a generator can then for example be done using continued fractions, of which the basics are already implemented in Lean by Kevin Kappelmann, though certifying that a given (perhaps externally computed) element is indeed a generator could also certainly be done without continued fractions.
 
 \item Applications of algebraic number theory to solving Diophantine equations, such as determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for
-given nonzero $D \in \Z$. It would be interesting to deal with some values of $D$ where no elementary techniques are available and factorization in the ring of integers of $\Q(\sqrt{D})$, along with class number info, wil resolve the equation.
+given nonzero $D \in \Z$. It would be interesting to deal with some values of $D$ where no elementary techniques are available and factorization in the ring of integers of $\QQ(\sqrt{D})$, along with class number info, wil resolve the equation.
 
 \end{itemize}
 
@@ -904,13 +880,7 @@ and contributed our own set of designs.
 The real achievement was not to complete each proof,
 but to build a better foundation for formal mathematics.
 
-\begin{acknowledgements}
-We would like to thank Jasmin Blanchette and the anonymous reviewers for useful comments on previous versions of the manuscript, which found their way into this paper.\\
-A.~N.~would like to thank Prof.\ Kevin Buzzard for his constant support and encouragement, and for introducing her to the other co-authors.\\
-A.~N.~and F.~N.~wish to express their deepest gratitude to Anne Baanen for the generosity shown along all stages of the project. Without Anne's never-ending patience, it would have been impossible for them to contribute to this project, and to overcome several difficulties.\\
-Finally, we would like to thank the whole \mathlib community for invaluable advice all along the project.
-\end{acknowledgements}
-
+\backmatter
 
 \bibliography{lean}
 
