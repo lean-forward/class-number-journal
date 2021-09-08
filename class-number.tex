@@ -586,9 +586,7 @@ With much of the necessary definitions and properties already formalized, the fo
 lemma ideal.dvd_iff_le {I J : ideal D} : (I ∣ J) ↔ J ≤ I
 \end{lstlisting}
 
-Similarly, to strictly contain is to properly divide, so the well-foundedness condition of UFMs is exactly the property that a Dedekind domain is Noetherian. To show irreducible elements of the monoid \lean{ideal D} are prime, we first formalized that all irreducible ideals are maximal. Since a Dedekind domain has Krull dimension at most one, we conclude all maximal ideals are prime ideals (noting that prime ideals of a Dedekind domain $D$ coincide with prime elements of the monoid \lean{ideal D}).
-???
-%TODO Anne: please rewrite. Always: maximal ideals are prime; Krull dim at most one means all nonzero prime ideals are maximal.
+Similarly, to strictly contain is to properly divide, so the well-foundedness condition of UFMs is exactly the property that a Dedekind domain is Noetherian. To show irreducible elements of the monoid \lean{ideal D} are prime, we formalized that all irreducible ideals in a Dedekind domain are maximal and therefore prime (noting that prime ideals of a Dedekind domain $D$ coincide with prime elements of the monoid \lean{ideal D}); the converse holds in any monoid.
 
 We note that the unique factorization result, or actually a quick corollary thereof, is an important ingredient in our finiteness proof for the class group of global fields, as we will elaborate on in Section~\ref{subsec:finiteness}.
 
