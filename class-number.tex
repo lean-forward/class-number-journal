@@ -120,14 +120,14 @@ repository%
 \footnote{\url{https://github.com/lean-forward/class-number-journal}}
 containing the source code referred to in this paper.
 
-This paper is an extended version of a paper published in the ITP 2021 conference proceedings~\cite{ClassGroupsITP2021}. The additions to this paper, apart from several small local changes throughout the text, mainly concern the following:
+This paper is an extended version of a paper published in the ITP 2021 conference proceedings~\cite{ClassGroupsITP2021}. The additions to this paper, apart from several small local changes throughout the text, mainly concern the following.
 \begin{itemize}
  \item Code samples throughout have been updated to reflect parts of our formalization contributed to \mathlib after the previous publication and to incorporate changes in \mathlib after contribution.
  \item A brief description of class groups for general domains, instead of only considering these for Dedekind domains; see the end of Section~\ref{sec math background} and Section~\ref{subsec:class_group}.
  \item The new Section~\ref{sec:typeclasses} gives a more detailed explanation of the use of typeclasses in \mathlib.
  \item The further evolution of fraction rings in \mathlib is discussed at the end of Section~\ref{subsection : fields of fractions}.
  \item Elaboration on unique factorization of ideals in Dedekind domains in Section~\ref{subsec:unique_ideal_factorization}.
- \item More details on the finiteness of the class number in Section~\ref{sec:class-number}.
+ \item More details on the finiteness of the class number in Section~\ref{subsec:finiteness}.
  \item Elaboration on future directions in Section~\ref{sec:future_directions}.
 \end{itemize}
 
@@ -788,7 +788,6 @@ One then also needs to show that finiteness of the class group of the integral c
 A trivial way to get rid of the assumption in the statement above is to simply move it to our definition of function field.
 While this would be mathematically consistent by the result just cited, we did not opt to do this (for instance showing a finite extension of a function field is a function field
 would become nontrivial).
-%One reason being that it would simply preserve the proof obligation for future basic formalizaion work, for instance when showing a finite extension of a function field is a function field.
 Alternatively, one could aim at dropping the separability condition in the formalized result mentioned in the first paragraph of Section~\ref{sec:integral-closure}.
 Having a formalization of this generalization would be interesting in its own right.
 This approach would also still need the adaptation of some of the details in the final steps for the finiteness of the class group in the admissible case.
