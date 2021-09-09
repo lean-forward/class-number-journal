@@ -82,10 +82,7 @@ and its fraction field, the rational numbers $\QQ$.
 Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\QQ$,
 it is worthwhile to study finite extensions of $\QQ$, called \emph{number fields}, as well as their \emph{rings of integers} (Section~\ref{sec math background}),
 whose relations mirror the way $\QQ$ contains $\Z$ as a subring.
-In this paper, we describe our project aiming at formalizing these notions and some of their important properties. Our goal, however, is not to get to the definitions and properties as quickly as possible,
-but rather
-to lay the foundations for future work,
-as part of a natural and more general theory as we shall explain below.
+In this paper, we describe our project aiming at formalizing these notions and some of their important properties. Our goal is not to get to the definitions and properties as quickly as possible; rather, we lay the foundations for future work, as part of a natural and more general theory.
 
 In particular, our project resulted in formalized definitions and elementary properties of
 number fields and their rings of integers (Section~\ref{sec:ring-of-integers}),
@@ -371,7 +368,7 @@ Results on fraction fields were parametrized over a choice of fraction map $f$.
 This made it possible to view $\QQ$ as the fraction field of $\Z$, by providing a suitable map \lean{int.fraction\_map : fraction\_map ℤ ℚ}.
 This came at a price:
 informally, at any given stage of one's reasoning, the field $K$ is fixed and the map $f\colon R\to K$ is applied implicitly, just viewing every $x:R$ as $x:K$.
-It is now impossible to view $f(R) \leq K$ as an inclusion of subalgebras,
+It is now impossible to view $R \leq K$ as an inclusion of $R$-subalgebras,
 because the map $f$ is needed explicitly to give the $R$-algebra structure on $K$.
 As a workaround, \mathlib used a type synonym \lean{codomain f := K} and instantiated the $R$-algebra structure given by $f$ on this synonym.
 Again we encountered a distinction between $\QQ$ ``itself'' and $\Frac(\Z) = \lean{codomain int.fraction\_map}$,
