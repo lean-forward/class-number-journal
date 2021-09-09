@@ -538,28 +538,28 @@ we were able to prove that every ideal $I\ne 0$ is invertible by arguing by cont
 \subsection{Unique ideal factorization}\label{subsec:unique_ideal_factorization}
 
 As briefly indicated before, we also formalized a proof that in a Dedekind domain every nonzero ideal can be expressed as a product of prime ideals in a unique way up to the order of the factors.
-In fact, for an integral domain, each nonzero ideal is a product of prime ideals if and only if all nonzero fractional ideals are invertible; the uniqueness follows separately. We have formalized one direction of this equivalence, a proof of the converse can be found in e.g. \cite[Chapter 5, \SS 6, Theorem 10]{Zariski-Samuel}.
+In fact, for an arbitrary integral domain, every nonzero ideal is a product of prime ideals if and only if all nonzero fractional ideals are invertible; the uniqueness follows separately. We have formalized one direction of this equivalence, a proof of the converse can be found in \cite[Chapter 5, \S6, Theorem 10]{Zariski-Samuel}.
 
-We formalized the unique ideal factorization property of a Dedekind domain \lean{D} by instantiating a unique factorization monoid structure on its ideals.
+We formalized the unique ideal factorization property of a Dedekind domain $D$ by instantiating a unique factorization monoid structure on its ideals.
 
 \begin{lstlisting}
 instance ideal.unique_factorization_monoid :
   unique_factorization_monoid (ideal D)
 \end{lstlisting}
 
-\mathlib generalizes unique factorization domains to unique factorization monoids (UFMs).
-A commutative monoid $R$ with an absorbing element $0$ and injectivity of multiplication is defined to be a UFM,
-if the relation ``$x$ properly divides $y$'' is well-founded (implying each element can be factored as a product of irreducibles) and
-an element of $R$ is prime if and only if it is irreducible (implying the factorization is unique).
+In \mathlib, unique factorization domains are actually a special case of unique factorization monoids (UFMs).
+A commutative monoid $R$ with an absorbing element $0$ and injective multiplication is defined to be a UFM,
+if the relation ``$x$ properly divides $y$'' is well-founded (implying that every element can be factored as a product of irreducibles) and
+an element of $R$ is prime if and only if it is irreducible (implying uniqueness of the factorization).
 With much of the necessary definitions and properties already formalized, the formalization of this unique factorization result has been done in well under 100 lines of Lean code. One of the main mathematical ingredients (interesting in its own right) is that for ideals in a Dedekind domain, to contain is to divide:
 
 \begin{lstlisting}
 lemma ideal.dvd_iff_le {I J : ideal D} : (I ∣ J) ↔ J ≤ I
 \end{lstlisting}
 
-Similarly, to strictly contain is to properly divide, so the well-foundedness condition of UFMs is exactly the property that a Dedekind domain is Noetherian. To show irreducible elements of the monoid \lean{ideal D} are prime, we formalized that all irreducible ideals in a Dedekind domain are maximal and therefore prime (noting that prime ideals of a Dedekind domain $D$ coincide with prime elements of the monoid \lean{ideal D}); the converse holds in any monoid.
+Similarly, to strictly contain is to properly divide, so the well-foundedness condition of UFMs is exactly the property that a Dedekind domain is Noetherian. IN order to show that all irreducible elements of the monoid of nonzero prime ideals in $D$ are prime elements, we formalized that irreducible ideals in a Dedekind domain are maximal and therefore prime (note that prime ideals of a Dedekind domain $D$ coincide with prime elements of the monoid of its nonzero ideals); the converse holds in every monoid.
 
-We note that the unique factorization result, or actually a quick corollary thereof, is an important ingredient in our finiteness proof for the class group of global fields, as we will elaborate on in Section~\ref{subsec:finiteness}.
+We note that the unique factorization result, or actually an easy corollary thereof, is an important ingredient in our finiteness proof for the class group of global fields, as we will elaborate on in Section~\ref{subsec:finiteness}.
 
 \section{Principal ideal domains are Dedekind}
 
@@ -708,17 +708,22 @@ def class_group (R K : Type*) [integral_domain R] [field K]
 quotient_group.quotient (range (to_principal_ideal R K))
 \end{lstlisting}
 
-Here, \lean{units R} for a semiring $R$ denotes $R^\times$, the multiplicative group of all invertible elements of $R$.
-Recall from Section~\ref{subsection:frac_ideals} that in the general case of an integral domain $R$ (which need not necessarily be Dedekind) the type of fractional ideals of $R$ is endowed with the structure of a commutative semiring.
+Here, \lean{units R} for a semiring $R$ denotes $R^\times$, the multiplicative group of its invertible elements.
+Recall from Section~\ref{subsection:frac_ideals} that in the general case of an integral domain $R$ %(which need not necessarily be Dedekind)
+ the type of fractional ideals of $R$ is endowed with the structure of a commutative semiring.
 Therefore, the quotient of the abelian group \lean{units (fractional\_ideal R K)} by the subgroup of nonzero principal fractional ideals is well-defined.
 In the case where $R$ is a Dedekind domain, we provide a map \lean{class\_group.mk0} sending nonzero integral ideals of $R$ to the corresponding class in the class group.
 
 \subsection{Finiteness results}\label{subsec:finiteness}
 
-In general, Dedekind domains can have infinite class groups. However, as discussed in Section~\ref{sec math background}, the rings of integers of global fields have finite class groups.
+In general, Dedekind domains can have infinite class groups: in fact, a celebrated result by Claborn shows that for every abelian group $G$, there exists a Dedekind domain $D$ with $\Cl_D\cong G$ (see~\cite[Theorem~7]{Cla66}). For an extreme --- but somewhat classical --- example, the Dedekind domain
+\[
+D=\C[X,Y]/Y^2-X^3-X-1  
+\]
+has class group isomorphic to $\C/\Z^2$. However, as discussed in Section~\ref{sec math background}, the rings of integers of global fields have finite class groups.
 
-We let $K$ be a number field and $K'$ be a function field, with ring of integers $\OK$ and $\OK[K']$ (w.r.t. a fixed $\Fq[q][t]$), respectively. 
-Most proofs of the finiteness of $\Cl_{\OK}$ one finds in a modern textbook (see~\cite[Theorems 4.4,~5.3,~6.3]{Neukirch}) depend on Minkowski's lattice point theorem, a result from the geometry of numbers (which has been formalized in Isabelle/HOL~\cite{Minkowskis_Theorem-AFP}).
+We let $K$ be a number field and $K'$ be a function field, with ring of integers $\OK$ and $\OK[K']$ (we fix a choice of a model $\Fq[q][t]$), respectively. 
+Most proofs of the finiteness of $\Cl_{\OK}$ available in a modern textbook (see~\cite[Theorems 4.4,~5.3,~6.3]{Neukirch}) depend on Minkowski's lattice point theorem, a result from the geometry of numbers (which has been formalized in Isabelle/HOL~\cite{Minkowskis_Theorem-AFP}).
 Extending this proof to show the finiteness of $\Cl_{\OK[K']}$ is quite involved and does not result in a uniform proof for $\Cl_{\OK}$ and $\Cl_{\OK[K']}$.
 Our formalization instead adapted and generalized a classical approach to the finiteness of $\Cl_{\OK}$, where the use of Minkowski's theorem is replaced by the pigeonhole principle. 
 For an informal writeup of the proof, used in the formalization efforts, see~\url{https://github.com/lean-forward/class-number/blob/itp-2021-final/FiniteClassGroup.pdf}.
@@ -727,7 +732,7 @@ and can be found, for instance, in~\cite{Ireland-Rosen}.
 We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}.
 
 Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction field $F$ of $D$, let $K$ be a finite separable field extension of~$F$.
-We formalized, in the theorem \lean{class\_group.fintype\_of\_\-admissible\_\-of\_finite}, that the integral closure $S$ of $D$ in $K$ has a finite class group if $D$ has an ``admissible'' absolute value \lean{abs}.
+We formalized, in the theorem \lean{class\_group.fintype\_of\_\-admissible\_\-of\_finite}, that the integral closure $S$ of $D$ in $K$ has a finite class group, whenever $D$ has an ``admissible'' absolute value \lean{abs}.
 This notion originated in our project from the adaptation and generalization of the classical finiteness proof in interaction with the formalization efforts.
 Very informally, the admissibility conditions require that the remainder operator \lean{\%} produces values that are not too far apart.
 Formally, we defined the predicate classifying admissible absolute values \lean{abv} on $D$ as follows:
