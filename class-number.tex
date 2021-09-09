@@ -236,6 +236,8 @@ Compared to Haskell, Lean's typeclasses have few structural restrictions: notabl
 
 In our development, we followed the common practice in \mathlib of providing structure on a type,
 whenever such a structure exists canonically, through typeclasses.
+The informal notion of providing a certain mathematical structure on a type should not be confused with the \lean{structure} keyword formally declaring a \emph{structure type} whose elements are tuples.
+To confuse matters further, Lean implements typeclasses as structure types, where the instances are tuples of the typeclass's fields.
 Typeclasses provided us a way to treat uniformly situations that are informally considered the same, as we discuss in Sections \ref{sec:field_extension} and \ref{sec:scalar_tower}.
 Our reliance on typeclasses did not cause any noticeable slowness in proof checking:
 there was no instance that should be found but could not due to timeouts.
@@ -366,7 +368,7 @@ The second version
 defined $K$ to be the field of fractions of $R$ if there existed an injective \emph{fraction map} $f : R \to K$, which is a ring homomorphism witnessing that all elements of $K$ are ``fractions'' of elements of $R$;
 the map and its properties were bundled as a type \lean{fraction\_map R K}.
 Results on fraction fields were parametrized over a choice of fraction map $f$.
-This made it possible to view $\QQ$ as the fraction field of $\Z$, by providing a suitable map \lean{int.fraction\_map : fraction\_map ℤ ℚ}.
+This made it possible to view $\QQ$ as the fraction field of $\Z$, by providing a suitable map called \lean{int.fraction\_map : fraction\_map ℤ ℚ}.
 This came at a price:
 informally, at any given stage of one's reasoning, the field $K$ is fixed and the map $f\colon R\to K$ is applied implicitly, just viewing every $x:R$ as $x:K$.
 It is now impossible to view $R \leq K$ as an inclusion of $R$-subalgebras,
