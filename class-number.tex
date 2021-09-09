@@ -591,7 +591,7 @@ The latter lemma uses the characterization that $I$ is a maximal ideal if and on
 If $I$ is a nonzero prime ideal and $J \supsetneq I$ in the PID $R$, we have that the generator $j$ of $J$ is a divisor of the generator $i$ of $I$. Since $I$ is prime, this implies that either $j \in I$, contradicting the assumption that $J \supsetneq I$, $i = 0$, contradicting that $I$ is nonzero, or that $j$ is a unit, implying $J = R$ as desired.
 
 The final condition of a PID being integrally closed was the most challenging.
-We used the previously defined instance \lean{principal\_ideal\_ring.to\_\-unique\-\_factorization\_monoid} to deduce that a PID is a unique factorisation monoid (UFM),
+We used the previously defined instance \lean{principal\_ideal\_ring.to\_\-unique\-\_factorization\_monoid} to deduce that a PID is a unique factorization monoid (UFM),
 to instantiate our proof that every UFM is integrally closed.
 In a PID, the Noetherian property implies that the division relation is well-founded,
 and \lean{principal\_ideal\_ring.irreducible\_iff\_prime} shows irreducible elements and prime elements coincide.
@@ -762,7 +762,7 @@ the nonzero ideal $\langle M \rangle$ spanned by $M$ has only finitely many divi
 To contain is to divide in Dedekind domains, so there are only finitely many $J$ with $M \in J$.
 Thus, we concluded that $\Cl_{K}$ is finite under the condition of an admissible absolute value.
 
-It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfils the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; we note that this was somewhat more involved to formalize.
+It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfills the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; we note that this was somewhat more involved to formalize.
 We concluded that when $K$ is a global field, restricting to \emph{separable} extensions of $\Fq[q](t)$ in the function field case (but see the remark below), the class group is finite:
 \begin{lstlisting}
 noncomputable instance : fintype
@@ -865,7 +865,7 @@ Other contributors building on these results often extended them to meet our req
 before we could identify that we needed them, as the anecdote in Section \ref{sec:subobjects} illustrates.
 In other words, the low barriers for contributions ensured mutually beneficial collaboration.
 
-Quantifying the ratio between the length of our formal proofs and their paper counterparts in an accurrate and meanifngful way will be very difficult as background assumptions and levels of detail varied significantly. We actually did not always literally follow some written text, but deviated from the paper mathematics (often discussed orally, on blackboards, through Zulip, etc.) on many occasions. An important aspect we had to take into account was to consistently combine different descriptions of mathematical objects from different sources.
+Quantifying the ratio between the length of our formal proofs and their paper counterparts in an accurate and meaningful way will be very difficult as background assumptions and levels of detail varied significantly. We actually did not always literally follow some written text, but deviated from the paper mathematics (often discussed orally, on blackboards, through Zulip, etc.) on many occasions. An important aspect we had to take into account was to consistently combine different descriptions of mathematical objects from different sources.
 The formalization project described in this paper resulted in the contribution of thousands of lines of Lean code involving hundreds of declarations.
 A rough estimate concerning the former would be that about five thousand lines of project specific code were added, and about half of that number of lines of more generic background code.
 We validated existing design choices used in \mathlib, refactored those that did not scale well
@@ -892,7 +892,7 @@ Ashvni Narayan was funded by EPSRC Grant EP/S021590/1 (UK).
 The authors have no conflicts of interest to declare that are relevant to the content of this article.
 
 \paragraph{Availability of data and material}
-See \emph{Code availabilty}.
+See \emph{Code availability}.
 
 \paragraph{Code availability}
 Full source code of the formalization is maintained as part of \mathlib, \url{https://github.com/leanprover-community/mathlib}. Copies of the source files relevant to this paper are available in a separate repository at \url{https://github.com/lean-forward/class-number-journal}.
