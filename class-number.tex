@@ -138,10 +138,7 @@ Let us now introduce some of the main objects we study, described informally. We
 A \emph{number field} $K$ is a finite extension of the field $\QQ$, and as such has the structure of a finite dimensional vector space over $\QQ$; its dimension is called the \emph{degree} of $K$.
 The easiest example is $\QQ$ itself, and the two-dimensional cases are given by the quadratic number fields
 $\QQ(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \QQ\}$
-where $d \in \Z$ is not a square.
-For an interesting cubic example, let $\alpha_0$ be the unique real number satisfying $\alpha_0^3 + \alpha_0^2 - 2\alpha_0 + 8=0$.
-It gives rise to the number field
-$\QQ(\alpha_0)=\{a+b\alpha_0+c \alpha_0^2: a,b,c \in \QQ\}$.
+where $d \in \Z$ is not a square. Similarly, adding a cubic root of some $d\in\Z$ which is not a cube leads to the number field $\QQ(\sqrt[3]{d})$: it has degree $3$ but not all cubic number fields arise in this way, mainly because the roots of the generic polynomial of degree $3$ are not linear combinations of a single $\sqrt{d}$ with $d\in\Z$. An example of a cubic number field that is not of this form, and that will occupy us later for other interesting features, is $\QQ(\alpha_0)=\{a+b\alpha_0+c \alpha_0^2: a,b,c \in \QQ\}$, where $\alpha_0$ is the unique real number satisfying $\alpha_0^3 + \alpha_0^2 - 2\alpha_0 + 8=0$.
 In general, taking any root $\alpha$ of an irreducible polynomial of degree $n$ over $\QQ$ yields a number field of degree $n$:
 $\QQ(\alpha)=\{c_0+c_1\alpha+\ldots+c_{n-1} \alpha^{n-1} : c_0,c_1,\ldots,c_{n-1} \in \QQ \}$,
 and, up to isomorphism, these are all the number fields of degree $n$.
