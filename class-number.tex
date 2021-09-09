@@ -225,7 +225,7 @@ class function_field (Fq F : Type*) [field Fq] [field F] :
 The hypothesis \lean{[to\_algebra : algebra (fraction\_ring (polynomial $\Fq$)) F]} witnesses that $F$ is a field extension of the fraction field $\Fq[q](t)$ of the polynomial ring $\Fq[q][t]$, where $\Fq[q]$ is a finite field.
 Again, the condition that this extension is finite is written using the \lean{finite\_dimensional} typeclass.
 We present a more detailed analysis of \lean{algebra} in Section \ref{sec:field_extension} and of \lean{fraction\_ring} in Section \ref{subsection : fields of fractions}.
-For now, we point out that there are many fields $K$ that are isomorphic to the field of rational polynomials $\Fq[q](t)$; we provide a theorem \lean{is\_fraction\_field\_iff} that shows the choice of $K$ does not matter.
+For now, we point out that there are many fields $K$ that are isomorphic to the field of rational polynomials $\Fq[q](t)$; we provided a theorem \lean{is\_fraction\_field\_iff} that shows the choice of $K$ does not matter.
 Note that there is no requirement that the field \lean{Fq} is finite, since this is not needed to state the conditions on \lean{F}.
 We instead add a \lean{[fintype Fq]} hypothesis only to those results that require finiteness.
 
@@ -591,7 +591,7 @@ The latter lemma uses the characterization that $I$ is a maximal ideal if and on
 If $I$ is a nonzero prime ideal and $J \supsetneq I$ in the PID $R$, we have that the generator $j$ of $J$ is a divisor of the generator $i$ of $I$. Since $I$ is prime, this implies that either $j \in I$, contradicting the assumption that $J \supsetneq I$, $i = 0$, contradicting that $I$ is nonzero, or that $j$ is a unit, implying $J = R$ as desired.
 
 The final condition of a PID being integrally closed was the most challenging.
-We used the previously defined instance \lean{principal\_ideal\_ring.to\-\_unique\-\_factorization\_monoid} to deduce that a PID is a unique factorisation monoid (UFM),
+We used the previously defined instance \lean{principal\_ideal\_ring.to\_\-unique\-\_factorization\_monoid} to deduce that a PID is a unique factorisation monoid (UFM),
 to instantiate our proof that every UFM is integrally closed.
 In a PID, the Noetherian property implies that the division relation is well-founded,
 and \lean{principal\_ideal\_ring.irreducible\_iff\_prime} shows irreducible elements and prime elements coincide.
@@ -622,10 +622,10 @@ In particular, we showed that an ideal $I$ in an integral extension is maximal i
 and used a result already available in \mathlib that a prime ideal $I$ in an integral extension lies over a prime ideal.
 \begin{lstlisting}
 lemma is_maximal_of_is_integral_of_is_maximal_comap
-  (I : ideal S) [is_prime I]
+  (f : R →+* S) (I : ideal S) [is_prime I]
   (hI : is_maximal (comap f I)) : is_maximal I
-theorem is_prime.comap (I : ideal S) [hI : is_prime I] :
-  is_prime (comap f I)
+theorem is_prime.comap (f : R →+* S) (I : ideal S)
+  [hI : is_prime I] : is_prime (comap f I)
 \end{lstlisting}
 
 The final condition, that the integral closure $S$ of $D$ in $L$ is a Noetherian ring, required the most work.
@@ -710,7 +710,7 @@ quotient_group.quotient (range (to_principal_ideal R K))
 Here, \lean{units R} for a semiring $R$ denotes $R^\times$, the multiplicative group of all invertible elements of $R$.
 Recall from Section~\ref{subsection:frac_ideals} that in the general case of an integral domain $R$ (which need not necessarily be Dedekind) the type of fractional ideals of $R$ is endowed with the structure of a commutative semiring.
 Therefore, the quotient of the abelian group \lean{units (fractional\_ideal R K)} by the subgroup of nonzero principal fractional ideals is well-defined.
-In the case where $R$ is a Dedekind domain, we provide a map \lean{class\_group.mk0} sending nonzero integral ideals of $R$ to the corresponding class in the class group.
+In the case where $R$ is a Dedekind domain, we provided a map \lean{class\_group.mk0} sending nonzero integral ideals of $R$ to the corresponding class in the class group.
 
 \subsection{Finiteness results}\label{subsec:finiteness}
 
@@ -720,12 +720,12 @@ We let $K$ be a number field and $K'$ be a function field, with ring of integers
 Most proofs of the finiteness of $\Cl_{\OK}$ one finds in a modern textbook (see~\cite[Theorems 4.4,~5.3,~6.3]{Neukirch}) depend on Minkowski's lattice point theorem, a result from the geometry of numbers (which has been formalized in Isabelle/HOL~\cite{Minkowskis_Theorem-AFP}).
 Extending this proof to show the finiteness of $\Cl_{\OK[K']}$ is quite involved and does not result in a uniform proof for $\Cl_{\OK}$ and $\Cl_{\OK[K']}$.
 Our formalization instead adapted and generalized a classical approach to the finiteness of $\Cl_{\OK}$, where the use of Minkowski's theorem is replaced by the pigeonhole principle. 
-For an informal writeup of the proof, used in the formalization efforts, see~\url{https://github.com/lean-forward/class-number/blob/itp-2021-final/FiniteClassGroup.pdf}.
+For an informal writeup of the proof, used in the formalization efforts, see~\url{https://github.com/lean-forward/class-number-journal/blob/jar-reviews/FiniteClassGroup.pdf}.
 The classical approach seems to go back to Kronecker
 and can be found, for instance, in~\cite{Ireland-Rosen}.
 We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}.
 
-Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction field $F$ of $D$, let $K$ be a finite separable field extension of~$F$.
+Let $D$ be a Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction field $F$ of $D$, let $K$ be a finite separable field extension of~$F$.
 We formalized, in the theorem \lean{class\_group.fintype\_of\_\-admissible\_\-of\_finite}, that the integral closure $S$ of $D$ in $K$ has a finite class group if $D$ has an ``admissible'' absolute value \lean{abs}.
 This notion originated in our project from the adaptation and generalization of the classical finiteness proof in interaction with the formalization efforts.
 Very informally, the admissibility conditions require that the remainder operator \lean{\%} produces values that are not too far apart.
@@ -759,7 +759,8 @@ we show that each class in $\Cl_{K}$ contains an ideal $J$ with $M \in J$,
 where $M$ is the product of all elements of \lean{finset\_approx}, hence $M$ is nonzero.
 Since the ideals of the Dedekind domain $S$ have unique factorization,
 the nonzero ideal $\langle M \rangle$ spanned by $M$ has only finitely many divisors.
-To contain is to divide in Dedekind domains, so there are only finitely many $J$ with $M \in J$,
+To contain is to divide in Dedekind domains, so there are only finitely many $J$ with $M \in J$.
+Thus, we concluded that $\Cl_{K}$ is finite under the condition of an admissible absolute value.
 
 It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfils the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; we note that this was somewhat more involved to formalize.
 We concluded that when $K$ is a global field, restricting to \emph{separable} extensions of $\Fq[q](t)$ in the function field case (but see the remark below), the class group is finite:
