@@ -1,7 +1,12 @@
 #!/bin/bash
 # Update src/ by copying relevant files from the `mathlib` in the `_target` folder.
-cp _target/deps/mathlib/src/algebraic_number_theory/{class_number,function_field,number_field,class_number/admissible_absolute_value}.lean\
+cp _target/deps/mathlib/src/number_theory/{function_field,number_field,class_number/{admissible_abs,admissible_absolute_value,admissible_card_pow_degree,finite}}.lean\
   _target/deps/mathlib/src/group_theory/group_action/defs.lean\
-  _target/deps/mathlib/src/field_theory/{adjoin,intermediate_field,primitive_element,subfield}.lean\
-  _target/deps/mathlib/src/ring_theory/{class_group,dedekind_domain,fractional_ideal,integral_closure,localization,noetherian,principal_ideal_domain,power_basis,trace,unique_factorization_domain}.lean\
+  _target/deps/mathlib/src/field_theory/{adjoin,intermediate_field,minpoly,primitive_element,subfield}.lean\
+  _target/deps/mathlib/src/ring_theory/{class_group,dedekind_domain,fractional_ideal,ideal/over,integral_closure,integrally_closed,localization,noetherian,principal_ideal_domain,power_basis,trace,unique_factorization_domain}.lean\
   src/
+# Copy these into a subdirectory since they have the same filename
+cp _target/deps/mathlib/src/number_theory/class_number/{function_field,number_field}.lean src/class_number/
+cp _target/deps/mathlib/src/algebra/algebra/basic.lean src/algebra/
+cp _target/deps/mathlib/src/algebra/group_with_zero/basic.lean src/group_with_zero/
+cp _target/deps/mathlib/src/data/set_like/basic.lean src/set_like/

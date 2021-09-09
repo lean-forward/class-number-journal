@@ -3,11 +3,10 @@ Copyright (c) 2021 Anne Baanen. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Anne Baanen, Ashvni Narayanan
 -/
-import algebra.field
-import data.rat.basic
 import ring_theory.algebraic
 import ring_theory.dedekind_domain
-import ring_theory.integral_closure
+import ring_theory.localization
+import ring_theory.integrally_closed
 
 /-!
 # Function fields
@@ -15,129 +14,96 @@ import ring_theory.integral_closure
 This file defines a function field and the ring of integers corresponding to it.
 
 ## Main definitions
-
- - `function_field_over` defines a function field over `Fq(t)`,
-    a finite dimensional extension of a fraction field of the polynomials over a finite field.
- - `function_field` bundles the finite field and its fraction field into the
-   structure of `function_field_over`.
- - `ring_of_integers` defines the ring of integers corresponding to a function field
-    as the integral closure of `polynomial K` in the function field.
-
-## Main results
-
- - `ring_of_integers.is_dedekind_domain`: Shows that the ring of integers of a function field is a
-    Dedekind domain.
+ - `function_field Fq F` states that `F` is a function field over the (finite) field `Fq`,
+   i.e. it is a finite extension of the field of rational polynomials in one variable over `Fq`.
+ - `function_field.ring_of_integers` defines the ring of integers corresponding to a function field
+    as the integral closure of `polynomial Fq` in the function field.
 
 ## Implementation notes
-
 The definitions that involve a field of fractions choose a canonical field of fractions,
-but are independent of that choice.
+but are independent of that choice. We also omit assumptions like `finite Fq` or
+`is_scalar_tower (polynomial Fq) (fraction_ring (polynomial Fq)) F` in definitions,
+adding them back in lemmas when they are needed.
 
 ## References
-
 * [D. Marcus, *Number Fields*][marcus1977number]
 * [J.W.S. Cassels, A. Frölich, *Algebraic Number Theory*][cassels1967algebraic]
 * [P. Samuel, *Algebraic Theory of Numbers*][samuel1970algebraic]
 
 ## Tags
-
-number field, ring of integers
+function field, ring of integers
 -/
-
 
 noncomputable theory
 
-/-- `F` is a function field if it is a finite extension of the field of rational polynomials
-in one variable over a finite field.
+variables (Fq F : Type) [field Fq] [field F]
 
-The map `f` witnesses that `L` is isomorphic to the rational polynomials over a finite field;
-`f` is uniquely determined, thus it's marked as an `out_param`.
+/-- `F` is a function field over the finite field `Fq` if it is a finite
+extension of the field of rational polynomials in one variable over `Fq`.
+
+Note that `F` can be a function field over multiple, non-isomorphic, `Fq`.
 -/
-class function_field_over {K L : Type*} [field K] [fintype K] [field L]
-  (f : out_param (fraction_map (polynomial K) L)) (F : Type*) [field F]
-  [algebra f.codomain F] : Prop :=
-(fd : finite_dimensional f.codomain F)
+abbreviation function_field [algebra (fraction_ring (polynomial Fq)) F] : Prop :=
+finite_dimensional (fraction_ring (polynomial Fq)) F
 
-/-- `F` is a function field if it is a finite extension of the field of rational polynomials
-in one variable over a finite field.
-
-This is a bundled version of `function_field_over`. -/
-class function_field (F : Type*) [field F] :=
-(fin_field : Type*) [field_fin_field : field fin_field] [fintype_fin_field : fintype fin_field]
-(rat_poly : Type*) [field_rat_poly : field rat_poly]
-(rat_poly_map' : fraction_map (polynomial fin_field) rat_poly)
-[alg' : algebra rat_poly_map'.codomain F]
-(ff_over' : @function_field_over _ _ _ _ _ rat_poly_map' F _ alg')
-
-namespace function_field_over
-
-variables {K L : Type*} [field K] [fintype K] [field L]
-variables (f : fraction_map (polynomial K) L)
-variables (F : Type*) [field F] [algebra f.codomain F] [function_field_over f F]
-
-include f
-
-attribute [instance] function_field_over.fd
-
-@[nolint dangerous_instance unused_arguments] -- Ensures this works, since `f` is an out_param
-instance : algebra (polynomial K) F :=
-ring_hom.to_algebra ((algebra_map f.codomain F).comp (algebra_map (polynomial K) f.codomain))
-
-instance : is_scalar_tower (polynomial K) f.codomain F :=
-is_scalar_tower.of_algebra_map_eq (λ x, rfl)
-
-end function_field_over
+/-- `F` is a function field over `Fq` iff it is a finite extension of `Fq(t)`. -/
+protected lemma function_field_iff (Fqt : Type*) [field Fqt]
+  [algebra (polynomial Fq) Fqt] [is_fraction_ring (polynomial Fq) Fqt]
+  [algebra (fraction_ring (polynomial Fq)) F] [algebra Fqt F]
+  [algebra (polynomial Fq) F] [is_scalar_tower (polynomial Fq) Fqt F]
+  [is_scalar_tower (polynomial Fq) (fraction_ring (polynomial Fq)) F] :
+  function_field Fq F ↔ finite_dimensional Fqt F :=
+begin
+  let e := fraction_ring.alg_equiv (polynomial Fq) Fqt,
+  have : ∀ c (x : F), e c • x = c • x,
+  { intros c x,
+    rw [algebra.smul_def, algebra.smul_def],
+    congr,
+    refine congr_fun _ c,
+    refine is_localization.ext (non_zero_divisors (polynomial Fq)) _ _ _ _ _ _ _;
+      intros; simp only [alg_equiv.map_one, ring_hom.map_one, alg_equiv.map_mul, ring_hom.map_mul,
+                         alg_equiv.commutes, ← is_scalar_tower.algebra_map_apply], },
+  split; intro h; resetI,
+  { let b := finite_dimensional.fin_basis (fraction_ring (polynomial Fq)) F,
+    exact finite_dimensional.of_fintype_basis (b.map_coeffs e this) },
+  { let b := finite_dimensional.fin_basis Fqt F,
+    refine finite_dimensional.of_fintype_basis (b.map_coeffs e.symm _),
+    intros c x, convert (this (e.symm c) x).symm; simp },
+end
 
 namespace function_field
 
-variables (F : Type*) [field F] [function_field F]
+/-- The function field analogue of `number_field.ring_of_integers`:
+`function_field.ring_of_integers Fq Fqt F` is the integral closure of `Fq[t]` in `F`.
 
-attribute [instance] field_fin_field fintype_fin_field field_rat_poly
-
-/-- `rat_poly_map F` is the map witnessing that `rat_poly F` is the field of
-rational polynomials over `fin_field F`. -/
-def rat_poly_map : fraction_map (polynomial (fin_field F)) (rat_poly F) :=
-rat_poly_map'
-
-instance alg : algebra (rat_poly_map F).codomain F :=
-alg'
-
-instance ff_over : function_field_over (rat_poly_map F) F :=
-ff_over'
-
-end function_field
-
-namespace function_field_over
-
-variables {K L : Type*} [field K] [fintype K] [field L]
-variables (f : fraction_map (polynomial K) L)
-variables (F : Type*) [field F] [algebra f.codomain F] [function_field_over f F]
-
-include f
-
-/-- The function field analogue of `number_field.ring_of_integers`. -/
-def ring_of_integers := integral_closure (polynomial K) F
+We don't actually assume `F` is a function field over `Fq` in the definition,
+only when proving its properties.
+-/
+def ring_of_integers [algebra (polynomial Fq) F] := integral_closure (polynomial Fq) F
 
 namespace ring_of_integers
 
-open fraction_map
+variables [algebra (polynomial Fq) F]
 
-/-- `ring_of_integers.fraction_map K` is the map `O_F → F`, as a `fraction_map`. -/
-protected def fraction_map : fraction_map (ring_of_integers f F) F :=
-integral_closure.fraction_map_of_finite_extension _ f
+instance : integral_domain (ring_of_integers Fq F) :=
+(ring_of_integers Fq F).integral_domain
 
-instance : integral_domain (ring_of_integers f F) :=
-(ring_of_integers f F).integral_domain
+instance : is_integral_closure (ring_of_integers Fq F) (polynomial Fq) F :=
+integral_closure.is_integral_closure _ _
 
-variables [is_separable f.codomain F]
+variables [algebra (fraction_ring (polynomial Fq)) F] [function_field Fq F]
+variables [is_scalar_tower (polynomial Fq) (fraction_ring (polynomial Fq)) F]
 
-instance is_dedekind_domain_integral_closure :
-  is_dedekind_domain (integral_closure (polynomial K) F) :=
-is_dedekind_domain.integral_closure f (principal_ideal_ring.is_dedekind_domain _)
+instance : is_fraction_ring (ring_of_integers Fq F) F :=
+integral_closure.is_fraction_ring_of_finite_extension (fraction_ring (polynomial Fq)) F
 
-instance : is_dedekind_domain (ring_of_integers f F) :=
-ring_of_integers.is_dedekind_domain_integral_closure f F
+instance : is_integrally_closed (ring_of_integers Fq F) :=
+integral_closure.is_integrally_closed_of_finite_extension (fraction_ring (polynomial Fq))
+
+instance [is_separable (fraction_ring (polynomial Fq)) F] :
+  is_dedekind_domain (ring_of_integers Fq F) :=
+is_integral_closure.is_dedekind_domain (polynomial Fq) (fraction_ring (polynomial Fq)) F _
 
 end ring_of_integers
 
-end function_field_over
+end function_field
