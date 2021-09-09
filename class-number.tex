@@ -347,10 +347,10 @@ as fields $K$ with a suitable \lean{[algebra R K]} instance, where the canonical
 and to parametrize every result over the choice of $K$.
 The conditions on the $R$-algebra structure on $K$ are encoded as a typeclass \lean{is\_fraction\_ring R K}.
 In the definition used by \mathlib, a fraction ring is a special case of a \emph{ring localization},
-which are defined for any commutative ring $R$.
+which is defined for any commutative ring $R$.
 Different localizations restrict the denominators to different multiplicative submonoids of $R\setminus\{0\}$.
 
-The conditions on \lean{algebra\_map R K} imply that $K$ is the smallest field containing $R$, expressed by the following unique mapping property.
+The conditions on \lean{algebra\_map R K} imply that $K$ is the smallest field, up to isomorphism, containing $R$, expressed by the following unique mapping property.
 If $g \colon R \to A$ is an injective map to a ring $A$ such that $g(x)$ has a multiplicative inverse for all $x \ne 0 : R$, then
 it can be extended uniquely to a map $K \to A$ compatible with \lean{algebra\_map R K} and $g$.
 In particular, given \lean{is\_fraction\_ring R K₁} and \lean{is\_fraction\_ring R K₂}, we can derive an isomorphism $K_1 \simeq K_2$.
