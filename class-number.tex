@@ -360,8 +360,7 @@ The above description of fraction fields is the third such formalization in \mat
 %\footnote{Source code available at \url{https://github.com/leanprover-community/mathlib/blob/a012d76d5034d587924f23ccd0cdefa11569d5d9/src/ring_theory/localization.lean}}
 consisted of a quotient type \lean{quotient\_ring R},
 constructed similarly to the current definition of \lean{fraction\_ring R}.
-Due to the aforementioned drawback,
-that this provided no easy way to view e.g. $\QQ$ as the field of fractions of $\Z$,
+Due to the aforementioned drawback --- namely, that this provided no easy way to view $\QQ$ as the field of fractions of $\Z$, for instance ---
 this was refactored to use a characteristic predicate instead.
 
 The second version
@@ -537,7 +536,7 @@ we were able to prove that every ideal $I\ne 0$ is invertible by arguing by cont
 \subsection{Unique ideal factorization}\label{subsec:unique_ideal_factorization}
 
 As briefly indicated before, we also formalized a proof that in a Dedekind domain every nonzero ideal can be expressed as a product of prime ideals in a unique way up to the order of the factors.
-In fact, for an integral domain, every nonzero ideal is a product of prime ideals if and only if all nonzero fractional ideals are invertible; the uniqueness follows separately. We have formalized one direction of this equivalence, a proof of the converse can be found in~\cite[Chapter 5, \S6, Theorem 10]{Zariski-Samuel}.
+In fact, for an integral domain, every nonzero ideal is a product of prime ideals if and only if all nonzero fractional ideals are invertible; the uniqueness follows separately. We have formalized one direction of this equivalence, a proof of the converse can be found in~\cite[Chapter 5, \textsection 6, Theorem 10]{Zariski-Samuel}.
 
 We formalized the unique ideal factorization property of a Dedekind domain $D$ by instantiating a unique factorization monoid structure on its ideals.
 
@@ -556,7 +555,7 @@ With much of the necessary definitions and properties already formalized, the fo
 lemma ideal.dvd_iff_le {I J : ideal D} : (I ∣ J) ↔ J ≤ I
 \end{lstlisting}
 
-Similarly, to strictly contain is to properly divide, so the well-foundedness condition of UFMs is exactly the property that a Dedekind domain is Noetherian. IN order to show that all irreducible elements of the monoid of nonzero prime ideals in $D$ are prime elements, we formalized that irreducible ideals in a Dedekind domain are maximal and therefore prime (note that prime ideals of a Dedekind domain $D$ coincide with prime elements of the monoid of its nonzero ideals); the converse holds in every monoid.
+Similarly, to strictly contain is to properly divide, so the well-foundedness condition of UFMs is exactly the property that a Dedekind domain is Noetherian. In order to show that all irreducible elements of the monoid of nonzero prime ideals in $D$ are prime elements, we formalized that irreducible ideals in a Dedekind domain are maximal and therefore prime (note that prime ideals of a Dedekind domain $D$ coincide with prime elements of the monoid of its nonzero ideals); the converse holds in every monoid.
 
 We note that the unique factorization result, or actually a quick corollary thereof, is an important ingredient in our finiteness proof for the class group of rings of integers, as we will elaborate on in Section~\ref{subsec:finiteness}.
 
@@ -839,20 +838,20 @@ defining the integer-valued norm on $\Z[i]$ and classifying the prime elements o
 Having formalized various basic results of algebraic number theory, there are several natural directions for future work, including formalizing some of the following results.
 \begin{itemize}
 
-\item The group of units of the ring of integers $\OK^{\times}$ in a number field $K$ is finitely generated, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch}, which gives that $\OK^{\times}$ has rank $r+s-1$ and torsion subgroup consisting of the roots of unity in $K$ (which is cyclic). Here $r$ denotes the number of real embeddings of $K$ and $s$ the number of (conjugate) pairs of complex non-real embeddings of $K$. The finite generation result also holds in the function fields, again with a precise description of the rank (and the torsion of course).
+\item The group of units of the ring of integers $\OK^{\times}$ in a number field $K$ is finitely generated, or even Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch}, stating that $\OK^{\times}$ has rank $r+s-1$ and that its torsion subgroup is the cyclic group of roots of unity in $K$. Here $r$ denotes the number of real embeddings of $K$ and $s$ the number of conjugate pairs of complex non-real embeddings of $K$. The finite generation result also holds in function fields, again with a precise description of the rank and of the torsion.
 
 \item Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of finitely many number fields, up to isomorphism,
-with bounded discriminant~\cite[Theorem 2.16]{Neukirch}. While this could be done without interpreting the primes dividing the discriminant as the primes that \emph{ramify} in the number field, it would certainly be interesting to set up some basic ramification theory (also essential for many other developments) and get the version of Hermite's theorem stating that, up to isomorphism, there are only finitely many number fields with bounded degree and ramification.
-As usual, there are analogous results in the function field setting, though they are less straightforward. One reason being that the nondegenerateness of the trace form from Section~\ref{sec:trace-form} does not hold any more when the separability condition is dropped.
+with bounded discriminant~\cite[Theorem 2.16]{Neukirch}. While this could be done without interpreting the primes dividing the discriminant as the primes that \emph{ramify} in the number field, it would certainly be interesting to set up some basic ramification theory: on the one hand, this would also prove essential for many other developments and, on the other, it would allow to prove a version of Hermite's theorem stating that, up to isomorphism, there are only finitely many number fields with bounded degree and restricted ramification.
+As usual, there are analogous results in the function field setting, though they are less straightforward. One reason for this is that the nondegeneracy of the trace form from Section~\ref{sec:trace-form} does not hold any more when the separability condition is dropped.
 
 \item Class number computations, starting with, say, quadratic number fields.
-This could be part of verifying correctness of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
-Along the same lines, unit group computations would also be of much interest, most notably the explicit computation of $r+s-1$ generators for the free part of $\OK^{\times}$ as mentioned in the first item above.
-Restricting to quadratic fields, we see that the rank is only positive (namely 1) if the field is of the shape $\QQ(\sqrt{d})$ for some positive integer $d$ (not a square).
-Finding a generator can then for example be done using continued fractions, of which the basics are already implemented in Lean by Kevin Kappelmann, though certifying that a given (perhaps externally computed) element is indeed a generator could also certainly be done without continued fractions.
+This could be a step towards the verification of correctness of number-theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
+Along the same lines, unit group computations would also be of much interest, most notably the explicit computation of $r+s-1$ generators for the free part of $\OK^{\times}$. % as mentioned in the first item above.
+Restricting to quadratic fields, we see that the rank is positive (and equal to $1$) if and only if the field is of the shape $\QQ(\sqrt{d})$ for some positive square-free integer $d$. Finding a generator can %then for example
+be done by using continued fractions, of which the basics are already implemented in Lean by Kevin Kappelmann, though certifying that a given (perhaps externally computed) element is indeed a generator could also be done without continued fractions.
 
 \item Applications of algebraic number theory to solving Diophantine equations, such as determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for
-given nonzero $D \in \Z$. It would be interesting to deal with some values of $D$ where no elementary techniques are available and factorization in the ring of integers of $\QQ(\sqrt{D})$, along with class number info, wil resolve the equation.
+some nonzero $D \in \Z$. It would be interesting to deal with some values of $D$ where no elementary techniques are available and where factorization in the ring of integers of $\QQ(\sqrt{D})$, along with information about the class number, could solve the equation.
 
 \end{itemize}
 
