@@ -537,7 +537,7 @@ we were able to prove that every ideal $I\ne 0$ is invertible by arguing by cont
 \subsection{Unique ideal factorization}\label{subsec:unique_ideal_factorization}
 
 As briefly indicated before, we also formalized a proof that in a Dedekind domain every nonzero ideal can be expressed as a product of prime ideals in a unique way up to the order of the factors.
-In fact, for an integral domain, each nonzero ideal is a product of prime ideals if and only if all nonzero fractional ideals are invertible; the uniqueness follows separately. We have formalized one direction of this equivalence, a proof of the converse can be found in e.g. \cite[Chapter 5, Section 6, Theorem 10]{Zariski-Samuel}.
+In fact, for an integral domain, every nonzero ideal is a product of prime ideals if and only if all nonzero fractional ideals are invertible; the uniqueness follows separately. We have formalized one direction of this equivalence, a proof of the converse can be found in~\cite[Chapter 5, \S6, Theorem 10]{Zariski-Samuel}.
 
 We formalized the unique ideal factorization property of a Dedekind domain $D$ by instantiating a unique factorization monoid structure on its ideals.
 
@@ -731,7 +731,7 @@ and can be found, for instance, in~\cite{Ireland-Rosen}.
 We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}.
 
 Let $D$ be a Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction field $F$ of $D$, let $K$ be a finite separable field extension of~$F$.
-We formalized, in the theorem \lean{class\_group.fintype\_of\_\-admissible\_\-of\_finite}, that the integral closure $S$ of $D$ in $K$ has a finite class group if $D$ has an ``admissible'' absolute value \lean{abs}.
+We formalized, in the theorem \lean{class\_group.fintype\_of\_\-admissible\_\-of\_finite}, that the integral closure $S$ of $D$ in $K$ has a finite class group whenever $D$ has an ``admissible'' absolute value \lean{abs}.
 This notion originated in our project from the adaptation and generalization of the classical finiteness proof in interaction with the formalization efforts.
 Very informally, the admissibility conditions require that the remainder operator \lean{\%} produces values that are not too far apart.
 Formally, we defined the predicate classifying admissible absolute values \lean{abv} on $D$ as follows:
