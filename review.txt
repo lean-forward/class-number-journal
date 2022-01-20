@@ -1,0 +1,80 @@
+Reviewer #1:
+
+p 7 l 46: "definitionally equal": I think this is the first time this phrase was used. You should explain what it means for the non-experts.
+ -> Anne
+
+p 7 l 54: "maps commute": I guess the word "commute" is used in the same sense as saying that diagrams commute, but is this a standard usage?
+  -> This is standard usage
+
+p 14 l 42-44: "However, it is quite challenging ...": this confused me. What is challenging about it? How is the product of submodules defined? Is it a matter of the difference between finite sets and finite sequences?
+ -> Filippo
+
+p 16 l 21: UFMs: it's a nice generalization. What are the other applications in mathlib? Anything other than nat and int?
+ -> Anne: associates
+
+p 21 l 36: don't make me read the formal definition! Can you tell me what it says? The appearance of 'card' on line 40 was especially confusing, since I didn't notice it as an argument at first.
+p 21 l 58: same comment: it would help to use words and an ordinary mathematical explanation.
+
+ -> Sander
+
+Small points:
+
+p 2 l 26: "our formal definition" -> "a formal definition" (a formal definition is an essential requirement, but maybe not yours).
+
+p 4 l 32: I would use two sentences rather than a colon
+
+p 4 l 37: I would replace the colon by a semicolon
+
+p 4 l 55: The authors use * for multiplication throughout. I would have preferred a dot, but it's not a big deal.
+
+p 4 l 14: "that of *a* Dedekind domain", and here I would replace the colon with a period and use two sentences
+
+p 7 l 59: "map Q -> K depends": shouldn't it be "the definition of the map Q -> K depends"?
+
+p 9 l 16: "provide similar benefits as" -> "provide benefits similar to those of"
+
+p 12 l 18: I'd end with "equivalence of two definitions." since "of Dedekind domains" is implied (and repetitive)
+
+p 14 l 18: "this reflects": the word "reflects" doesn't sound right. Maybe "this makes use of" or "this explains"?
+
+p 14 l 51: "however, this tactic" -> "but this tactic" ("however" introduces a new sentence)
+
+p 15 l 17 and after: I'd change "first ... secondly ... thirdly ...."  to "first ... second ... third ..." (which is better than "firstly ... secondly ... thirdly ...")
+
+p 16 l 51: "rather it is split up" -> "Rather, it is split up" ("rather" starts a new sentence)
+
+p 17 l 36: "every UFM is integrally closed": isn't it more correct to say "every ring that is a UFM is integrally closed"? (On line 45, it would then be o.k. to use the shorter phrase.)
+
+p 19 l 25: have you said what 'finrank' is?
+
+p 20 l 17: "sigma x": on the next line, there is a space after the sigma, so it probably makes sense to use one in the summation.
+
+p 21 l 20: it looks funny to have a long url in the text. I'd put it in the references, or at least in a footnote.
+
+p 25 acknowledgments: I would use ordinary paragraph indents.
+
+
+
+Reviewer #3:
+
+My main concern is how much the present submission extends the author's previous ITP article. As far
+as I can see, most of the text is the same, and the new sections that were added (as described by
+the authors) are concerned mainly with giving some more details on particular aspects of the same
+formalization. The exception is Section 3.6, which describes work that was done after the previous
+publication. I am not sure that this is enough to warrant a journal publication.
+
+ -> Anne + Ashvni: write something about how we *use* typeclasses and coercions: why sometimes we define unbundled, or bundled structures, sometimes as classes.
+
+An additional comment is that some familiarity with Lean is required in order to follow the
+presentation; this should be mentioned explicitly - alternatively, the authors could consider
+expanding their short presentation of the system (p.2, l.34-41). Likewise, it would be nice to have
+a short introduction to the matlib library that is used throughout. However, these are minor
+issues.
+
+ -> Ashvni: send some of this material, turn this into a short section before Section 2
+ -> Sander
+
+--
+
+Future directions: there are ongoing projects based on our formalization: adele/idele and FLT-regular.
+ -> Filippo
