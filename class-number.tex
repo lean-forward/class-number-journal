@@ -508,9 +508,14 @@ To show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain
 The proofs for being integrally closed and of dimension being less than or equal to $1$ are fairly straightforward.
 
 Formalizing the Noetherian condition was the most challenging. Fr\"ohlich considers elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
-satisfying $ \sum_i a_i b_i = 1 $.
-However, it is quite challenging to prove that an element of the product of two $D$-submodules $A$ and $B$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$ for all $1 \leq i \leq m$.
-Instead, we show that, for every element $x\in A\ast B$, there are finite sets $T\subseteq A$, $T'\subseteq B$ such that \lean{x $\in$ span (T * T')}, formalized as
+satisfying $ \sum_i a_i b_i = 1 $. Observe now that, in \mathlib, the definition of the product $A\ast B$ of two fractional ideals $A,B$ is a special case of the product of two submodules, and therefore it is defined as
+
+\begin{lstlisting}
+submodule.has_mul = {mul := $\lambda$ (A B : submodule D K),
+ $\sqcup$ (a : A), submodule.map ((algebra.lmul D K) a.val) B}
+\end{lstlisting}
+
+Unravelling this definition, we see that it defines $A\ast B$ as the smallest (\emph{i.~e.}, the infimum with respect to set-theoretic inclusion as order relation) submodule containing all submodules $a\cdot B$ for $a\in A$, where $a \cdot B$ is the image of the function \lean{$\lambda$ b : B, $a\ast b$}. However, it is quite challenging to formalize that an element of $A\ast B$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$. Instead, we show that, for every element $x\in A\ast B$, there are finite sets $T\subseteq A$, $T'\subseteq B$ such that \lean{x $\in$ span (T * T')}, formalized as
 \lean{submodule.mem\_span\_mul\_finite\-\_of\-\_mem\-\_mul}.
 Now considering a nonzero integral ideal $I$ of the ring $D$, by definition of invertibility we can write \lean{1 $\in$ (1 $:$ fractional\_ideal D K) = I * I\inv}. Hence, we obtain 
 finite sets $T \subset I$ and $T' \subset I\inv$ such that $1$ is contained in the $D$-span of $T*T'$. We used the \lean{norm\_cast} tactic~\cite{norm_cast} to resolve most coercions, however, this tactic did not solve coercions coming from the inclusion \lean{algebra\_map D K}. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(↑I)\inv}, which reads
