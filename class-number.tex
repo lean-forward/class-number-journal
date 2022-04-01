@@ -34,6 +34,7 @@
 \newcommand*{\OK}[1][K]{\mathcal{O}_{#1}}
 \newcommand*{\Cl}{\mathcal{C}\kern-.075em l}
 \newcommand*{\Fq}[1][q]{\mathbb{F}_{#1}}
+\newcommand*{\refFLT}[1]{($\mathrm{FLT}_{#1}$)}
 \DeclareMathOperator{\Tr}{Tr}
 \newcommand{\mathlib}{\textsf{mathlib}\xspace}
 \newcommand{\N}{\mathbb{N}}
@@ -509,13 +510,11 @@ The proofs for being integrally closed and of dimension being less than or equal
 
 Formalizing the Noetherian condition was the most challenging. Fr\"ohlich considers elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
 satisfying $ \sum_i a_i b_i = 1 $. Observe now that, in \mathlib, the definition of the product $A\ast B$ of two fractional ideals $A,B$ is a special case of the product of two submodules, and therefore it is defined as
-
 \begin{lstlisting}
 submodule.has_mul = {mul := $\lambda$ (A B : submodule D K),
  $\sqcup$ (a : A), submodule.map ((algebra.lmul D K) a.val) B}
 \end{lstlisting}
-
-Unravelling this definition, we see that it defines $A\ast B$ as the smallest (\emph{i.~e.}, the infimum with respect to set-theoretic inclusion as order relation) submodule containing all submodules $a\cdot B$ for $a\in A$, where $a \cdot B$ is the image of the function \lean{$\lambda$ b : B, $a\ast b$}. However, it is quite challenging to formalize that an element of $A\ast B$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$. Instead, we show that, for every element $x\in A\ast B$, there are finite sets $T\subseteq A$, $T'\subseteq B$ such that \lean{x $\in$ span (T * T')}, formalized as
+Unravelling this definition, we see that it defines $A\ast B$ as the smallest (\emph{i.~e.}, the infimum with respect to set-theoretic inclusion as order relation) submodule containing all submodules $a\cdot B$ for $a\in A$, where $a \cdot B$ is the range of the function \lean{$\lambda$ b : B, $a\ast b$}. However, it is quite challenging to formalize that an element of $A\ast B$ must be a \emph{finite} sum $\sum_{i} a_i*b_i$, for $a_i \in A$ and $b_i \in B$. Instead, we show that, for every element $x\in A\ast B$, there are finite sets $T\subseteq A$, $T'\subseteq B$ such that \lean{x $\in$ span (T * T')}, formalized as
 \lean{submodule.mem\_span\_mul\_finite\-\_of\-\_mem\-\_mul}.
 Now considering a nonzero integral ideal $I$ of the ring $D$, by definition of invertibility we can write \lean{1 $\in$ (1 $:$ fractional\_ideal D K) = I * I\inv}. Hence, we obtain 
 finite sets $T \subset I$ and $T' \subset I\inv$ such that $1$ is contained in the $D$-span of $T*T'$. We used the \lean{norm\_cast} tactic~\cite{norm_cast} to resolve most coercions, however, this tactic did not solve coercions coming from the inclusion \lean{algebra\_map D K}. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(↑I)\inv}, which reads
@@ -814,7 +813,7 @@ class_number_eq_one_iff.mpr
 
 \subsection{Related work}
 
-Broadly speaking, one could see the formalization work as part of number theory. There are several formalization results in this direction.
+Broadly speaking, one could see our formalization work as part of number theory. There are several formalization results in this direction.
 Most notably, Eberl formalized a substantial part of analytic number theory in Isabelle/HOL~\cite{Eberl19}.
 Narrowing somewhat to a more algebraic setting,
 Cano, Cohen, Dénès, Mörtberg and Siles formalized constructive definitions in ring theory, most notable for our discussion being the Krull dimension~\cite{linear-algebra-coq}.
@@ -838,6 +837,17 @@ in MetaMath by Carneiro~\cite{gaussian_integers-metamath}
 and in Mizar by Futa, Mizushima, and Okazaki~\cite{gaussian_integers-mizar}.
 Eberl's Isabelle/HOL formalization deserves special mention in this context since it introduces techniques from algebraic number theory,
 defining the integer-valued norm on $\Z[i]$ and classifying the prime elements of $\Z[i]$.
+
+Finally, we mention that since our project became available in the \mathlib library, a team led by Brasca has begun formalizing Fermat's Last Theorem for regular primes. Fermat's Last Theorem is the assertion that, for all~$n\geq 3$,
+\begin{equation}\tag*{\refFLT{n}}
+\forall x,y,z \in \Z, \quad x^n+y^n=z^n\Longrightarrow x\cdot y \cdot z =0
+\end{equation}
+In other words, any integral solution to the Fermat equation $X^n+Y^n=Z^n$ must be trivial. It is immediate to see that, for every~$n\geq 3$, \refFLT{n} is equivalent to the validity of \refFLT{p} for all prime numbers~$p$ dividing~$n$, and therefore the only interesting exponents to consider are prime numbers. Now, recall that a prime number $p$ is said to be \emph{regular} if it does not divide the order of the class group $\Cl_{\QQ(\zeta_p)}$ of the number field obtained by adjoining to~$\QQ$ a primitive $p$th root of unity; equivalently,~$\zeta_p^p=1$ and~$\zeta_p\neq 1$ or, again equivalently,~$\zeta_p$ is a root of the irreducible polynomial
+\[
+\frac{X^p-1}{X-1}=X^{p-1}+X^{p-2}+\cdots +X+1.
+\]
+A classical result, due to Kummer's work in 1847, is that \refFLT{p} is true for every \emph{regular} prime number~$p$. This is the result Brasca and his team have been formalizing in Lean 3 in the on-going work~\cite{Bra21}, and it evidently requires the finiteness of the class group in order to define the notion of a \emph{regular prime}\footnote{It is actually possible to simply \emph{define} a regular prime without mentioning class groups, in terms of divisibility of some Bernoulli number, but this definition would at any rate need to be translated in terms of class numbers in order to implement Kummer's proof.}. Moreover, most arguments occurring in Kummer's proof pertain to the structure of the ring of integers $\Z[\zeta_p]=\OK[\QQ(\zeta_p)]$ as a Dedekind domain, and our work lies at the core of the formalization of these structures.
+
 
 \subsection{Future directions}\label{sec:future_directions}
 
