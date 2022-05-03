@@ -55,6 +55,7 @@
 \DeclareUnicodeCharacter{2082}{\ensuremath{_2}}
 \DeclareUnicodeCharacter{2090}{\ensuremath{_a}}
 \DeclareUnicodeCharacter{2097}{\ensuremath{_l}}
+\DeclareUnicodeCharacter{2115}{\ensuremath{\N}}
 \DeclareUnicodeCharacter{211A}{\ensuremath{\QQ}}
 \DeclareUnicodeCharacter{2124}{\ensuremath{\Z}}
 \DeclareUnicodeCharacter{2211}{\ensuremath{\sum}}
@@ -235,7 +236,8 @@ and are used throughout Lean's core library and \mathlib to endow types with mat
 When the elaborator sees a function with an instance parameter being applied, such as the \lean{[field K]} parameter of \lean{is\_number\_field K}, a Prolog-like search is started to automatically infer a suitable value for this parameter.
 Each of the local parameters and the declarations marked as \lean{instance} are tested to see if their type matches the expected type of the instance search.
 Any instance parameters of candidate instances are themselves recursively inferred, until either a suitable term is constructed or no more candidates remain; an error is raised in the latter case~\cite[Section 10]{theorem-proving-in-lean}.
-Compared to Haskell, Lean's typeclasses have few structural restrictions: notably, classes and instances can depend on any term, classes can apply to multiple types and can have functional dependencies.
+Compared to Haskell, Lean's typeclasses have few structural restrictions: notably, classes and instances can depend on any term, instances may overlap, classes can apply to multiple types and can have functional dependencies.
+% TODO: cite my upcoming typeclass paper?
 
 In our development, we followed the common practice in \mathlib of providing structure on a type,
 whenever such a structure exists canonically, through typeclasses.
@@ -244,6 +246,25 @@ To confuse matters further, Lean implements typeclasses as structure types, wher
 Typeclasses provided us a way to treat uniformly situations that are informally considered the same, as we discuss in Sections \ref{sec:field_extension} and \ref{sec:scalar_tower}.
 Our reliance on typeclasses did not cause any noticeable slowness in proof checking:
 there was no instance that should be found but could not due to timeouts.
+
+A central consideration in formalizing definitions for \mathlib is choosing the appropriate amount of \emph{bundling}:
+determining whether information about an object should be carried in the object itself (bundled), or passed as a separate value (unbundled).
+For example, the \lean{is\_number\_field} typeclass is considered to have unbundled inheritance from the \lean{field} class because instances of these classes are passed in separate parameters,
+while it has bundled inheritance from \lean{char\_zero} and \lean{finite\_dimensional} since both are included as fields of the structure.
+Similarly, the formalization of admissible absolute values discussed in Section~\ref{subsec:finiteness} features a bundled structure \lean{absolute\_value} which includes a map along with proofs stating this map is an absolute value,
+and an unbundled structure \lean{is\_admissible} which takes the absolute value map as a separate parameter.
+
+Unbundling has an advantage in expressivity: because each property of an object is passed in a separate parameter,
+modifying one hypothesis requires modifying one parameter.
+In contrast, bundling hypotheses means each subset of hypotheses requires its own structure declaration;
+any results proved for a given structure have to be made available for other structures manually or through automation such as typeclass inference.
+On the other hand, bundled structures result in simpler parameter lists, since fully unbundling the \lstinline{field} class would result in each of its 38 structure fields becoming a separate parameter.
+Technical considerations play another important role in choosing the level of bundling:
+bundled properties are easily found by automation compared to unbundled properties which require a search of the local context,
+bundled inheritance between classes can only be applied when the two classes have the same type parameters,
+while long unbundled inheritance chains cause exponentially large terms, resulting in slowdowns and high memory consumption.
+Although there is no general rule governing bundling, in general \mathlib prefers to bundle if possible,
+unbundling only when the additional properties are all \lean{Prop}-valued and are not involved in long inheritance chains.
 
 \subsection{Field extensions} \label{sec:field_extension}
 
@@ -257,10 +278,16 @@ For example, the definition of complex numbers depends on many results for ratio
 
 Instead, we formalized results about field extensions through parametrization. The fields $K$ and $L$ can be arbitrary types
 and the hypothesis ``$L$ is a field extension of~$K$'' is represented by an instance parameter \lean{[algebra K L]} denoting a $K$-algebra structure on $L$.
-There are multiple possible $K$-algebra structures for a field $L$ and Lean does not enforce uniqueness of typeclass instances,
-but the \mathlib maintainers try to ensure all instances that can be inferred are definitionally equal.
 The \lean{algebra} structure provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
 In other words, field extensions are given by their canonical embeddings.
+
+There are multiple possible $K$-algebra structures for a field $L$ and Lean does not enforce uniqueness of typeclass instances,
+but the \mathlib maintainers try to ensure all instances that can be inferred are \emph{definitionally equal}.
+Definitional equality is a syntactical notion of equality found in dependent type theories that reflects the possibility of computation:
+for example, the term \lean{2 + 2 : ℕ} is definitionally equal to \lean{4}.
+Whenever Lean can infer the definitional equality of two terms, (the terms are said to \emph{unify})
+one can be substituted for the other.
+Thus, ensuring definitional equality for instances means overlapping instances will not lead to conflicts when one instance is expected and another is found.
 
 \subsection{Scalar towers} \label{sec:scalar_tower}
 
@@ -555,6 +582,7 @@ In \mathlib, unique factorization domains are actually a special case of unique 
 A commutative monoid $R$ with an absorbing element $0$ and injective multiplication is defined to be a UFM,
 if the relation ``$x$ properly divides $y$'' is well-founded (implying that every element can be factored as a product of irreducibles) and
 an element of $R$ is prime if and only if it is irreducible (implying uniqueness of the factorization).
+Examples in \mathlib of UFMs are the unique factorization domains $\N$ and $\Z$, and for any UFM \lean{α}, the quotient of \lean{α} by the subgroup of invertible elements \lean{associates α}.
 With much of the necessary definitions and properties already formalized, the formalization of this unique factorization result has been done in well under 100 lines of Lean code. One of the main mathematical ingredients (interesting in its own right) is that for ideals in a Dedekind domain, to contain is to divide:
 
 \begin{lstlisting}
