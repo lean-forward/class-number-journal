@@ -237,7 +237,6 @@ When the elaborator sees a function with an instance parameter being applied, su
 Each of the local parameters and the declarations marked as \lean{instance} are tested to see if their type matches the expected type of the instance search.
 Any instance parameters of candidate instances are themselves recursively inferred, until either a suitable term is constructed or no more candidates remain; an error is raised in the latter case~\cite[Section 10]{theorem-proving-in-lean}.
 Compared to Haskell, Lean's typeclasses have few structural restrictions: notably, classes and instances can depend on any term, instances may overlap, classes can apply to multiple types and can have functional dependencies.
-% TODO: cite my upcoming typeclass paper?
 
 In our development, we followed the common practice in \mathlib of providing structure on a type,
 whenever such a structure exists canonically, through typeclasses.
@@ -248,7 +247,7 @@ Our reliance on typeclasses did not cause any noticeable slowness in proof check
 there was no instance that should be found but could not due to timeouts.
 
 A central consideration in formalizing definitions for \mathlib is choosing the appropriate amount of \emph{bundling}:
-determining whether information about an object should be carried in the object itself (bundled), or passed as a separate value (unbundled).
+determining whether information about an object should be carried in the object itself (bundled), or passed as a separate value (unbundled)~\cite{instance-parameters-mathlib}.
 For example, the \lean{is\_number\_field} typeclass is considered to have unbundled inheritance from the \lean{field} class because instances of these classes are passed in separate parameters,
 while it has bundled inheritance from \lean{char\_zero} and \lean{finite\_dimensional} since both are included as fields of the structure.
 Similarly, the formalization of admissible absolute values discussed in Section~\ref{subsec:finiteness} features a bundled structure \lean{absolute\_value} which includes a map along with proofs stating this map is an absolute value,
@@ -935,7 +934,7 @@ Finally, we would like to thank the whole \mathlib community for invaluable advi
 \paragraph{Funding}
 Anne Baanen was funded by NWO Vidi grant No.\ 016.Vidi.189.037, Lean Forward.\\
 Sander R. Dahmen was funded by NWO Vidi grant No.\ 639.032.613, New Diophantine Directions.\\
-Ashvni Narayan was funded by EPSRC Grant EP/S021590/1 (UK).
+Ashvni Narayanan was funded by EPSRC Grant EP/S021590/1 (UK).
 
 \paragraph{Conflicts of interest}
 The authors have no conflicts of interest to declare that are relevant to the content of this article.
