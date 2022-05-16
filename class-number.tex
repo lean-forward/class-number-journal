@@ -865,15 +865,19 @@ and in Mizar by Futa, Mizushima, and Okazaki~\cite{gaussian_integers-mizar}.
 Eberl's Isabelle/HOL formalization deserves special mention in this context since it introduces techniques from algebraic number theory,
 defining the integer-valued norm on $\Z[i]$ and classifying the prime elements of $\Z[i]$.
 
-Finally, we mention that since our project became available in the \mathlib library, a team led by Brasca has begun formalizing Fermat's Last Theorem for regular primes. Fermat's Last Theorem is the assertion that, for all~$n\geq 3$,
+Finally, since our project became available in the \mathlib library, a team led by Brasca has begun formalizing Fermat's Last Theorem for regular primes. Fermat's Last Theorem is the assertion that, for all integers~$n\geq 3$,
 \begin{equation}\tag*{\refFLT{n}}
-\forall x,y,z \in \Z, \quad x^n+y^n=z^n\Longrightarrow x\cdot y \cdot z =0
+\forall x,y,z \in \Z, \quad x^n+y^n=z^n\Longrightarrow x\cdot y \cdot z =0.
 \end{equation}
-In other words, any integral solution to the Fermat equation $X^n+Y^n=Z^n$ must be trivial. It is immediate to see that, for every~$n\geq 3$, \refFLT{n} is equivalent to the validity of \refFLT{p} for all prime numbers~$p$ dividing~$n$, and therefore the only interesting exponents to consider are prime numbers. Now, recall that a prime number $p$ is said to be \emph{regular} if it does not divide the order of the class group $\Cl_{\QQ(\zeta_p)}$ of the number field obtained by adjoining to~$\QQ$ a primitive $p$th root of unity; equivalently,~$\zeta_p^p=1$ and~$\zeta_p\neq 1$ or, again equivalently,~$\zeta_p$ is a root of the irreducible polynomial
+%In other words, any integral solution to the Fermat equation $X^n+Y^n=Z^n$ must be trivial.
+It is immediate to see that, for positive integers $n$ and $m$, if $n$ divides $m$, then the validity of \refFLT{n} implies that of \refFLT{m}.
+Therefore, also taking into account that \refFLT{4} was already dealt with by Fermat himself, it suffices to only consider exponents that are odd prime numbers.
+
+Now, an odd prime number $p$ is said to be \emph{regular} if it does not divide the order of the class group $\Cl_{\QQ(\zeta_p)}$ of the number field obtained by adjoining to~$\QQ$ a \emph{primitive $p$th root of unity}~$\zeta_p$; the latter means that~$\zeta_p^p=1$ and~$\zeta_p\neq 1$ or, equivalently, that~$\zeta_p$ is a root of the irreducible polynomial
 \[
 \frac{X^p-1}{X-1}=X^{p-1}+X^{p-2}+\cdots +X+1.
 \]
-A classical result, due to Kummer's work in 1847, is that \refFLT{p} is true for every \emph{regular} prime number~$p$. This is the result Brasca and his team have been formalizing in Lean 3 in the on-going work~\cite{Bra21}, and it evidently requires the finiteness of the class group in order to define the notion of a \emph{regular prime}\footnote{It is actually possible to simply \emph{define} a regular prime without mentioning class groups, in terms of divisibility of some Bernoulli number, but this definition would at any rate need to be translated in terms of class numbers in order to implement Kummer's proof.}. Moreover, most arguments occurring in Kummer's proof pertain to the structure of the ring of integers $\Z[\zeta_p]=\OK[\QQ(\zeta_p)]$ as a Dedekind domain, and our work lies at the core of the formalization of these structures.
+A classical result, due to Kummer's work in 1847, is that \refFLT{p} is true for every \emph{regular} prime number~$p$. This is the result Brasca and his team have begun formalizing in Lean 3 in the on-going work~\cite{Bra21}, and it evidently requires the finiteness of the class group in order to define the notion of a \emph{regular prime} as above\footnote{It is actually possible to simply \emph{define} a regular prime only in terms of divisibility of some Bernoulli numbers, instead of mentioning class groups. But this definition would at any rate need to be translated in terms of class numbers in order to implement Kummer's proof.}. Moreover, most arguments occurring in Kummer's proof pertain to the structure of the ring of integers $\Z[\zeta_p]=\OK[\QQ(\zeta_p)]$ as a Dedekind domain, and our work lies at the core of the formalization of these structures.
 
 
 \subsection{Future directions}\label{sec:future_directions}
