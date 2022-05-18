@@ -76,6 +76,7 @@ We will now provide an overview of the source code files containing results ment
  * integral closure: [`src/ring_theory/integral_closure.lean`](src/integral_closure.lean)
  * Noetherian ring: [`src/ring_theory/noetherian.lean`](src/noetherian.lean)
  * fractional ideal: [`src/ring_theory/fractional_ideal.lean`](src/fractional_ideal.lean)
+ * inverses of fractional ideals: [`src/ring_theory/dedekind_domain/ideal.lean`](src/dedekind_domain/ideal.lean)
  * group with zero: [`src/algebra/group_with_zero/basic.lean`](src/group_with_zero/basic.lean)
  * unique factorization monoid: [`src/ring_theory/unique_factorization_domain.lean`](src/unique_factorization_domain.lean)
 

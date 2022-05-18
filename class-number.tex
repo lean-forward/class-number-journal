@@ -49,6 +49,7 @@
 \definecolor{symbolcolor}{rgb}{0.4, 0.4, 0.4}    % grey
 \definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
 
+\DeclareUnicodeCharacter{02E3}{\ensuremath{{}^\times}}
 \DeclareUnicodeCharacter{03B1}{\ensuremath{\alpha}}
 \DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}}
 \DeclareUnicodeCharacter{2081}{\ensuremath{_1}}
@@ -64,6 +65,7 @@
 \DeclareUnicodeCharacter{2286}{\ensuremath{\subseteq}}
 \DeclareUnicodeCharacter{22A4}{\ensuremath{\top}}
 \DeclareUnicodeCharacter{22A5}{\ensuremath{\bot}}
+\DeclareUnicodeCharacter{29F8}{\ensuremath{\textfractionsolidus}}
 
 \begin{document}
 
@@ -213,28 +215,27 @@ we describe the use of typeclasses in \mathlib in Section \ref{sec:typeclasses}.
 Round brackets mark parameters explicitly supplied by the user, such as \lean{(K : Type*)},
 square brackets mark instance parameters inferred by the typeclass system, such as \mbox{\lean{[field K]}}.
 The condition \lean{[to\_char\_zero : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
-This implies that there is a $\QQ$-algebra structure on $K$ (found by typeclass instance search), endowing $K$ with the $\QQ$-vector space structure used in the hypothesis \mbox{\lean{[to\_finite\_dimensional : finite\_dimensional ℚ K]}}.
+This implies that there is a $\QQ$-algebra structure on $K$ (found by typeclass instance synthesis), endowing $K$ with the $\QQ$-vector space structure used in the hypothesis \mbox{\lean{[to\_finite\_dimensional : finite\_dimensional ℚ K]}}.
 
 Similarly, we defined the function field $F$ over a finite field $\Fq$ using the following typeclass:
 \begin{lstlisting}
 class function_field (Fq F : Type*) [field Fq] [field F] :
   Prop :=
-[to_algebra : algebra (fraction_ring (polynomial Fq)) F]
-[to_finite_dimensional : finite_dimensional
-  (fraction_ring (polynomial Fq)) F]
+[to_algebra : algebra (ratfunc Fq) F]
+[to_finite_dimensional : finite_dimensional (ratfunc Fq) F]
 \end{lstlisting}
-The hypothesis \lean{[to\_algebra : algebra (fraction\_ring (polynomial $\Fq$)) F]} witnesses that $F$ is a field extension of the fraction field $\Fq[q](t)$ of the polynomial ring $\Fq[q][t]$, where $\Fq[q]$ is a finite field.
+The hypothesis \lean{[to\_algebra : algebra (ratfunc $\Fq$) F]} witnesses that $F$ is a field extension of the field $\Fq[q](t)$ of rational functions over $\Fq[q]$, where $\Fq[q]$ is a finite field.
 Again, the condition that this extension is finite is written using the \lean{finite\_dimensional} typeclass.
 We present a more detailed analysis of \lean{algebra} in Section \ref{sec:field_extension} and of \lean{fraction\_ring} in Section \ref{subsection : fields of fractions}.
-For now, we point out that there are many fields $K$ that are isomorphic to the field of rational polynomials $\Fq[q](t)$; we provided a theorem \lean{is\_fraction\_field\_iff} that shows the choice of $K$ does not matter.
+For now, we point out that there are many fields $K$ that are isomorphic to the field of rational functions $\Fq[q](t)$; we provided a theorem \lean{function\_field\_iff} that shows the choice of $K$ does not matter.
 Note that there is no requirement that the field \lean{Fq} is finite, since this is not needed to state the conditions on \lean{F}.
 We instead add a \lean{[fintype Fq]} hypothesis only to those results that require finiteness.
 
 \subsection{Use of typeclasses} \label{sec:typeclasses}
 Typeclasses were originally introduced in Haskell as a mechanism for operator overloading~\cite{typeclasses-haskell},
 and are used throughout Lean's core library and \mathlib to endow types with mathematical structures consisting of both operators and their properties~\cite{mathlib}.
-When the elaborator sees a function with an instance parameter being applied, such as the \lean{[field K]} parameter of \lean{is\_number\_field K}, a Prolog-like search is started to automatically infer a suitable value for this parameter.
-Each of the local parameters and the declarations marked as \lean{instance} are tested to see if their type matches the expected type of the instance search.
+When the elaborator sees a function with an instance parameter being applied, such as the \lean{[field K]} parameter of \lean{is\_number\_field K}, a Prolog-like search is started to automatically synthesize a suitable value for this parameter.
+Each of the local parameters and the declarations marked as \lean{instance} are tested to see if their type matches the expected type of the instance synthesis.
 Any instance parameters of candidate instances are themselves recursively inferred, until either a suitable term is constructed or no more candidates remain; an error is raised in the latter case~\cite[Section 10]{theorem-proving-in-lean}.
 Compared to Haskell, Lean's typeclasses have few structural restrictions: notably, classes and instances can depend on any term, instances may overlap, classes can apply to multiple types and can have functional dependencies.
 
@@ -284,7 +285,7 @@ There are multiple possible $K$-algebra structures for a field $L$ and Lean does
 but the \mathlib maintainers try to ensure all instances that can be inferred are \emph{definitionally equal}.
 Definitional equality is a syntactical notion of equality found in dependent type theories that reflects the possibility of computation:
 for example, the term \lean{2 + 2 : ℕ} is definitionally equal to \lean{4}.
-Whenever Lean can infer the definitional equality of two terms, (the terms are said to \emph{unify})
+Whenever Lean can infer the definitional equality of two terms (the terms are said to \emph{unify}),
 one can be substituted for the other.
 Thus, ensuring definitional equality for instances means overlapping instances will not lead to conflicts when one instance is expected and another is found.
 
@@ -304,8 +305,7 @@ The \lean{is\_scalar\_tower} typeclass derives its name from its applicability t
 \begin{lstlisting}
 class is_scalar_tower (M N α : Type*)
   [has_scalar M N] [has_scalar N α] [has_scalar M α] : Prop :=
-(smul_assoc : ∀ (x : M) (y : N) (z : α),
-  (x • y) • z = x • (y • z))
+(smul_assoc : ∀(x : M) (y : N) (z : α), (x • y) • z = x • (y • z))
 \end{lstlisting}
 For example, if $R$ is a ring, $A$ is an $R$-algebra and $M$ an $A$-module, we can state that $M$ is also an $R$-module by adding a \lean{[is\_scalar\_tower R A M]} parameter.
 Since \lean{x~$\cdot$~y} for an $R$-algebra $A$ is defined as \lean{algebra\_map R A x * y}, applying \lean{smul\_assoc} for each $x : K$ with $y = (1 : L)$ and $z = (1 : F)$ shows that the \lean{algebra\_map}\kern-.3em s indeed commute in a tower of field extensions $L / K / F$.
@@ -313,7 +313,7 @@ Since \lean{x~$\cdot$~y} for an $R$-algebra $A$ is defined as \lean{algebra\_map
 Common \lean{is\_scalar\_tower} instances are declared in \mathlib,
 such as for the maps $R \to S \to B$ when $S$ is a $R$-subalgebra of $A$ and $B$ is an $A$-algebra such that \lean{is\_scalar\_tower R A B};
 this also implies that the maps $R \to S \to A$ form a tower.
-The effect is that almost all coherence proof obligations are automated through typeclass instance search.
+The effect is that almost all coherence proof obligations are automated through typeclass instance synthesis.
 Only when defining a new algebra structure were we required to supply the \lean{is\_scalar\_tower} instances ourselves.
 
 \subsection{Rings of integers} \label{sec:ring-of-integers}
@@ -326,7 +326,7 @@ def number_field.ring_of_integers (K : Type*) [field K]
 integral_closure ℤ K
 \end{lstlisting}
 where \lean{integral\_closure} was previously defined in \mathlib.
-When $K$ is a function field over the finite field $\Fq$, we defined $\OK$ analogously as \lean{integral\_closure (polynomial $\Fq$) K}.
+When $K$ is a function field over the finite field $\Fq$, we defined $\OK$ analogously as \lean{integral\_closure ($\Fq$[X]) K}.
 
 Since the integers $\Z$ are integrally closed in $\QQ$, this construction of the ring of integers of the number field $\QQ$ is isomorphic, but not definitionally equal, to $\Z$.
 To avoid dealing with these isomorphisms, and also to treat the two definitions of rings of integers on an equal footing,
@@ -467,8 +467,9 @@ although the truth value of the predicates does not depend on the choice of $K$.
 For ease of use, we let the type of \lean{is\_dedekind\_domain} depend only on the domain $D$
 by instantiating $K$ in the definition as \lean{fraction\-\_ring D}. From now on, we fix a fraction field $K$ of $D$.
 \begin{lstlisting}
-class is_dedekind_domain (D : Type*) [integral_domain D] :=
-(to_is_noetherian_ring : is_noetherian_ring D)
+class is_dedekind_domain (D : Type*)
+  [comm_ring D] [is_domain D] :=
+(is_noetherian_ring : is_noetherian_ring D)
 (dimension_le_one : dimension_le_one D)
 (is_integrally_closed : is_integrally_closed D)
 \end{lstlisting}
@@ -502,11 +503,13 @@ by showing that the corresponding operations on submodules map fractional ideals
 We also formalized that these operations give a commutative semiring structure on the type of fractional ideals.
 For example, multiplication of fractional ideals is defined as
 \begin{lstlisting}
-lemma fractional_mul (I J : fractional_ideal R F) :
-  is_fractional R (I * J : submodule R F) := _ -- proof omitted
+lemma is_fractional.mul (I J : submodule R F)
+  is_fractional R I → is_fractional R J →
+  is_fractional R (I * J) := _ -- proof omitted
 
 instance : has_mul (fractional_ideal R F) :=
-⟨λ I J, ⟨I * J : submodule R F, fractional_mul I J⟩⟩
+⟨λ I J, ⟨I * J : submodule R F,
+ is_fractional.mul I.is_fractional J.is_fractional⟩⟩
 \end{lstlisting}
 
 Defining the quotient of two fractional ideals requires slightly more work. Consider any $R$-algebra $A$ and an injection $R\hookrightarrow A$. Given ideals $I,J\le R$, the submodule $I / J\le A$
@@ -582,7 +585,7 @@ A commutative monoid $R$ with an absorbing element $0$ and injective multiplicat
 if the relation ``$x$ properly divides $y$'' is well-founded (implying that every element can be factored as a product of irreducibles) and
 an element of $R$ is prime if and only if it is irreducible (implying uniqueness of the factorization).
 Examples in \mathlib of UFMs are the unique factorization domains $\N$ and $\Z$, and for any UFM \lean{α}, the quotient of \lean{α} by the subgroup of invertible elements \lean{associates α}.
-With much of the necessary definitions and properties already formalized, the formalization of this unique factorization result has been done in well under 100 lines of Lean code. One of the main mathematical ingredients (interesting in its own right) is that for ideals in a Dedekind domain, to contain is to divide:
+With much of the necessary definitions and properties already formalized, the formalization of this unique factorization result has been done in well under 100 lines of Lean code. One of the main mathematical ingredients (interesting in its own right) is that for ideals in a Dedekind domain, to divide is to contain:
 
 \begin{lstlisting}
 lemma ideal.dvd_iff_le {I J : ideal D} : (I ∣ J) ↔ J ≤ I
@@ -596,23 +599,23 @@ We note that the unique factorization result, or actually a quick corollary ther
 
 As an example of our definitions, we discuss in some detail our formalization of the fact that a principal ideal domain is a Dedekind domain.
 In the same way that unique factorization domains are generalized in \mathlib to unique factorization monoids,
-there is no explicit definition of PIDs in \mathlib, rather it is split up into two hypotheses.
-One uses \lean{[integral\_domain R] [is\_principal\_ideal\_ring R]} to denote a PID $R$,
+there is no explicit definition of PIDs in \mathlib, rather it is split up into multiple hypotheses.
+One uses \lean{[comm\_ring R] [is\_domain R] [is\_principal\_ideal\_ring R]} to denote a PID $R$,
+where \lean{is\_domain} is a typeclass asserting the ring is nontrivial and there are no zero divisors,
 where \lean{is\_principal\_\-ideal\_\-ring} is a typeclass defined for all commutative rings:
 \begin{lstlisting}
 class is_principal_ideal_ring (R : Type*) [comm_ring R] :=
 (principal : ∀ (I : ideal R), is_principal I)
 \end{lstlisting}
 
-Our proof that the hypotheses \lean{[integral\_domain R] [is\_principal\_\-ideal\_\-ring R]} imply \lean{is\_dedekind\_domain R} was relatively short:
+Our proof that the hypotheses \lean{[comm\_ring R] [is\_domain R] [is\_principal\_\-ideal\_\-ring R]} imply \lean{is\_dedekind\_domain R} was relatively short:
 \begin{lstlisting}
 instance principal_ideal_ring.to_dedekind_domain (R : Type*)
-  [integral_domain R] [is_principal_ideal_ring R] :
+  [comm_ring R] [is_domain R] [is_principal_ideal_ring R] :
   is_dedekind_domain R :=
 ⟨principal_ideal_ring.is_noetherian_ring,
- dimension_le_one.principal_ideal_ring _,
- unique_factorization_monoid.integrally_closed
-   R (fraction_ring R)⟩
+ dimension_le_one.principal_ideal_ring R,
+ unique_factorization_monoid.is_integrally_closed⟩
 \end{lstlisting}
 
 The Noetherian property of a Dedekind domain followed easily by the previously defined lemma \lean{principal\_ideal\_ring.is\_noetherian\_ring}, since, by definition, each ideal in a principal ideal ring is finitely generated (by a single element).
@@ -650,11 +653,12 @@ The fact that the integral closure is integrally closed was immediate.
 
 To show the Krull dimension is at most $1$, we needed to develop basic going-up theory for ideals.
 In particular, we showed that an ideal $I$ in an integral extension is maximal if it lies over a maximal ideal,
-and used a result already available in \mathlib that a prime ideal $I$ in an integral extension lies over a prime ideal.
+and used a result already available in \mathlib that a prime ideal $I$ in a ring extension lies over a prime ideal.
 \begin{lstlisting}
 lemma is_maximal_of_is_integral_of_is_maximal_comap
-  (f : R →+* S) (I : ideal S) [is_prime I]
-  (hI : is_maximal (comap f I)) : is_maximal I
+  [algebra R S] (hRS : algebra.is_integral R S)
+  (I : ideal S) [is_prime I]
+  (hI : is_maximal (comap (algebra_map R S) I)) : is_maximal I
 theorem is_prime.comap (f : R →+* S) (I : ideal S)
   [hI : is_prime I] : is_prime (comap f I)
 \end{lstlisting}
@@ -730,18 +734,18 @@ so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x
 Recall from Section~\ref{sec math background} that the ideal class group $\Cl_D$ of a Dedekind domain $D$ is the quotient of the group of nonzero fractional ideals of $D$ by the nonzero principal fractional ideals.
 More generally, given an integral domain $R$ with fraction field $K$,
 we can define the class group $\Cl_R$ as the quotient of the invertible fractional ideals by the nonzero principal fractional ideals.
-We formalized this in Lean by first defining a map \lean{to\_principal\_ideal R K $:$ units K → units (fractional\_ideal R K)},
+We formalized this in Lean by first defining a map \lean{to\_principal\_ideal R K $:$ Kˣ → (fractional\_ideal R K)ˣ},
 and defined the class group as
 \begin{lstlisting}
-def class_group (R K : Type*) [integral_domain R] [field K]
-  [algebra R K] [is_fraction_ring R K] :=
-quotient_group.quotient (range (to_principal_ideal R K))
+def class_group (R K : Type*) [comm_ring R] [is_domain R]
+  [field K] [algebra R K] [is_fraction_ring R K] :=
+(fractional_ideal R K)ˣ ⧸ (range (to_principal_ideal R K))
 \end{lstlisting}
 
-Here, \lean{units R} for a semiring $R$ denotes $R^\times$, the multiplicative group of its invertible elements.
+Here, \lean{Rˣ} for a semiring $R$ denotes the multiplicative group of its invertible elements.
 Recall from Section~\ref{subsection:frac_ideals} that in the general case of an integral domain $R$ %(which need not necessarily be Dedekind)
  the type of fractional ideals of $R$ is endowed with the structure of a commutative semiring.
-Therefore, the quotient of the abelian group \lean{units (fractional\_ideal R K)} by the subgroup of nonzero principal fractional ideals is well-defined.
+Therefore, the quotient of the abelian group \lean{(fractional\_ideal R K)ˣ} by the subgroup of nonzero principal fractional ideals is well-defined.
 In the case where $R$ is a Dedekind domain, we provided a map \lean{class\_group.mk0} sending nonzero integral ideals of $R$ to the corresponding class in the class group.
 
 \subsection{Finiteness results}\label{subsec:finiteness}
@@ -808,8 +812,7 @@ class_group.fintype_of_admissible_of_finite ℚ K
 
 noncomputable instance : fintype
   (class_group (function_field.ring_of_integers Fq F) F) :=
-class_group.fintype_of_admissible_of_finite
-  (fraction_ring (polynomial Fq)) F
+class_group.fintype_of_admissible_of_finite (ratfunc Fq) F
   polynomial.card_pow_degree_is_admissible
 \end{lstlisting}
 
