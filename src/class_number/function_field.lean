@@ -10,26 +10,22 @@ import number_theory.function_field
 /-!
 # Class numbers of function fields
 
-This file defines the class number of a function field as the finite cardinality
-of the class group of its ring of integers.
-
-It also proves some basic results about the class number, e.g. the class number
-is 1 if the ring of integers is a PID.
+This file defines the class number of a function field as the (finite) cardinality of
+the class group of its ring of integers. It also proves some elementary results
+on the class number.
 
 ## Main definitions
- - `function_field.class_number`: the class number of a function field is the (finite)
-   cardinality of the class group of its ring of integers
+- `function_field.class_number`: the class number of a function field is the (finite)
+cardinality of the class group of its ring of integers
 -/
 
-open_locale big_operators
-open_locale non_zero_divisors
-
 namespace function_field
+open_locale polynomial
 
 variables (Fq F : Type) [field Fq] [fintype Fq] [field F]
-variables [algebra (polynomial Fq) F] [algebra (fraction_ring (polynomial Fq)) F]
-variables [is_scalar_tower (polynomial Fq) (fraction_ring (polynomial Fq)) F]
-variables [function_field Fq F] [is_separable (fraction_ring (polynomial Fq)) F]
+variables [algebra Fq[X] F] [algebra (ratfunc Fq) F]
+variables [is_scalar_tower Fq[X] (ratfunc Fq) F]
+variables [function_field Fq F] [is_separable (ratfunc Fq) F]
 
 open_locale classical
 
@@ -38,9 +34,9 @@ namespace ring_of_integers
 open function_field
 
 noncomputable instance  : fintype (class_group (ring_of_integers Fq F) F) :=
-class_group.fintype_of_admissible_of_finite (fraction_ring (polynomial Fq)) F
+class_group.fintype_of_admissible_of_finite (ratfunc Fq) F
   (polynomial.card_pow_degree_is_admissible : absolute_value.is_admissible
-    (polynomial.card_pow_degree : absolute_value (polynomial Fq) ℤ))
+    (polynomial.card_pow_degree : absolute_value Fq[X] ℤ))
 
 end ring_of_integers
 

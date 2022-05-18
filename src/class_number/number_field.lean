@@ -10,23 +10,16 @@ import number_theory.number_field
 /-!
 # Class numbers of number fields
 
-This file defines the class number of a number field as the finite cardinality
-of the class group of its ring of integers.
-
-It also proves some basic results about the class number, e.g. the class number
-is 1 if the ring of integers is a PID.
+This file defines the class number of a number field as the (finite) cardinality of
+the class group of its ring of integers. It also proves some elementary results
+on the class number.
 
 ## Main definitions
- - `number_field.class_number`: the class number of a number field is the (finite)
-   cardinality of the class group of its ring of integers
+- `number_field.class_number`: the class number of a number field is the (finite)
+cardinality of the class group of its ring of integers
 -/
 
-open_locale big_operators
-open_locale non_zero_divisors
-
 namespace number_field
-
-open class_group
 
 variables (K : Type*) [field K] [number_field K]
 

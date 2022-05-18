@@ -3,30 +3,28 @@ Copyright (c) 2020 Kenji Nakagawa. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kenji Nakagawa, Anne Baanen, Filippo A. E. Nuccio
 -/
-import ring_theory.discrete_valuation_ring
+import algebra.algebra.subalgebra.pointwise
+import algebraic_geometry.prime_spectrum.noetherian
+import ring_theory.dedekind_domain.basic
 import ring_theory.fractional_ideal
-import ring_theory.ideal.over
-import ring_theory.integrally_closed
-import ring_theory.polynomial.rational_root
-import ring_theory.trace
 
 /-!
-# Dedekind domains
+# Dedekind domains and ideals
 
-This file defines the notion of a Dedekind domain (or Dedekind ring),
-giving three equivalent definitions (TODO: and shows that they are equivalent).
+In this file, we show a ring is a Dedekind domain iff all fractional ideals are invertible.
+Then we prove some results on the unique factorization monoid structure of the ideals.
 
 ## Main definitions
 
- - `is_dedekind_domain` defines a Dedekind domain as a commutative ring that is
-   Noetherian, integrally closed in its field of fractions and has Krull dimension at most one.
-   `is_dedekind_domain_iff` shows that this does not depend on the choice of field of fractions.
- - `is_dedekind_domain_dvr` alternatively defines a Dedekind domain as an integral domain that
-   is Noetherian, and the localization at every nonzero prime ideal is a DVR.
  - `is_dedekind_domain_inv` alternatively defines a Dedekind domain as an integral domain where
    every nonzero fractional ideal is invertible.
  - `is_dedekind_domain_inv_iff` shows that this does note depend on the choice of field of
    fractions.
+ - `is_dedekind_domain.height_one_spectrum` defines the type of nonzero prime ideals of `R`.
+
+## Main results:
+ - `is_dedekind_domain_iff_is_dedekind_domain_inv`
+ - `ideal.unique_factorization_monoid`
 
 ## Implementation notes
 
@@ -47,89 +45,17 @@ to add a `(h : ¬ is_field A)` assumption whenever this is explicitly needed.
 dedekind domain, dedekind ring
 -/
 
-variables (R A K : Type*) [comm_ring R] [integral_domain A] [field K]
+variables (R A K : Type*) [comm_ring R] [comm_ring A] [field K]
 
-open_locale non_zero_divisors
+open_locale non_zero_divisors polynomial
 
-/-- A ring `R` has Krull dimension at most one if all nonzero prime ideals are maximal. -/
-def ring.dimension_le_one : Prop :=
-∀ p ≠ (⊥ : ideal R), p.is_prime → p.is_maximal
-
-open ideal ring
-
-namespace ring
-
-lemma dimension_le_one.principal_ideal_ring
-  [is_principal_ideal_ring A] : dimension_le_one A :=
-λ p nonzero prime, by { haveI := prime, exact is_prime.to_maximal_ideal nonzero }
-
-lemma dimension_le_one.is_integral_closure (B : Type*) [integral_domain B]
-  [nontrivial R] [algebra R A] [algebra R B] [algebra B A] [is_scalar_tower R B A]
-  [is_integral_closure B R A] (h : dimension_le_one R) :
-  dimension_le_one B :=
-λ p ne_bot prime, by exactI
-  is_integral_closure.is_maximal_of_is_maximal_comap A p
-    (h _ (is_integral_closure.comap_ne_bot A ne_bot) infer_instance)
-
-lemma dimension_le_one.integral_closure [nontrivial R] [algebra R A]
-  (h : dimension_le_one R) : dimension_le_one (integral_closure R A) :=
-h.is_integral_closure R A (integral_closure R A)
-
-end ring
-
-/--
-A Dedekind domain is an integral domain that is Noetherian, integrally closed, and
-has Krull dimension at most one.
-
-This is definition 3.2 of [Neukirch1992].
-
-The integral closure condition is independent of the choice of field of fractions:
-use `is_dedekind_domain_iff` to prove `is_dedekind_domain` for a given `fraction_map`.
-
-This is the default implementation, but there are equivalent definitions,
-`is_dedekind_domain_dvr` and `is_dedekind_domain_inv`.
-TODO: Prove that these are actually equivalent definitions.
--/
-class is_dedekind_domain : Prop :=
-(is_noetherian_ring : is_noetherian_ring A)
-(dimension_le_one : dimension_le_one A)
-(is_integrally_closed : is_integrally_closed A)
-
--- See library note [lower instance priority]
-attribute [instance, priority 100]
-  is_dedekind_domain.is_noetherian_ring is_dedekind_domain.is_integrally_closed
-
-/-- An integral domain is a Dedekind domain iff and only if it is
-Noetherian, has dimension ≤ 1, and is integrally closed in a given fraction field.
-In particular, this definition does not depend on the choice of this fraction field. -/
-lemma is_dedekind_domain_iff (K : Type*) [field K] [algebra A K] [is_fraction_ring A K] :
-  is_dedekind_domain A ↔ is_noetherian_ring A ∧ dimension_le_one A ∧
-    (∀ {x : K}, is_integral A x → ∃ y, algebra_map A K y = x) :=
-⟨λ ⟨hr, hd, hi⟩, ⟨hr, hd, λ x, (is_integrally_closed_iff K).mp hi⟩,
- λ ⟨hr, hd, hi⟩, ⟨hr, hd, (is_integrally_closed_iff K).mpr @hi⟩⟩
-
-@[priority 100] -- See library note [lower instance priority]
-instance is_principal_ideal_ring.is_dedekind_domain [is_principal_ideal_ring A] :
-  is_dedekind_domain A :=
-⟨principal_ideal_ring.is_noetherian_ring,
- ring.dimension_le_one.principal_ideal_ring A,
- unique_factorization_monoid.is_integrally_closed⟩
-
-/--
-A Dedekind domain is an integral domain that is Noetherian, and the
-localization at every nonzero prime is a discrete valuation ring.
-
-This is equivalent to `is_dedekind_domain`.
-TODO: prove the equivalence.
--/
-structure is_dedekind_domain_dvr : Prop :=
-(is_noetherian_ring : is_noetherian_ring A)
-(is_dvr_at_nonzero_prime : ∀ P ≠ (⊥ : ideal A), P.is_prime →
-  discrete_valuation_ring (localization.at_prime P))
+variables [is_domain A]
 
 section inverse
 
-variables {R₁ : Type*} [integral_domain R₁] [algebra R₁ K] [is_fraction_ring R₁ K]
+namespace fractional_ideal
+
+variables {R₁ : Type*} [comm_ring R₁] [is_domain R₁] [algebra R₁ K] [is_fraction_ring R₁ K]
 variables {I J : fractional_ideal R₁⁰ K}
 
 noncomputable instance : has_inv (fractional_ideal R₁⁰ K) := ⟨λ I, 1 / I⟩
@@ -207,8 +133,8 @@ open submodule submodule.is_principal
   (fractional_ideal.span_singleton R₁⁰ x)⁻¹ = fractional_ideal.span_singleton _ (x⁻¹) :=
 fractional_ideal.one_div_span_singleton x
 
-lemma mul_generator_self_inv (I : fractional_ideal R₁⁰ K)
-  [submodule.is_principal (I : submodule R₁ K)] (h : I ≠ 0) :
+lemma mul_generator_self_inv {R₁ : Type*} [comm_ring R₁] [algebra R₁ K] [is_localization R₁⁰ K]
+  (I : fractional_ideal R₁⁰ K) [submodule.is_principal (I : submodule R₁ K)] (h : I ≠ 0) :
   I * fractional_ideal.span_singleton _ (generator (I : submodule R₁ K))⁻¹ = 1 :=
 begin
   -- Rewrite only the `I` that appears alone.
@@ -258,8 +184,10 @@ begin
     ((generator (I : submodule R₁ K))⁻¹)) hI).symm
 end
 
-@[simp] lemma fractional_ideal.one_inv : (1⁻¹ : fractional_ideal R₁⁰ K) = 1 :=
+@[simp] lemma inv_one : (1⁻¹ : fractional_ideal R₁⁰ K) = 1 :=
 fractional_ideal.div_one
+
+end fractional_ideal
 
 /--
 A Dedekind domain is an integral domain such that every fractional ideal has an inverse.
@@ -267,7 +195,7 @@ A Dedekind domain is an integral domain such that every fractional ideal has an 
 This is equivalent to `is_dedekind_domain`.
 In particular we provide a `fractional_ideal.comm_group_with_zero` instance,
 assuming `is_dedekind_domain A`, which implies `is_dedekind_domain_inv`. For **integral** ideals,
-`is_dedekind_domain`(`_inv`) implies only `ideal.comm_cancel_monoid_with_zero`.
+`is_dedekind_domain`(`_inv`) implies only `ideal.cancel_comm_monoid_with_zero`.
 -/
 def is_dedekind_domain_inv : Prop :=
 ∀ I ≠ (⊥ : fractional_ideal A⁰ (fraction_ring A)), I * I⁻¹ = 1
@@ -280,18 +208,10 @@ lemma is_dedekind_domain_inv_iff [algebra A K] [is_fraction_ring A K] :
   is_dedekind_domain_inv A ↔
     (∀ I ≠ (⊥ : fractional_ideal A⁰ K), I * I⁻¹ = 1) :=
 begin
-  set h : fraction_ring A ≃ₐ[A] K := fraction_ring.alg_equiv A K,
-  split; rintros hi I hI,
-  { have := hi (fractional_ideal.map h.symm.to_alg_hom I)
-               (fractional_ideal.map_ne_zero h.symm.to_alg_hom hI),
-    convert congr_arg (fractional_ideal.map h.to_alg_hom) this;
-      simp only [alg_equiv.to_alg_hom_eq_coe, map_symm_map, map_one,
-                 fractional_ideal.map_mul, fractional_ideal.map_div, inv_eq] },
-  { have := hi (fractional_ideal.map h.to_alg_hom I)
-               (fractional_ideal.map_ne_zero h.to_alg_hom hI),
-    convert congr_arg (fractional_ideal.map h.symm.to_alg_hom) this;
-      simp only [alg_equiv.to_alg_hom_eq_coe, map_map_symm, map_one,
-                 fractional_ideal.map_mul, fractional_ideal.map_div, inv_eq] },
+  let h := fractional_ideal.map_equiv (fraction_ring.alg_equiv A K),
+  refine h.to_equiv.forall_congr (λ I, _),
+  rw ← h.to_equiv.apply_eq_iff_eq,
+  simp
 end
 
 lemma fractional_ideal.adjoin_integral_eq_one_of_is_unit [algebra A K] [is_fraction_ring A K]
@@ -341,6 +261,8 @@ begin
   { exact mem_adjoin_integral_self A⁰ x hx },
   { exact λ h, one_ne_zero (eq_zero_iff.mp h 1 (subalgebra.one_mem _)) },
 end
+
+open ring
 
 lemma dimension_le_one : dimension_le_one A :=
 begin
@@ -405,7 +327,7 @@ lemma exists_multiset_prod_cons_le_and_prod_not_le [is_dedekind_domain A]
     ¬ (multiset.prod (Z.map prime_spectrum.as_ideal) ≤ I) :=
 begin
   -- Let `Z` be a minimal set of prime ideals such that their product is contained in `J`.
-  obtain ⟨Z₀, hZ₀⟩ := exists_prime_spectrum_prod_le_and_ne_bot_of_domain hNF hI0,
+  obtain ⟨Z₀, hZ₀⟩ := prime_spectrum.exists_prime_spectrum_prod_le_and_ne_bot_of_domain hNF hI0,
   obtain ⟨Z, ⟨hZI, hprodZ⟩, h_eraseZ⟩ := multiset.well_founded_lt.has_min
     (λ Z, (Z.map prime_spectrum.as_ideal).prod ≤ I ∧ (Z.map prime_spectrum.as_ideal).prod ≠ ⊥)
     ⟨Z₀, hZ₀⟩,
@@ -421,8 +343,7 @@ begin
          not_or_distrib, ← this] at hprodZ },
   -- By maximality of `P` and `M`, we have that `P ≤ M` implies `P = M`.
   have hPM' := (is_dedekind_domain.dimension_le_one _ hP0 P.is_prime).eq_of_le hM.ne_top hPM,
-  tactic.unfreeze_local_instances,
-  subst hPM',
+  substI hPM',
 
   -- By minimality of `Z`, erasing `P` from `Z` is exactly what we need.
   refine ⟨Z.erase P, _, _⟩,
@@ -433,6 +354,8 @@ begin
 end
 
 namespace fractional_ideal
+
+open ideal
 
 lemma exists_not_mem_one_of_ne_bot [is_dedekind_domain A]
   (hNF : ¬ is_field A) {I : ideal A} (hI0 : I ≠ ⊥) (hI1 : I ≠ ⊤) :
@@ -464,13 +387,13 @@ begin
   -- Choose an element `b` of the product that is not in `J`.
   obtain ⟨b, hbZ, hbJ⟩ := set_like.not_le_iff_exists.mp hnle,
   have hnz_fa : algebra_map A K a ≠ 0 :=
-    mt ((ring_hom.injective_iff _).mp (is_fraction_ring.injective A K) a) ha0,
+    mt ((injective_iff_map_eq_zero _).mp (is_fraction_ring.injective A K) a) ha0,
   have hb0 : algebra_map A K b ≠ 0 :=
-    mt ((ring_hom.injective_iff _).mp (is_fraction_ring.injective A K) b)
+    mt ((injective_iff_map_eq_zero _).mp (is_fraction_ring.injective A K) b)
       (λ h, hbJ $ h.symm ▸ J.zero_mem),
   -- Then `b a⁻¹ : K` is in `M⁻¹` but not in `1`.
   refine ⟨algebra_map A K b * (algebra_map A K a)⁻¹, (mem_inv_iff _).mpr _, _⟩,
-  { exact (fractional_ideal.coe_to_fractional_ideal_ne_zero (le_refl _)).mpr hM0.ne' },
+  { exact (fractional_ideal.coe_to_fractional_ideal_ne_zero le_rfl).mpr hM0.ne' },
   { rintro y₀ hy₀,
     obtain ⟨y, h_Iy, rfl⟩ := (fractional_ideal.mem_coe_ideal _).mp hy₀,
     rw [mul_comm, ← mul_assoc, ← ring_hom.map_mul],
@@ -505,29 +428,27 @@ lemma mul_inv_cancel_of_le_one [h : is_dedekind_domain A]
 begin
   -- Handle a few trivial cases.
   by_cases hI1 : I = ⊤,
-  { rw [hI1, coe_ideal_top, one_mul, fractional_ideal.one_inv] },
+  { rw [hI1, coe_ideal_top, one_mul, fractional_ideal.inv_one] },
   by_cases hNF : is_field A,
-  { letI := hNF.to_field A, rcases hI1 (I.eq_bot_or_top.resolve_left hI0) },
+  { letI := hNF.to_field, rcases hI1 (I.eq_bot_or_top.resolve_left hI0) },
   -- We'll show a contradiction with `exists_not_mem_one_of_ne_bot`:
   -- `J⁻¹ = (I * I⁻¹)⁻¹` cannot have an element `x ∉ 1`, so it must equal `1`.
-  by_contradiction h_abs,
   obtain ⟨J, hJ⟩ : ∃ (J : ideal A), (J : fractional_ideal A⁰ K) = I * I⁻¹ :=
     le_one_iff_exists_coe_ideal.mp mul_one_div_le_one,
   by_cases hJ0 : J = ⊥,
   { subst hJ0,
-    apply hI0,
+    refine absurd _ hI0,
     rw [eq_bot_iff, ← coe_ideal_le_coe_ideal K, hJ],
     exact coe_ideal_le_self_mul_inv K I,
     apply_instance },
-  have hJ1 : J ≠ ⊤,
-  { rintro rfl,
-    rw [← hJ, coe_ideal_top] at h_abs,
-    exact h_abs rfl },
+  by_cases hJ1 : J = ⊤,
+  { rw [← hJ, hJ1, coe_ideal_top] },
   obtain ⟨x, hx, hx1⟩ : ∃ (x : K),
     x ∈ (J : fractional_ideal A⁰ K)⁻¹ ∧ x ∉ (1 : fractional_ideal A⁰ K) :=
     exists_not_mem_one_of_ne_bot hNF hJ0 hJ1,
+  contrapose! hx1 with h_abs,
   rw hJ at hx,
-  exact hx1 (hI hx)
+  exact hI hx,
 end
 
 /-- Nonzero integral ideals in a Dedekind domain are invertible.
@@ -560,7 +481,7 @@ begin
     intros y hy,
     exact hx _ (fractional_ideal.mul_mem_mul hy hb) },
   -- It turns out the subalgebra consisting of all `p(x)` for `p : polynomial A` works.
-  refine ⟨alg_hom.range (polynomial.aeval x : polynomial A →ₐ[A] K),
+  refine ⟨alg_hom.range (polynomial.aeval x : A[X] →ₐ[A] K),
           is_noetherian_submodule.mp (fractional_ideal.is_noetherian I⁻¹) _ (λ y hy, _),
           ⟨polynomial.X, polynomial.aeval_X x⟩⟩,
   obtain ⟨p, rfl⟩ := (alg_hom.mem_range _).mp hy,
@@ -591,8 +512,49 @@ begin
   rw [mul_assoc, mul_left_comm (J : fractional_ideal A⁰ K), coe_ideal_mul_inv, mul_one,
       fractional_ideal.span_singleton_mul_span_singleton, inv_mul_cancel,
       fractional_ideal.span_singleton_one],
-  { exact mt ((algebra_map A K).injective_iff.mp (is_fraction_ring.injective A K) _) ha },
+  { exact mt ((injective_iff_map_eq_zero (algebra_map A K)).mp
+      (is_fraction_ring.injective A K) _) ha },
   { exact fractional_ideal.coe_ideal_ne_zero_iff.mp (right_ne_zero_of_mul hne) }
+end
+
+lemma mul_right_le_iff [is_dedekind_domain A] {J : fractional_ideal A⁰ K}
+  (hJ : J ≠ 0) : ∀ {I I'}, I * J ≤ I' * J ↔ I ≤ I' :=
+begin
+  intros I I',
+  split,
+  { intros h, convert mul_right_mono J⁻¹ h;
+      rw [mul_assoc, fractional_ideal.mul_inv_cancel hJ, mul_one] },
+  { exact λ h, mul_right_mono J h }
+end
+
+lemma mul_left_le_iff [is_dedekind_domain A] {J : fractional_ideal A⁰ K}
+  (hJ : J ≠ 0) {I I'} : J * I ≤ J * I' ↔ I ≤ I' :=
+by convert fractional_ideal.mul_right_le_iff hJ using 1; simp only [mul_comm]
+
+lemma mul_right_strict_mono [is_dedekind_domain A] {I : fractional_ideal A⁰ K}
+  (hI : I ≠ 0) : strict_mono (* I) :=
+strict_mono_of_le_iff_le (λ _ _, (mul_right_le_iff hI).symm)
+
+lemma mul_left_strict_mono [is_dedekind_domain A] {I : fractional_ideal A⁰ K}
+  (hI : I ≠ 0) : strict_mono ((*) I) :=
+strict_mono_of_le_iff_le (λ _ _, (mul_left_le_iff hI).symm)
+
+/--
+This is also available as `_root_.div_eq_mul_inv`, using the
+`comm_group_with_zero` instance defined below.
+-/
+protected lemma div_eq_mul_inv [is_dedekind_domain A] (I J : fractional_ideal A⁰ K) :
+  I / J = I * J⁻¹ :=
+begin
+  by_cases hJ : J = 0,
+  { rw [hJ, div_zero, inv_zero', mul_zero] },
+  refine le_antisymm ((mul_right_le_iff hJ).mp _) ((le_div_iff_mul_le hJ).mpr _),
+  { rw [mul_assoc, mul_comm J⁻¹, fractional_ideal.mul_inv_cancel hJ, mul_one, mul_le],
+    intros x hx y hy,
+    rw [mem_div_iff_of_nonzero hJ] at hx,
+    exact hx y hy },
+  rw [mul_assoc, mul_comm J⁻¹, fractional_ideal.mul_inv_cancel hJ, mul_one],
+  exact le_refl I
 end
 
 end fractional_ideal
@@ -610,20 +572,24 @@ section is_dedekind_domain
 variables {R A} [is_dedekind_domain A] [algebra A K] [is_fraction_ring A K]
 
 open fractional_ideal
+open ideal
 
 noncomputable instance fractional_ideal.comm_group_with_zero :
   comm_group_with_zero (fractional_ideal A⁰ K) :=
 { inv := λ I, I⁻¹,
   inv_zero := inv_zero' _,
-  exists_pair_ne := ⟨0, 1, (coe_to_fractional_ideal_injective (le_refl _)).ne
+  div := (/),
+  div_eq_mul_inv := fractional_ideal.div_eq_mul_inv,
+  exists_pair_ne := ⟨0, 1, (coe_to_fractional_ideal_injective le_rfl).ne
     (by simpa using @zero_ne_one (ideal A) _ _)⟩,
   mul_inv_cancel := λ I, fractional_ideal.mul_inv_cancel,
   .. fractional_ideal.comm_semiring }
 
-noncomputable instance ideal.comm_cancel_monoid_with_zero :
-  comm_cancel_monoid_with_zero (ideal A) :=
-function.injective.comm_cancel_monoid_with_zero (coe_ideal_hom A⁰ (fraction_ring A))
+noncomputable instance ideal.cancel_comm_monoid_with_zero :
+  cancel_comm_monoid_with_zero (ideal A) :=
+function.injective.cancel_comm_monoid_with_zero (coe_ideal_hom A⁰ (fraction_ring A))
   coe_ideal_injective (ring_hom.map_zero _) (ring_hom.map_one _) (ring_hom.map_mul _)
+  (ring_hom.map_pow _)
 
 /-- For ideals in a Dedekind domain, to divide is to contain. -/
 lemma ideal.dvd_iff_le {I J : ideal A} : (I ∣ J) ↔ J ≤ I :=
@@ -647,7 +613,7 @@ end⟩
 lemma ideal.dvd_not_unit_iff_lt {I J : ideal A} :
   dvd_not_unit I J ↔ J < I :=
 ⟨λ ⟨hI, H, hunit, hmul⟩, lt_of_le_of_ne (ideal.dvd_iff_le.mp ⟨H, hmul⟩)
-   (mt (λ h, have H = 1, from mul_left_cancel' hI (by rw [← hmul, h, mul_one]),
+   (mt (λ h, have H = 1, from mul_left_cancel₀ hI (by rw [← hmul, h, mul_one]),
    show is_unit H, from this.symm ▸ is_unit_one) hunit),
  λ h, dvd_not_unit_of_dvd_of_not_dvd (ideal.dvd_iff_le.mpr (le_of_lt h))
    (mt ideal.dvd_iff_le.mp (not_le_of_lt h))⟩
@@ -662,19 +628,20 @@ instance : wf_dvd_monoid (ideal A) :=
 instance ideal.unique_factorization_monoid :
   unique_factorization_monoid (ideal A) :=
 { irreducible_iff_prime := λ P,
-    ⟨λ hirr, ⟨hirr.ne_zero, hirr.not_unit, λ I J, begin
-      have : P.is_maximal,
-      { use mt ideal.is_unit_iff.mpr hirr.not_unit,
-        intros J hJ,
-        obtain ⟨J_ne, H, hunit, P_eq⟩ := ideal.dvd_not_unit_iff_lt.mpr hJ,
-        exact ideal.is_unit_iff.mp ((hirr.is_unit_or_is_unit P_eq).resolve_right hunit) },
-      simp only [ideal.dvd_iff_le, has_le.le, preorder.le, partial_order.le],
-      contrapose!,
-      rintros ⟨⟨x, x_mem, x_not_mem⟩, ⟨y, y_mem, y_not_mem⟩⟩,
-      exact ⟨x * y, ideal.mul_mem_mul x_mem y_mem,
-             mt this.is_prime.mem_or_mem (not_or x_not_mem y_not_mem)⟩,
-    end⟩,
-    prime.irreducible⟩,
+  ⟨λ hirr, ⟨hirr.ne_zero, hirr.not_unit, λ I J, begin
+    have : P.is_maximal,
+    { refine ⟨⟨mt ideal.is_unit_iff.mpr hirr.not_unit, _⟩⟩,
+      intros J hJ,
+      obtain ⟨J_ne, H, hunit, P_eq⟩ := ideal.dvd_not_unit_iff_lt.mpr hJ,
+      exact ideal.is_unit_iff.mp ((hirr.is_unit_or_is_unit P_eq).resolve_right hunit) },
+    rw [ideal.dvd_iff_le, ideal.dvd_iff_le, ideal.dvd_iff_le,
+        set_like.le_def, set_like.le_def, set_like.le_def],
+    contrapose!,
+    rintros ⟨⟨x, x_mem, x_not_mem⟩, ⟨y, y_mem, y_not_mem⟩⟩,
+    exact ⟨x * y, ideal.mul_mem_mul x_mem y_mem,
+           mt this.is_prime.mem_or_mem (not_or x_not_mem y_not_mem)⟩,
+   end⟩,
+   prime.irreducible⟩,
   .. ideal.wf_dvd_monoid }
 
 noncomputable instance ideal.normalization_monoid : normalization_monoid (ideal A) :=
@@ -706,196 +673,351 @@ theorem ideal.prime_iff_is_prime {P : ideal A} (hP : P ≠ ⊥) :
   prime P ↔ is_prime P :=
 ⟨ideal.is_prime_of_prime, ideal.prime_of_is_prime hP⟩
 
-end is_dedekind_domain
+lemma ideal.strict_anti_pow (I : ideal A) (hI0 : I ≠ ⊥) (hI1 : I ≠ ⊤) :
+  strict_anti ((^) I : ℕ → ideal A) :=
+strict_anti_nat_of_succ_lt $ λ e, ideal.dvd_not_unit_iff_lt.mp
+  ⟨pow_ne_zero _ hI0, I, mt is_unit_iff.mp hI1, pow_succ' I e⟩
 
-section is_integral_closure
+lemma ideal.pow_lt_self (I : ideal A) (hI0 : I ≠ ⊥) (hI1 : I ≠ ⊤) (e : ℕ) (he : 2 ≤ e) : I^e < I :=
+by convert I.strict_anti_pow hI0 hI1 he; rw pow_one
 
-/-! ### `is_integral_closure` section
+lemma ideal.exists_mem_pow_not_mem_pow_succ (I : ideal A) (hI0 : I ≠ ⊥) (hI1 : I ≠ ⊤) (e : ℕ) :
+  ∃ x ∈ I^e, x ∉ I^(e+1) :=
+set_like.exists_of_lt (I.strict_anti_pow hI0 hI1 e.lt_succ_self)
 
-We show that an integral closure of a Dedekind domain in a finite separable
-field extension is again a Dedekind domain. This implies the ring of integers
-of a number field is a Dedekind domain. -/
-
-open algebra
-open_locale big_operators
-
-variables {A K} [algebra A K] [is_fraction_ring A K]
-variables {L : Type*} [field L] (C : Type*) [integral_domain C]
-variables [algebra K L] [finite_dimensional K L] [algebra A L] [is_scalar_tower A K L]
-variables [algebra C L] [is_integral_closure C A L] [algebra A C] [is_scalar_tower A C L]
-
-lemma is_integral_closure.range_le_span_dual_basis [is_separable K L]
-  {ι : Type*} [fintype ι] [decidable_eq ι] (b : basis ι K L)
-  (hb_int : ∀ i, is_integral A (b i)) [is_integrally_closed A] :
-  ((algebra.linear_map C L).restrict_scalars A).range ≤
-    submodule.span A (set.range $ (trace_form K L).dual_basis (trace_form_nondegenerate K L) b) :=
+lemma associates.le_singleton_iff (x : A) (n : ℕ) (I : ideal A) :
+  associates.mk I^n ≤ associates.mk (ideal.span {x}) ↔ x ∈ I^n :=
 begin
-  let db := (trace_form K L).dual_basis (trace_form_nondegenerate K L) b,
-  rintros _ ⟨x, rfl⟩,
-  simp only [linear_map.coe_restrict_scalars_eq_coe, algebra.linear_map_apply],
-  have hx : is_integral A (algebra_map C L x) :=
-    (is_integral_closure.is_integral A L x).algebra_map,
-  suffices : ∃ (c : ι → A), algebra_map C L x = ∑ i, c i • db i,
-  { obtain ⟨c, x_eq⟩ := this,
-    rw x_eq,
-    refine submodule.sum_mem _ (λ i _, submodule.smul_mem _ _ (submodule.subset_span _)),
-    rw set.mem_range,
-    exact ⟨i, rfl⟩ },
-  suffices : ∃ (c : ι → K), ((∀ i, is_integral A (c i)) ∧ algebra_map C L x = ∑ i, c i • db i),
-  { obtain ⟨c, hc, hx⟩ := this,
-    have hc' : ∀ i, is_localization.is_integer A (c i) :=
-      λ i, is_integrally_closed.is_integral_iff.mp (hc i),
-    use λ i, classical.some (hc' i),
-    refine hx.trans (finset.sum_congr rfl (λ i _, _)),
-    conv_lhs { rw [← classical.some_spec (hc' i)] },
-    rw [← is_scalar_tower.algebra_map_smul K (classical.some (hc' i)) (db i)] },
-  refine ⟨λ i, db.repr (algebra_map C L x) i, (λ i, _), (db.sum_repr _).symm⟩,
-  rw bilin_form.dual_basis_repr_apply,
-  exact is_integral_trace (is_integral_mul hx (hb_int i))
+  rw [← associates.dvd_eq_le, ← associates.mk_pow, associates.mk_dvd_mk, ideal.dvd_span_singleton],
 end
 
-lemma integral_closure_le_span_dual_basis [is_separable K L]
-  {ι : Type*} [fintype ι] [decidable_eq ι] (b : basis ι K L)
-  (hb_int : ∀ i, is_integral A (b i)) [is_integrally_closed A] :
-  (integral_closure A L).to_submodule ≤ submodule.span A (set.range $
-    (trace_form K L).dual_basis (trace_form_nondegenerate K L) b) :=
-begin
-  refine le_trans _ (is_integral_closure.range_le_span_dual_basis (integral_closure A L) b hb_int),
-  intros x hx,
-  exact ⟨⟨x, hx⟩, rfl⟩
-end
-
-variables (A) (K)
-
-include K
-
-/-- Send a set of `x`'es in a finite extension `L` of the fraction field of `R`
-to `(y : R) • x ∈ integral_closure R L`. -/
-lemma exists_integral_multiples (s : finset L) :
-  ∃ (y ≠ (0 : A)), ∀ x ∈ s, is_integral A (y • x) :=
-begin
-  haveI := classical.dec_eq L,
-  refine s.induction _ _,
-  { use [1, one_ne_zero],
-    rintros x ⟨⟩ },
-  { rintros x s hx ⟨y, hy, hs⟩,
-    obtain ⟨x', y', hy', hx'⟩ := exists_integral_multiple
-      ((is_fraction_ring.is_algebraic_iff A K).mpr (algebra.is_algebraic_of_finite x))
-      ((algebra_map A L).injective_iff.mp _),
-    refine ⟨y * y', mul_ne_zero hy hy', λ x'' hx'', _⟩,
-    rcases finset.mem_insert.mp hx'' with (rfl | hx''),
-    { rw [mul_smul, algebra.smul_def, algebra.smul_def, mul_comm _ x'', hx'],
-      exact is_integral_mul is_integral_algebra_map x'.2 },
-    { rw [mul_comm, mul_smul, algebra.smul_def],
-      exact is_integral_mul is_integral_algebra_map (hs _ hx'') },
-    { rw is_scalar_tower.algebra_map_eq A K L,
-      apply (algebra_map K L).injective.comp,
-      exact is_fraction_ring.injective _ _ } }
-end
-
-variables (L)
-
-/-- If `L` is a finite extension of `K = Frac(A)`,
-then `L` has a basis over `A` consisting of integral elements. -/
-lemma finite_dimensional.exists_is_basis_integral :
-  ∃ (s : finset L) (b : basis s K L), (∀ x, is_integral A (b x)) :=
-begin
-  letI := classical.dec_eq L,
-  let s' := is_noetherian.finset_basis_index K L,
-  let bs' := is_noetherian.finset_basis K L,
-  obtain ⟨y, hy, his'⟩ := exists_integral_multiples A K (finset.univ.image bs'),
-  have hy' : algebra_map A L y ≠ 0,
-  { refine mt ((algebra_map A L).injective_iff.mp _ _) hy,
-    rw is_scalar_tower.algebra_map_eq A K L,
-    exact (algebra_map K L).injective.comp (is_fraction_ring.injective A K) },
-  refine ⟨s', bs'.map { to_fun := λ x, algebra_map A L y * x,
-                        inv_fun := λ x, (algebra_map A L y)⁻¹ * x,
-                        left_inv := _,
-                        right_inv := _,
-                        .. algebra.lmul _ _ (algebra_map A L y) },
-          _⟩,
-  { intros x, simp only [inv_mul_cancel_left' hy'] },
-  { intros x, simp only [mul_inv_cancel_left' hy'] },
-  { rintros ⟨x', hx'⟩,
-    simp only [algebra.smul_def, finset.mem_image, exists_prop, finset.mem_univ, true_and] at his',
-    simp only [basis.map_apply, linear_equiv.coe_mk],
-    exact his' _ ⟨_, rfl⟩ }
-end
-
-variables (A K L) [is_separable K L]
-include L
-
-/- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
-integrally closed and Noetherian, the integral closure `C` of `A` in `L` is
-Noetherian. -/
-lemma is_integral_closure.is_noetherian_ring [is_integrally_closed A] [is_noetherian_ring A] :
-  is_noetherian_ring C :=
-begin
-  haveI := classical.dec_eq L,
-  obtain ⟨s, b, hb_int⟩ := finite_dimensional.exists_is_basis_integral A K L,
-  rw is_noetherian_ring_iff,
-  let b' := (trace_form K L).dual_basis (trace_form_nondegenerate K L) b,
-  letI := is_noetherian_span_of_finite A (set.finite_range b'),
-  let f : C →ₗ[A] submodule.span A (set.range b') :=
-    (submodule.of_le (is_integral_closure.range_le_span_dual_basis C b hb_int)).comp
-    ((algebra.linear_map C L).restrict_scalars A).range_restrict,
-  refine is_noetherian_of_tower A (is_noetherian_of_injective f _),
-  rw [linear_map.ker_comp, submodule.ker_of_le, submodule.comap_bot, linear_map.ker_cod_restrict],
-  exact linear_map.ker_eq_bot_of_injective (is_integral_closure.algebra_map_injective C A L)
-end
-
+open fractional_ideal
 variables {A K}
 
-/- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is
-integrally closed and Noetherian, the integral closure of `A` in `L` is
-Noetherian. -/
-lemma integral_closure.is_noetherian_ring [is_integrally_closed A] [is_noetherian_ring A] :
-  is_noetherian_ring (integral_closure A L) :=
-is_integral_closure.is_noetherian_ring A K L (integral_closure A L)
-
-variables (A K)
-/- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a Dedekind domain,
-the integral closure `C` of `A` in `L` is a Dedekind domain.
-
-Can't be an instance since `A`, `K` or `L` can't be inferred. See also the instance
-`integral_closure.is_dedekind_domain_fraction_ring` where `K := fraction_ring A`
-and `C := integral_closure A L`.
--/
-lemma is_integral_closure.is_dedekind_domain [h : is_dedekind_domain A] :
-  is_dedekind_domain C :=
+/-- Strengthening of `is_localization.exist_integer_multiples`:
+Let `J ≠ ⊤` be an ideal in a Dedekind domain `A`, and `f ≠ 0` a finite collection
+of elements of `K = Frac(A)`, then we can multiply the elements of `f` by some `a : K`
+to find a collection of elements of `A` that is not completely contained in `J`. -/
+lemma ideal.exist_integer_multiples_not_mem
+  {J : ideal A} (hJ : J ≠ ⊤) {ι : Type*} (s : finset ι) (f : ι → K)
+  {j} (hjs : j ∈ s) (hjf : f j ≠ 0) :
+  ∃ a : K, (∀ i ∈ s, is_localization.is_integer A (a * f i)) ∧
+    ∃ i ∈ s, (a * f i) ∉ (J : fractional_ideal A⁰ K) :=
 begin
-  haveI : is_fraction_ring C L := is_integral_closure.is_fraction_ring_of_finite_extension A K L C,
-  exact
-  ⟨is_integral_closure.is_noetherian_ring A K L C,
-   h.dimension_le_one.is_integral_closure _ L _,
-   (is_integrally_closed_iff L).mpr (λ x hx, ⟨is_integral_closure.mk' C x
-      (is_integral_trans (is_integral_closure.is_integral_algebra A L) _ hx),
-    is_integral_closure.algebra_map_mk' _ _ _⟩)⟩
+  -- Consider the fractional ideal `I` spanned by the `f`s.
+  let I : fractional_ideal A⁰ K := fractional_ideal.span_finset A s f,
+  have hI0 : I ≠ 0 := fractional_ideal.span_finset_ne_zero.mpr ⟨j, hjs, hjf⟩,
+  -- We claim the multiplier `a` we're looking for is in `I⁻¹ \ (J / I)`.
+  suffices : ↑J / I < I⁻¹,
+  { obtain ⟨_, a, hI, hpI⟩ := set_like.lt_iff_le_and_exists.mp this,
+    rw mem_inv_iff hI0 at hI,
+    refine ⟨a, λ i hi, _, _⟩,
+    -- By definition, `a ∈ I⁻¹` multiplies elements of `I` into elements of `1`,
+    -- in other words, `a * f i` is an integer.
+    { exact (mem_one_iff _).mp (hI (f i)
+        (submodule.subset_span (set.mem_image_of_mem f hi))) },
+    { contrapose! hpI,
+      -- And if all `a`-multiples of `I` are an element of `J`,
+      -- then `a` is actually an element of `J / I`, contradiction.
+      refine (mem_div_iff_of_nonzero hI0).mpr (λ y hy, submodule.span_induction hy _ _ _ _),
+      { rintros _ ⟨i, hi, rfl⟩, exact hpI i hi },
+      { rw mul_zero, exact submodule.zero_mem _ },
+      { intros x y hx hy, rw mul_add, exact submodule.add_mem _ hx hy },
+      { intros b x hx, rw mul_smul_comm, exact submodule.smul_mem _ b hx } } },
+  -- To show the inclusion of `J / I` into `I⁻¹ = 1 / I`, note that `J < I`.
+  calc ↑J / I = ↑J * I⁻¹ : div_eq_mul_inv ↑J I
+          ... < 1 * I⁻¹ : mul_right_strict_mono (inv_ne_zero hI0) _
+          ... = I⁻¹ : one_mul _,
+  { rw [← coe_ideal_top],
+    -- And multiplying by `I⁻¹` is indeed strictly monotone.
+    exact strict_mono_of_le_iff_le (λ _ _, (coe_ideal_le_coe_ideal K).symm)
+      (lt_top_iff_ne_top.mpr hJ) },
 end
 
-/- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a Dedekind domain,
-the integral closure of `A` in `L` is a Dedekind domain.
+end is_dedekind_domain
 
-Can't be an instance since `K` can't be inferred. See also the instance
-`integral_closure.is_dedekind_domain_fraction_ring` where `K := fraction_ring A`.
--/
-lemma integral_closure.is_dedekind_domain [h : is_dedekind_domain A] :
-  is_dedekind_domain (integral_closure A L) :=
-is_integral_closure.is_dedekind_domain A K L (integral_closure A L)
+section is_dedekind_domain
 
-omit K
+variables {T : Type*} [comm_ring T] [is_domain T] [is_dedekind_domain T] {I J : ideal T}
+open_locale classical
+open multiset unique_factorization_monoid ideal
 
-variables [algebra (fraction_ring A) L] [is_scalar_tower A (fraction_ring A) L]
-variables [finite_dimensional (fraction_ring A) L] [is_separable (fraction_ring A) L]
+lemma prod_normalized_factors_eq_self (hI : I ≠ ⊥) : (normalized_factors I).prod = I :=
+associated_iff_eq.1 (normalized_factors_prod hI)
 
-/- If `L` is a finite separable extension of `Frac(A)`, where `A` is a Dedekind domain,
-the integral closure of `A` in `L` is a Dedekind domain.
+lemma normalized_factors_prod {α : multiset (ideal T)}
+  (h : ∀ p ∈ α, prime p) : normalized_factors α.prod = α :=
+by { simp_rw [← multiset.rel_eq, ← associated_eq_eq],
+     exact prime_factors_unique (prime_of_normalized_factor) h
+      (normalized_factors_prod (α.prod_ne_zero_of_prime h)) }
 
-See also the lemma `integral_closure.is_dedekind_domain` where you can choose
-the field of fractions yourself.
--/
-instance integral_closure.is_dedekind_domain_fraction_ring
-  [is_dedekind_domain A] : is_dedekind_domain (integral_closure A L) :=
-integral_closure.is_dedekind_domain A (fraction_ring A) L
+lemma count_le_of_ideal_ge {I J : ideal T} (h : I ≤ J) (hI : I ≠ ⊥) (K : ideal T) :
+  count K (normalized_factors J) ≤ count K (normalized_factors I) :=
+le_iff_count.1 ((dvd_iff_normalized_factors_le_normalized_factors (ne_bot_of_le_ne_bot hI h) hI).1
+  (dvd_iff_le.2 h)) _
 
-end is_integral_closure
+lemma sup_eq_prod_inf_factors (hI : I ≠ ⊥) (hJ : J ≠ ⊥) :
+  I ⊔ J = (normalized_factors I ∩ normalized_factors J).prod :=
+begin
+  have H : normalized_factors (normalized_factors I ∩ normalized_factors J).prod =
+    normalized_factors I ∩ normalized_factors J,
+  { apply _root_.normalized_factors_prod,
+    intros p hp,
+    rw mem_inter at hp,
+    exact prime_of_normalized_factor p hp.left },
+  have := (multiset.prod_ne_zero_of_prime (normalized_factors I ∩ normalized_factors J)
+      (λ _ h, prime_of_normalized_factor _ (multiset.mem_inter.1 h).1)),
+  apply le_antisymm,
+  { rw [sup_le_iff, ← dvd_iff_le, ← dvd_iff_le],
+    split,
+    { rw [dvd_iff_normalized_factors_le_normalized_factors this hI, H],
+      exact inf_le_left },
+    { rw [dvd_iff_normalized_factors_le_normalized_factors this hJ, H],
+      exact inf_le_right } },
+  { rw [← dvd_iff_le, dvd_iff_normalized_factors_le_normalized_factors,
+      _root_.normalized_factors_prod, le_iff_count],
+    { intro a,
+      rw multiset.count_inter,
+      exact le_min (count_le_of_ideal_ge le_sup_left hI a)
+        (count_le_of_ideal_ge le_sup_right hJ a) },
+    { intros p hp,
+      rw mem_inter at hp,
+      exact prime_of_normalized_factor p hp.left },
+    { exact ne_bot_of_le_ne_bot hI le_sup_left },
+    { exact this } },
+end
+
+lemma irreducible_pow_sup (hI : I ≠ ⊥) (hJ : irreducible J) (n : ℕ) :
+  J^n ⊔ I = J^(min ((normalized_factors I).count J) n) :=
+by rw [sup_eq_prod_inf_factors (pow_ne_zero n hJ.ne_zero) hI, ← inf_eq_inter,
+       normalized_factors_of_irreducible_pow hJ, normalize_eq J, repeat_inf, prod_repeat]
+
+lemma irreducible_pow_sup_of_le (hJ : irreducible J) (n : ℕ)
+  (hn : ↑n ≤ multiplicity J I) : J^n ⊔ I = J^n :=
+begin
+  by_cases hI : I = ⊥,
+  { simp [*] at *, },
+  rw [irreducible_pow_sup hI hJ, min_eq_right],
+  rwa [multiplicity_eq_count_normalized_factors hJ hI, enat.coe_le_coe, normalize_eq J] at hn
+end
+
+lemma irreducible_pow_sup_of_ge (hI : I ≠ ⊥) (hJ : irreducible J) (n : ℕ)
+  (hn : multiplicity J I ≤ n) : J^n ⊔ I = J ^ (multiplicity J I).get (enat.dom_of_le_coe hn) :=
+begin
+  rw [irreducible_pow_sup hI hJ, min_eq_left],
+  congr,
+  { rw [← enat.coe_inj, enat.coe_get, multiplicity_eq_count_normalized_factors hJ hI,
+    normalize_eq J] },
+  { rwa [multiplicity_eq_count_normalized_factors hJ hI, enat.coe_le_coe, normalize_eq J]
+      at hn }
+end
+
+end is_dedekind_domain
+
+section height_one_spectrum
+
+/-!
+### Height one spectrum of a Dedekind domain
+If `R` is a Dedekind domain of Krull dimension 1, the maximal ideals of `R` are exactly its nonzero
+prime ideals.
+We define `height_one_spectrum` and provide lemmas to recover the facts that prime ideals of height
+one are prime and irreducible. -/
+
+namespace is_dedekind_domain
+
+variables [is_domain R] [is_dedekind_domain R]
+
+/-- The height one prime spectrum of a Dedekind domain `R` is the type of nonzero prime ideals of
+`R`. Note that this equals the maximal spectrum if `R` has Krull dimension 1. -/
+@[ext, nolint has_inhabited_instance unused_arguments]
+structure height_one_spectrum :=
+(as_ideal : ideal R)
+(is_prime : as_ideal.is_prime)
+(ne_bot   : as_ideal ≠ ⊥)
+
+variables (v : height_one_spectrum R) {R}
+
+lemma height_one_spectrum.prime (v : height_one_spectrum R) : prime v.as_ideal :=
+ideal.prime_of_is_prime v.ne_bot v.is_prime
+
+lemma height_one_spectrum.irreducible (v : height_one_spectrum R) :
+  irreducible v.as_ideal :=
+begin
+  rw [unique_factorization_monoid.irreducible_iff_prime],
+  apply v.prime,
+end
+
+lemma height_one_spectrum.associates_irreducible (v : height_one_spectrum R) :
+  irreducible (associates.mk v.as_ideal) :=
+begin
+  rw [associates.irreducible_mk _],
+  apply v.irreducible,
+end
+
+end is_dedekind_domain
+
+end height_one_spectrum
+
+section chinese_remainder
+
+open ideal unique_factorization_monoid
+open_locale big_operators
+
+variables {R}
+
+lemma ring.dimension_le_one.prime_le_prime_iff_eq (h : ring.dimension_le_one R)
+  {P Q : ideal R} [hP : P.is_prime] [hQ : Q.is_prime] (hP0 : P ≠ ⊥) :
+  P ≤ Q ↔ P = Q :=
+⟨(h P hP0 hP).eq_of_le hQ.ne_top, eq.le⟩
+
+lemma ideal.coprime_of_no_prime_ge {I J : ideal R} (h : ∀ P, I ≤ P → J ≤ P → ¬ is_prime P) :
+  I ⊔ J = ⊤ :=
+begin
+  by_contra hIJ,
+  obtain ⟨P, hP, hIJ⟩ := ideal.exists_le_maximal _ hIJ,
+  exact h P (le_trans le_sup_left hIJ) (le_trans le_sup_right hIJ) hP.is_prime
+end
+
+section dedekind_domain
+
+variables {R} [is_domain R] [is_dedekind_domain R]
+
+lemma ideal.is_prime.mul_mem_pow (I : ideal R) [hI : I.is_prime] {a b : R} {n : ℕ}
+  (h : a * b ∈ I^n) : a ∈ I ∨ b ∈ I^n :=
+begin
+  cases n, { simp },
+  by_cases hI0 : I = ⊥, { simpa [pow_succ, hI0] using h },
+  simp only [← submodule.span_singleton_le_iff_mem, ideal.submodule_span_eq, ← ideal.dvd_iff_le,
+    ← ideal.span_singleton_mul_span_singleton] at h ⊢,
+  by_cases ha : I ∣ span {a},
+  { exact or.inl ha },
+  rw mul_comm at h,
+  exact or.inr (prime.pow_dvd_of_dvd_mul_right ((ideal.prime_iff_is_prime hI0).mpr hI) _ ha h),
+end
+
+section
+
+open_locale classical
+
+lemma ideal.count_normalized_factors_eq {p x : ideal R} (hp0 : p ≠ ⊥) [hp : p.is_prime] {n : ℕ}
+  (hle : x ≤ p^n) (hlt : ¬ (x ≤ p^(n+1))) :
+  (normalized_factors x).count p = n :=
+count_normalized_factors_eq ((ideal.prime_iff_is_prime hp0).mpr hp).irreducible (normalize_eq _)
+  (ideal.dvd_iff_le.mpr hle) (mt ideal.le_of_dvd hlt)
+
+end
+
+lemma ideal.le_mul_of_no_prime_factors
+  {I J K : ideal R} (coprime : ∀ P, J ≤ P → K ≤ P → ¬ is_prime P) (hJ : I ≤ J) (hK : I ≤ K) :
+  I ≤ J * K :=
+begin
+  simp only [← ideal.dvd_iff_le] at coprime hJ hK ⊢,
+  by_cases hJ0 : J = 0,
+  { simpa only [hJ0, zero_mul] using hJ },
+  obtain ⟨I', rfl⟩ := hK,
+  rw mul_comm,
+  exact mul_dvd_mul_left K
+    (unique_factorization_monoid.dvd_of_dvd_mul_right_of_no_prime_factors hJ0
+      (λ P hPJ hPK, mt ideal.is_prime_of_prime (coprime P hPJ hPK))
+      hJ)
+end
+
+lemma ideal.le_of_pow_le_prime {I P : ideal R} [hP : P.is_prime] {n : ℕ} (h : I^n ≤ P) : I ≤ P :=
+begin
+  by_cases hP0 : P = ⊥,
+  { simp only [hP0, le_bot_iff] at ⊢ h,
+    exact pow_eq_zero h },
+  rw ← ideal.dvd_iff_le at ⊢ h,
+  exact ((ideal.prime_iff_is_prime hP0).mpr hP).dvd_of_dvd_pow h
+end
+
+lemma ideal.pow_le_prime_iff {I P : ideal R} [hP : P.is_prime] {n : ℕ} (hn : n ≠ 0) :
+  I^n ≤ P ↔ I ≤ P :=
+⟨ideal.le_of_pow_le_prime, λ h, trans (ideal.pow_le_self hn) h⟩
+
+lemma ideal.prod_le_prime {ι : Type*} {s : finset ι} {f : ι → ideal R} {P : ideal R}
+  [hP : P.is_prime] :
+  ∏ i in s, f i ≤ P ↔ ∃ i ∈ s, f i ≤ P :=
+begin
+  by_cases hP0 : P = ⊥,
+  { simp only [hP0, le_bot_iff],
+    rw [← ideal.zero_eq_bot, finset.prod_eq_zero_iff] },
+  simp only [← ideal.dvd_iff_le],
+  exact ((ideal.prime_iff_is_prime hP0).mpr hP).dvd_finset_prod_iff _
+end
+
+/-- The intersection of distinct prime powers in a Dedekind domain is the product of these
+prime powers. -/
+lemma is_dedekind_domain.inf_prime_pow_eq_prod {ι : Type*}
+  (s : finset ι) (f : ι → ideal R) (e : ι → ℕ)
+  (prime : ∀ i ∈ s, prime (f i)) (coprime : ∀ i j ∈ s, i ≠ j → f i ≠ f j) :
+  s.inf (λ i, f i ^ e i) = ∏ i in s, f i ^ e i :=
+begin
+  letI := classical.dec_eq ι,
+  revert prime coprime,
+  refine s.induction _ _,
+  { simp },
+  intros a s ha ih prime coprime,
+  specialize ih (λ i hi, prime i (finset.mem_insert_of_mem hi))
+    (λ i hi j hj, coprime i (finset.mem_insert_of_mem hi) j (finset.mem_insert_of_mem hj)),
+  rw [finset.inf_insert, finset.prod_insert ha, ih],
+  refine le_antisymm (ideal.le_mul_of_no_prime_factors _ inf_le_left inf_le_right) ideal.mul_le_inf,
+  intros P hPa hPs hPp,
+  haveI := hPp,
+  obtain ⟨b, hb, hPb⟩ := ideal.prod_le_prime.mp hPs,
+  haveI := ideal.is_prime_of_prime (prime a (finset.mem_insert_self a s)),
+  haveI := ideal.is_prime_of_prime (prime b (finset.mem_insert_of_mem hb)),
+  refine coprime a (finset.mem_insert_self a s) b (finset.mem_insert_of_mem hb) _
+    (((is_dedekind_domain.dimension_le_one.prime_le_prime_iff_eq _).mp
+        (ideal.le_of_pow_le_prime hPa)).trans
+      ((is_dedekind_domain.dimension_le_one.prime_le_prime_iff_eq _).mp
+        (ideal.le_of_pow_le_prime hPb)).symm),
+  { unfreezingI { rintro rfl }, contradiction },
+  { exact (prime a (finset.mem_insert_self a s)).ne_zero },
+  { exact (prime b (finset.mem_insert_of_mem hb)).ne_zero },
+end
+
+/-- **Chinese remainder theorem** for a Dedekind domain: if the ideal `I` factors as
+`∏ i, P i ^ e i`, then `R ⧸ I` factors as `Π i, R ⧸ (P i ^ e i)`. -/
+noncomputable def is_dedekind_domain.quotient_equiv_pi_of_prod_eq {ι : Type*} [fintype ι]
+  (I : ideal R) (P : ι → ideal R) (e : ι → ℕ)
+  (prime : ∀ i, prime (P i)) (coprime : ∀ i j, i ≠ j → P i ≠ P j) (prod_eq : (∏ i, P i ^ e i) = I) :
+  R ⧸ I ≃+* Π i, R ⧸ (P i ^ e i) :=
+(ideal.quot_equiv_of_eq (by { simp only [← prod_eq, finset.inf_eq_infi, finset.mem_univ, cinfi_pos,
+  ← is_dedekind_domain.inf_prime_pow_eq_prod _ _ _ (λ i _, prime i) (λ i _ j _, coprime i j)] }))
+    .trans $
+ideal.quotient_inf_ring_equiv_pi_quotient _ (λ i j hij, ideal.coprime_of_no_prime_ge (begin
+  intros P hPi hPj hPp,
+  haveI := hPp,
+  haveI := ideal.is_prime_of_prime (prime i), haveI := ideal.is_prime_of_prime (prime j),
+  exact coprime i j hij
+    (((is_dedekind_domain.dimension_le_one.prime_le_prime_iff_eq (prime i).ne_zero).mp
+      (ideal.le_of_pow_le_prime hPi)).trans
+    ((is_dedekind_domain.dimension_le_one.prime_le_prime_iff_eq (prime j).ne_zero).mp
+     (ideal.le_of_pow_le_prime hPj)).symm)
+end))
+
+open_locale classical
+
+/-- **Chinese remainder theorem** for a Dedekind domain: `R ⧸ I` factors as `Π i, R ⧸ (P i ^ e i)`,
+where `P i` ranges over the prime factors of `I` and `e i` over the multiplicities. -/
+noncomputable def is_dedekind_domain.quotient_equiv_pi_factors {I : ideal R} (hI : I ≠ ⊥) :
+  R ⧸ I ≃+* Π (P : (factors I).to_finset), R ⧸ ((P : ideal R) ^ (factors I).count P) :=
+is_dedekind_domain.quotient_equiv_pi_of_prod_eq _ _ _
+  (λ (P : (factors I).to_finset), prime_of_factor _ (multiset.mem_to_finset.mp P.prop))
+  (λ i j hij, subtype.coe_injective.ne hij)
+  (calc ∏ (P : (factors I).to_finset), (P : ideal R) ^ (factors I).count (P : ideal R)
+      = ∏ P in (factors I).to_finset, P ^ (factors I).count P
+    : (factors I).to_finset.prod_coe_sort (λ P, P ^ (factors I).count P)
+  ... = ((factors I).map (λ P, P)).prod : (finset.prod_multiset_map_count (factors I) id).symm
+  ... = (factors I).prod : by rw multiset.map_id'
+  ... = I : (@associated_iff_eq (ideal R) _ ideal.unique_units _ _).mp (factors_prod hI))
+
+@[simp] lemma is_dedekind_domain.quotient_equiv_pi_factors_mk {I : ideal R} (hI : I ≠ ⊥)
+  (x : R) : is_dedekind_domain.quotient_equiv_pi_factors hI (ideal.quotient.mk I x) =
+    λ P, ideal.quotient.mk _ x :=
+rfl
+
+end dedekind_domain
+
+end chinese_remainder
