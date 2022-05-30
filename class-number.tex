@@ -807,8 +807,10 @@ such that the following generalization of~\cite[Theorem~12.2.1]{Ireland-Rosen} h
 \begin{lstlisting}
 theorem exists_mem_finset_approx' (a b : S) (hb : b ≠ 0) :
   ∃ (q : S) (r ∈ finset_approx),
-  abv (algebra.norm R (r • a - q * b)) < abv (algebra.norm R b)
+  abv (algebra.norm D (r • a - q * b)) < abv (algebra.norm D b)
 \end{lstlisting}
+Translated back into more ``ordinary'' mathematical notation, this theorem tells us that, for all $a, b \in S$ with $b$ nonzero, there exist $q \in S$ and $r \in \operatorname{finset\_approx}$, such that
+\[\lvert \operatorname{Norm}_{S/D}(ra-qb)\rvert < \lvert \operatorname{Norm}_{S/D}(b) \rvert.\]
 
 After this, the classical approach mentioned above formalized smoothly:
 we show that each class in $\Cl_{K}$ contains an ideal $J$ with $M \in J$,
