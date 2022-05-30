@@ -114,7 +114,7 @@ Due to the decentralized organization and fluid nature of contributions to \math
 Attributing each formalization to a single set of main authors would not do justice to all others whose additions and tweaks are essential to its current use. Therefore, we will make clear whether a contribution is part of our project or not, but we will not stress whom we consider to be the main authors.
 
 The source files of the formalization have been contributed to \mathlib.
-We have preserved the development branch that this paper is based on.\footnote{\url{https://github.com/leanprover-community/mathlib/tree/dedekind-domain-dev}}
+We have preserved the development branch that this paper is based on\footnote{\url{https://github.com/leanprover-community/mathlib/tree/dedekind-domain-dev}}.
 We also maintain a
 repository%
 \footnote{\url{https://github.com/lean-forward/class-number-journal}}
@@ -138,19 +138,19 @@ Let us now introduce some of the main objects we study, described informally. We
 A \emph{number field} $K$ is a finite extension of the field $\QQ$, and as such has the structure of a finite dimensional vector space over $\QQ$; its dimension is called the \emph{degree} of $K$.
 The easiest example is $\QQ$ itself, and the two-dimensional cases are given by the quadratic number fields
 $\QQ(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \QQ\}$
-where $d \in \Z$ is not a square. Similarly, adding a cubic root of some $d\in\Z$ which is not a cube leads to the number field $\QQ(\sqrt[3]{d})$: it has degree $3$ but not all cubic number fields arise in this way.
+where $d \in \Z$ is not a square. Similarly, adding a cubic root $\sqrt[3]{d}$ of some $d\in\Z$ which is not a cube leads to the number field $\QQ(\sqrt[3]{d})$: it has degree $3$ but not all cubic number fields arise in this way.
 %, mainly because the roots of the generic polynomial of degree $3$ are not integral linear combinations of powers of a single $\sqrt[3]{d}$ with $d\in\Z$.
 An example of a cubic number field that is not of this form, and that will occupy us later for other interesting features, is $\QQ(\alpha_0)=\{a+b\alpha_0+c \alpha_0^2: a,b,c \in \QQ\}$, where $\alpha_0$ is the unique real number satisfying $\alpha_0^3 + \alpha_0^2 - 2\alpha_0 + 8=0$.
-In general, taking any root $\alpha$ of an irreducible polynomial of degree $n$ over $\QQ$ yields a number field of degree $n$:
+In general, taking any root $\alpha$ of an irreducible polynomial of degree $n$ over $\QQ$ yields a number field of degree~$n$, namely
 $\QQ(\alpha)=\{c_0+c_1\alpha+\ldots+c_{n-1} \alpha^{n-1} : c_0,c_1,\ldots,c_{n-1} \in \QQ \}$,
 and, up to isomorphism, all number fields of degree $n$ arise in this way.
 
 The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, namely
 \[
   \OK := \left\{x \in K : f(x)=0 \text{ where $f \in \Z[x]$ is a monic polynomial}\right\},\]
-where we recall that a polynomial is called \emph{monic} if its leading coefficient equals $1$.
+where we recall that a polynomial is called \emph{monic} if its leading coefficient equals~$1$.
 While it might not be immediately obvious that $\OK$ is a ring, this follows from general algebraic properties of integral closures.
-Some examples of $\OK$ are the following. Taking $K=\QQ$, we get $\OK=\Z$ back.
+Some examples of rings of integers are the following. Taking $K=\QQ$, we get $\OK=\Z$ back.
 For $K=\QQ(i)=\QQ(\sqrt{-1})$ we get that $\OK$ is the ring of Gaussian integers $\Z[i]=\{a+bi : a,b \in \Z\}$.
 But for $K=\QQ(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$; hence by definition, $\varphi \in \OK$.
 It turns out that $\OK=\Z[\varphi]=\{a+b\varphi : a,b \in \Z\}$.
@@ -165,24 +165,24 @@ An important property of $\Z$ is that it is a principal ideal domain (PID), mean
 finite product of prime elements, which is unique up to reordering and multiplying by $\pm 1$: a ring where this holds is called a unique factorization domain, or UFD.
 For example, $6$ can be factored in primes in $4$ equivalent ways, namely $6=2\cdot 3=3\cdot2=(-2)\cdot (-3)=(-3) \cdot (-2)$.
 In fact, the previously mentioned examples of rings of integers are UFDs, but this is certainly not true for all rings of integers. For example, unique factorization \emph{does not} hold in $\mathcal{O}_{\QQ(\sqrt{-5})}=\Z[\sqrt{-5}]$
-: it is easy to prove that $6=2\cdot3$ and $6=(1+\sqrt{-5}) (1-\sqrt{-5})$ provide two essentially different ways to factor $6$ into prime elements of $\Z[\sqrt{-5}]$.
+: it is easy to prove that $6=2\cdot3$ and $6=(1+\sqrt{-5}) (1-\sqrt{-5})$ provide two essentially different\footnote{By ``essentially different'' we mean that one factorization cannot be obtained from the other via multiplication by units.} ways to factor $6$ into prime elements of $\Z[\sqrt{-5}]$.
 
-As it turns out, there is a way to remedy this. Namely, by considering factorization of \emph{ideals} instead of elements: given a number field $K$, with ring of integers $\OK$, a beautiful and classical result by Dedekind shows that every nonzero ideal of $\OK$ can be factored as a product of prime ideals in a unique way, up to reordering.
+As it turns out, there is a way to weaken this notion of unique factorization in a meaningful way. Namely, by considering factorization of \emph{ideals} instead of elements: given a number field $K$, with ring of integers $\OK$, a beautiful and classical result by Dedekind shows that every nonzero ideal of $\OK$ can be factored as a product of prime ideals in a unique way, up to reordering.
 
 Although unique factorization in terms of ideals is of great importance, it is still interesting, and sometimes
 necessary, to also consider factorization properties in terms of elements.
-We mentioned that unique factorization in $\Z$ follows from the fact that every ideal is generated by a single element.
+We have already mentioned that unique factorization in $\Z$ follows from the fact that every ideal is generated by a single element.
 Now, it is convenient to extend the notion of ideals of $\Z$ to that of $\emph{fractional ideals}$. 
 These are additive subgroups of $\QQ$ of the form $\frac{1}{d} I$ with $I$ an ideal of $\Z$ and $d$ a nonzero integer.
 When the distinction is important, we refer to an ideal $I \subseteq \Z$ as an \emph{integral ideal}.
-The nonzero fractional ideals of $\Z$ naturally form a multiplicative group (whereas there is no integral ideal $I\subseteq \Z$ such that $I*(2\Z)=(1)$).
+The nonzero fractional ideals of $\Z$ naturally form a multiplicative group (whereas, for instance, there is no integral ideal $I\subseteq \Z$ such that $I*(2\Z)=(1)$).
 The statement that every ideal is generated by a single element
-translates to the fact that the quotient group of nonzero fractional ideals modulo $\QQ^\times$ is trivial (where $\frac{a}{b} \in \QQ^\times$ corresponds to $\frac{1}{b} a \Z$, and as usual, the multiplicative group of invertible elements of a ring $R$ is denoted by $R^{\times}$).
+translates to the fact that the quotient group of nonzero fractional ideals modulo $\QQ^\times$ is trivial (where $\frac{a}{b} \in \QQ^\times$ corresponds to~$\frac{1}{b} a \Z$, and the multiplicative group of invertible elements of a ring $R$ is denoted by $R^{\times}$).
 
-It turns out that this quotient group can be defined for every ring of integers $\OK$.
+It turns out that this quotient group can be defined for every ring of integers~$\OK$.
 The fundamental theoretical notion beneath this construction is that of Dedekind domain: these are integral domains $D$ which are Noetherian (every ideal of $D$ is finitely generated), integrally closed (if an element $x$ in the fraction field $\Frac D$ of $D$ is a root of a monic polynomial with coefficients in $D$, then actually $x \in D$), and of Krull dimension at most $1$ (every nonzero prime ideal of $D$ is maximal).
-It can be proved that the nonzero fractional ideals of $D$
-form a group under multiplication, and the quotient of this group by the image of the natural embedding of $(\Frac D)^\times$ is called the \emph{\textup{(}ideal\textup{)} class group} $\Cl_{D}$.
+It can be proved that the nonzero fractional ideals of a Dedekind domain~$D$
+form a group under multiplication, and that the quotient of this group by the image of the natural embedding of $(\Frac D)^\times$ is called the \emph{\textup{(}ideal\textup{)} class group} $\Cl_{D}$.
 For later reference, fractional ideals generated by one element of $\Frac D$ are called principal fractional ideals, so the image of the natural embedding of $(\Frac D)^\times$ consists exactly of the nonzero principal fractional ideals.
 
 What is arithmetically crucial is the theorem ensuring that the ring of integers $\OK$ of every number field $K$ is a Dedekind domain,
@@ -193,10 +193,10 @@ The order of $\Cl_{\OK}$ is called the \emph{class number} of $K$.
 Intuitively, then, the smaller the class number, the fewer factorizations are possible.
 In particular, the class number of $K$ is equal to $1$ if and only if $\OK$ is a UFD.
 
-The statements in the previous paragraph also hold for \emph{function fields}, namely fields which are finite extensions of $\Fq(t) \simeq \Frac \Fq[q][t]$, where $\Fq[q][t]$ stands for the ring of univariate polynomials (in a free variable $t$) with coefficients in a finite field with $q$ elements $\Fq$. Recall that when $q$ is a prime number, $\Fq$ is simply the field $\Z/q\Z$.
+The statements in the previous paragraph also hold for \emph{function fields}, namely fields which are finite extensions of $\Fq(t) \simeq \Frac \Fq[q][t]$, where $\Fq[q][t]$ stands for the ring of univariate polynomials (in a free variable $t$) with coefficients in a finite field $\Fq$ with $q$ elements. Recall that when $q$ is a prime number, $\Fq$ is simply the field $\Z/q\Z$.
 A field which is either a number field or a function field is called a \emph{global field}.
 
-The concept of class group actually not only makes sense for Dedekind domains but more generally for (at least) any integral domain $R$ as follows. While the nonzero fractional ideals of $R$ in general need not be a group, they do form a commutative monoid. Hence the invertible fractional ideals of $R$ form a group, and the class group of $R$ (denoted $\Cl_{R}$) is now defined as the quotient of this group by the image of the natural embedding of $(\Frac R)^\times$.
+The concept of class group actually not only makes sense for Dedekind domains but more generally for (at least) any integral domain $R$ as follows. While the nonzero fractional ideals of $R$ in general need not be a group, they do form a commutative monoid. Hence, the invertible fractional ideals of $R$ form a group, and the class group of $R$ (denoted $\Cl_{R}$) is now defined as the quotient of this group by the image of the natural embedding of $(\Frac R)^\times$.
 
 In the next sections we will describe the formalization of the above concepts.
 
@@ -212,12 +212,12 @@ class is_number_field (K : Type*) [field K] : Prop :=
 \end{lstlisting}
 The \emph{class} keyword declares a structure type (in other words, a type of records) and enables typeclass inference for terms of this type;
 we describe the use of typeclasses in \mathlib in Section \ref{sec:typeclasses}.
-Round brackets mark parameters explicitly supplied by the user, such as \lean{(K : Type*)},
+Round brackets mark parameters that must explicitly be supplied by the user, such as \lean{(K : Type*)}, while
 square brackets mark instance parameters inferred by the typeclass system, such as \mbox{\lean{[field K]}}.
-The condition \lean{[to\_char\_zero : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
+The condition \lean{[to\_char\_zero : char\_zero K]} states that $K$ has characteristic zero, so the unique ring homomorphism $\Z \to K$ is an embedding.
 This implies that there is a $\QQ$-algebra structure on $K$ (found by typeclass instance synthesis), endowing $K$ with the $\QQ$-vector space structure used in the hypothesis \mbox{\lean{[to\_finite\_dimensional : finite\_dimensional ℚ K]}}.
 
-Similarly, we defined the function field $F$ over a finite field $\Fq$ using the following typeclass:
+Similarly, we defined the class of function fields over a finite field $\Fq$ as:
 \begin{lstlisting}
 class function_field (Fq F : Type*) [field Fq] [field F] :
   Prop :=
@@ -227,7 +227,7 @@ class function_field (Fq F : Type*) [field Fq] [field F] :
 The hypothesis \lean{[to\_algebra : algebra (ratfunc $\Fq$) F]} witnesses that $F$ is a field extension of the field $\Fq[q](t)$ of rational functions over $\Fq[q]$, where $\Fq[q]$ is a finite field.
 Again, the condition that this extension is finite is written using the \lean{finite\_dimensional} typeclass.
 We present a more detailed analysis of \lean{algebra} in Section \ref{sec:field_extension} and of \lean{fraction\_ring} in Section \ref{subsection : fields of fractions}.
-For now, we point out that there are many fields $K$ that are isomorphic to the field of rational functions $\Fq[q](t)$; we provided a theorem \lean{function\_field\_iff} that shows the choice of $K$ does not matter.
+For now, we point out that there are many fields $K$ that are isomorphic to the field of rational functions $\Fq[q](t)$; we provided a theorem \lean{function\_field\_iff} that shows that the choice of $K$ does not matter.
 Note that there is no requirement that the field \lean{Fq} is finite, since this is not needed to state the conditions on \lean{F}.
 We instead add a \lean{[fintype Fq]} hypothesis only to those results that require finiteness.
 
@@ -236,8 +236,8 @@ Typeclasses were originally introduced in Haskell as a mechanism for operator ov
 and are used throughout Lean's core library and \mathlib to endow types with mathematical structures consisting of both operators and their properties~\cite{mathlib}.
 When the elaborator sees a function with an instance parameter being applied, such as the \lean{[field K]} parameter of \lean{is\_number\_field K}, a Prolog-like search is started to automatically synthesize a suitable value for this parameter.
 Each of the local parameters and the declarations marked as \lean{instance} are tested to see if their type matches the expected type of the instance synthesis.
-Any instance parameters of candidate instances are themselves recursively inferred, until either a suitable term is constructed or no more candidates remain; an error is raised in the latter case~\cite[Section 10]{theorem-proving-in-lean}.
-Compared to Haskell, Lean's typeclasses have few structural restrictions: notably, classes and instances can depend on any term, instances may overlap, classes can apply to multiple types and can have functional dependencies.
+All instance parameters of candidate instances are themselves recursively inferred, until either a suitable term is constructed or no more candidates remain; an error is raised in the latter case~\cite[Section 10]{theorem-proving-in-lean}.
+Compared to Haskell's, Lean's typeclasses have few structural restrictions: notably, classes and instances can depend on any term, instances may overlap, classes can apply to multiple types and can have functional dependencies.
 
 In our development, we followed the common practice in \mathlib of providing structure on a type,
 whenever such a structure exists canonically, through typeclasses.
@@ -248,15 +248,15 @@ Our reliance on typeclasses did not cause any noticeable slowness in proof check
 there was no instance that should be found but could not due to timeouts.
 
 A central consideration in formalizing definitions for \mathlib is choosing the appropriate amount of \emph{bundling}:
-determining whether information about an object should be carried in the object itself (bundled), or passed as a separate value (unbundled)~\cite{instance-parameters-mathlib}.
+determining whether information about an object should be carried by the object itself (bundled), or passed as a separate value (unbundled)~\cite{instance-parameters-mathlib}.
 For example, the \lean{is\_number\_field} typeclass is considered to have unbundled inheritance from the \lean{field} class because instances of these classes are passed in separate parameters,
 while it has bundled inheritance from \lean{char\_zero} and \lean{finite\_dimensional} since both are included as fields of the structure.
-Similarly, the formalization of admissible absolute values discussed in Section~\ref{subsec:finiteness} features a bundled structure \lean{absolute\_value} which includes a map along with proofs stating this map is an absolute value,
+Similarly, the formalization of admissible absolute values discussed in Section~\ref{subsec:finiteness} features a bundled structure \lean{absolute\_value} which includes a map along with proofs stating that this map is an absolute value,
 and an unbundled structure \lean{is\_admissible} which takes the absolute value map as a separate parameter.
 
 Unbundling has an advantage in expressivity: because each property of an object is passed in a separate parameter,
 modifying one hypothesis requires modifying one parameter.
-In contrast, bundling hypotheses means each subset of hypotheses requires its own structure declaration;
+In contrast, bundling hypotheses means that each subset of hypotheses requires its own structure declaration;
 any results proved for a given structure have to be made available for other structures manually or through automation such as typeclass inference.
 On the other hand, bundled structures result in simpler parameter lists, since fully unbundling the \lstinline{field} class would result in each of its 38 structure fields becoming a separate parameter.
 Technical considerations play another important role in choosing the level of bundling:
@@ -270,7 +270,7 @@ unbundling only when the additional properties are all \lean{Prop}-valued and ar
 
 The definition of \lean{is\_number\_field} illustrates our treatment of field extensions.
 A field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
-Often we encounter towers of field extensions: we might have that $\QQ$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\overline{K}$ of $K$, and $\overline{K}$ is contained in $\C$.
+Often we encounter towers of field extensions: we might have that $\QQ$ is contained in~$K$,~$K$ is contained in $L$, $L$ is contained in an algebraic closure $\overline{K}$ of $K$, and~$\overline{K}$ is contained in $\C$.
 We might formalize this situation by viewing $\QQ$, $K$, $L$ and $\overline{K}$ as sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
 This way, no coercions need to be inserted in order to map elements of one field into a larger field.
 Unfortunately, we can only avoid coercions as far as we are able to stay within one largest field.
@@ -278,8 +278,8 @@ For example, the definition of complex numbers depends on many results for ratio
 
 Instead, we formalized results about field extensions through parametrization. The fields $K$ and $L$ can be arbitrary types
 and the hypothesis ``$L$ is a field extension of~$K$'' is represented by an instance parameter \lean{[algebra K L]} denoting a $K$-algebra structure on $L$.
-The \lean{algebra} structure provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
-In other words, field extensions are given by their canonical embeddings.
+The \lean{algebra} structure provides us with a ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
+In other words, field extensions are given by their embeddings.
 
 There are multiple possible $K$-algebra structures for a field $L$ and Lean does not enforce uniqueness of typeclass instances,
 but the \mathlib maintainers try to ensure all instances that can be inferred are \emph{definitionally equal}.
@@ -287,7 +287,7 @@ Definitional equality is a syntactical notion of equality found in dependent typ
 for example, the term \lean{2 + 2 : ℕ} is definitionally equal to \lean{4}.
 Whenever Lean can infer the definitional equality of two terms (the terms are said to \emph{unify}),
 one can be substituted for the other.
-Thus, ensuring definitional equality for instances means overlapping instances will not lead to conflicts when one instance is expected and another is found.
+Thus, ensuring definitional equality for instances means that overlapping instances will not lead to conflicts when one instance is expected and another is found.
 
 \subsection{Scalar towers} \label{sec:scalar_tower}
 
@@ -297,11 +297,11 @@ resulting in a tower of extensions $L / K / \QQ$.
 In such a tower, the map $\QQ \to L$ should be equal to the composition $\QQ \to K$ followed by $K \to L$.
 Such an equality cannot always be achieved by defining the map $\QQ \to L$ to be this composition: in the example, the map $\QQ \to K$ depends on the map $\QQ \to L$.
 
-The solution in \mathlib is to parametrize over all three maps, as long a there is also a proof of coherence:
+The solution in \mathlib is to parametrize over all three maps, as long as there is also a proof of coherence:
 a hypothesis of the form ``$L / K / F$ is a tower of field extensions'' is translated into three instance parameters \lean{[algebra F K]}, \lean{[algebra K L]} and \lean{[algebra F L]},
 along with a parameter \lean{[is\_scalar\_tower F K L]} expressing that the maps commute.
 
-The \lean{is\_scalar\_tower} typeclass derives its name from its applicability to any three types between which exist scalar multiplication operations:
+The \lean{is\_scalar\_tower} typeclass derives its name from its applicability to any three types among which scalar multiplication operations exist:
 \begin{lstlisting}
 class is_scalar_tower (M N α : Type*)
   [has_scalar M N] [has_scalar N α] [has_scalar M α] : Prop :=
@@ -319,18 +319,18 @@ Only when defining a new algebra structure were we required to supply the \lean{
 \subsection{Rings of integers} \label{sec:ring-of-integers}
 
 When $K$ is a number field (defined as a field satifying \lean{is\_number\_field}), the ring $\OK$ of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
-This is the subring containing those $x : K$ that are the root of a monic polynomial with coefficients in $\Z$:
+This is the subring containing those $x : K$ that are a root of a monic polynomial with coefficients in $\Z$:
 \begin{lstlisting}
 def number_field.ring_of_integers (K : Type*) [field K]
   [is_number_field K] : subalgebra ℤ K :=
 integral_closure ℤ K
 \end{lstlisting}
-where \lean{integral\_closure} was previously defined in \mathlib.
+where \lean{integral\_closure} was already defined in \mathlib.
 When $K$ is a function field over the finite field $\Fq$, we defined $\OK$ analogously as \lean{integral\_closure ($\Fq$[X]) K}.
 
 Since the integers $\Z$ are integrally closed in $\QQ$, this construction of the ring of integers of the number field $\QQ$ is isomorphic, but not definitionally equal, to $\Z$.
 To avoid dealing with these isomorphisms, and also to treat the two definitions of rings of integers on an equal footing,
-we introduced a typeclass \lean{is\_integral\_closure A R B} stating that $A$ is the integral closure of $R$ in $B$,
+we introduced a typeclass \lean{is\_integral\_closure A R B} stating that $A$ is the integral closure of $R$ in~$B$,
 and worked with a generic \lean{is\_integral\_closure} instance instead of the specific \lean{ring\_of\_integers} construction when possible.
 
 \subsection{Subobjects} \label{sec:subobjects}
@@ -340,8 +340,8 @@ In \mathlib, subobjects are ``bundled'', in the form of a \lean{structure} compr
 Bundled subobjects provide similar benefits as bundled morphisms; the choice for the latter is explained in the \mathlib overview paper~\cite{mathlib}.
 Where the \lean{algebra} and \lean{is\_scalar\_tower} typeclasses provide an interface generalizing over multiple equivalent definitions, subobjects provide a specific implementation of that interface in the form of a subtype.
 
-Two new subobjects that we defined in our development were \lean{subfield} as well as \lean{intermediate\_field}. We defined a subfield of a field $K$ as a subset of $K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication and taking inverses.
-If $L$ is a field extension of~$K$, we defined an intermediate field as a subfield that is also a $K$-subalgebra: a subfield that contains the image of $\lean{algebra\_map K L}$.
+Two new subobjects that we defined in our development were \lean{subfield} as well as \lean{intermediate\_field}. We defined a subfield of a field $K$ as a subset of~$K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication and taking inverses.
+If $L$ is a field extension of~$K$, we defined an intermediate field as a subfield of $L$ that is also a $K$-subalgebra: in other words, a subfield that contains the image of $\lean{algebra\_map K L}$.
 Other examples of subobjects available in \mathlib are submonoids, subgroups and submodules (with ideals as a special case of submodules);
 all of these are provided with an instance of the \lean{set\_like} typeclass that supplies notation such as a membership relation ``$x \in S$''.
 
@@ -353,10 +353,10 @@ we used it in our development of the trace form.
 This anecdote illustrates the decentralized development style of \mathlib,
 with different groups and people building on each other's results in a collaborative process.
 
-Through the \lean{set\_like} typeclass, subobjects can be coerced to types, sending a subobject $S$ to the subtype of all elements of $S$.
+Through the \lean{set\_like} typeclass, subobjects can be coerced to types, by sending a subobject $S$ to the subtype of all elements of $S$.
 By putting typeclass instances on this subtype,
 we could reason about inductively defined rings such as $\Z$ and subrings such as \lean{integral\_closure $\Z$ K} uniformly.
-If $S : \lean{subfield}\ K$, there is a canonical ring embedding, the map that sends $x : S$ to $K$ by ``forgetting'' that $x \in S$,
+If $S : \lean{subfield}\ K$, there is a ring embedding, the map that sends $x : S$ to $K$ by ``forgetting'' that $x \in S$,
 and we registered this map as an \lean{algebra S K} instance, also allowing us to treat field extensions of the form $\QQ \to \C$ and subfields uniformly.
 Similarly, for $F : \lean{intermediate\_field K L}$, we defined the corresponding \lean{algebra K F}, \lean{algebra F L} and \lean{is\_scalar\_tower K F L} instances.
 
@@ -371,9 +371,7 @@ The drawback of this construction is that there are many other fields that can s
 Consider the field $\{z \in \C : \Re z \in \QQ, \Im z\in\QQ\}$, which is isomorphic to $\Frac (\Z[i])$ but not definitionally equal to it.
 Indeed, the \mathlib definition of the rational numbers $\QQ$ is a product type, not a quotient type, so we would not be able to treat $\QQ$ as the field of fractions of $\Z$ in this setup.
 
-The strategy used in \mathlib is to rather allow for many different \emph{fraction fields} of our given integral domain $R$,
-as fields $K$ with a suitable \lean{[algebra R K]} instance, where the canonical map \lean{algebra\_map R K} witnesses that all elements $K$ are ``fractions'' of elements of $R$,
-and to parametrize every result over the choice of $K$.
+The strategy used in \mathlib is to rather allow for many different \emph{fraction fields} of our given integral domain $R$ --- as fields $K$ with a suitable \lean{[algebra R K]} instance, where the map \lean{algebra\_map R K} witnesses that all elements~$K$ are ``fractions'' of elements of $R$ --- and to parametrize every result over the choice of $K$.
 The conditions on the $R$-algebra structure on $K$ are encoded as a typeclass \lean{is\_fraction\_ring R K}.
 In the definition used by \mathlib, a fraction ring is a special case of a \emph{ring localization},
 which is defined for any commutative ring $R$.
@@ -389,7 +387,7 @@ The above description of fraction fields is the third such formalization in \mat
 %\footnote{Source code available at \url{https://github.com/leanprover-community/mathlib/blob/a012d76d5034d587924f23ccd0cdefa11569d5d9/src/ring_theory/localization.lean}}
 consisted of a quotient type \lean{quotient\_ring R},
 constructed similarly to the current definition of \lean{fraction\_ring R}.
-Due to the aforementioned drawback --- namely, that this provided no easy way to view $\QQ$ as the field of fractions of $\Z$, for instance ---
+Due to the aforementioned drawback --- namely, that this provided no easy way to view~$\QQ$ as the field of fractions of $\Z$, for instance ---
 this was refactored to use a characteristic predicate instead.
 
 The second version
@@ -416,9 +414,9 @@ Separating out these parameters finally allowed us to painlessly view $\QQ$ as t
 
 \subsection{Representing monogenic field extensions} \label{sec:monogenic-field-extension}
 
-In Section~\ref{sec math background} we have informally said that every number field $K$ can be written as $K=\QQ(\alpha)$ for a root $\alpha$ of an irreducible polynomial $P\in\QQ[X]$. This can be made precise in several ways. For instance, one can consider a large field $L$ (of characteristic $0$) where $P$ splits completely, then choose a root $\alpha\in L$ and let $K = \QQ(\alpha)$ be the smallest subfield of $L$ containing $\alpha$. Or, one can consider the quotient ring $\QQ[X]/P$ and observe that this is a field where the class $X\pmod{P}$ is a root of $P$. The assignment $\alpha\mapsto X\pmod{P}$ yields an isomorphism of the two fields, but any other choice of a root $\alpha'\in L$ leads to another isomorphism $\QQ(\alpha')\cong \QQ[X]/P$. Although mathematically we often tacitly identify the constructions, there is no canonical representation of the \emph{monogenic} extensions of $\QQ$, those which can be obtained by adjoining a single root of one polynomial.
+In Section~\ref{sec math background} we have informally said that every number field $K$ can be written as $K=\QQ(\alpha)$ for a root $\alpha$ of an irreducible polynomial $P\in\QQ[X]$. This can be made precise in several ways. For instance, one can consider a large field~$L$ (of characteristic~$0$) where $P$ splits completely, then choose a root $\alpha\in L$ and let $K = \QQ(\alpha)$ be the smallest subfield of $L$ containing $\alpha$. Or, one can consider the quotient ring $\QQ[X]/P$ and observe that this is a field where the class $X\pmod{P}$ is a root of $P$. The assignment $\alpha\mapsto X\pmod{P}$ yields an isomorphism of the two fields, but any other choice of a root $\alpha'\in L$ leads to another isomorphism $\QQ(\alpha')\cong \QQ[X]/P$. Although mathematically we often tacitly identify these constructions, there is no canonical representation of the \emph{monogenic} extensions of $\QQ$, those which can be obtained by adjoining a single root of one polynomial.
 
-The same continues to hold if we replace the base field $\QQ$ with another field $F$, thus considering extensions of the form $F(\alpha)$, now requiring that $\alpha$ be a root of some $P\in F[X]$. Various constructions of $F(\alpha)$ have already been formalized in \mathlib. The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$.
+The same continues to hold if we replace the base field $\QQ$ with another field~$F$, thus considering extensions of the form $F(\alpha)$, now requiring that $\alpha$ be a root of some $P\in F[X]$. Various constructions of $F(\alpha)$ have already been formalized in \mathlib. The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$.
 
 To find a uniform way to reason about all these definitions,
 we chose to formalize the notion of \emph{power basis} to represent monogenic field extensions: this is a basis of the form $1, \alpha, \alpha^2, \dots, \alpha^{n-1} : K$ (viewing $K$ as a $F$-vector space).
@@ -484,19 +482,19 @@ lemma is_dedekind_domain_iff [is_fraction_ring D K] :
 \end{lstlisting}
 
 We marked \lean{is\_dedekind\_domain} as a typeclass by using the keyword \lean{class} rather than \lean{structure},
-allowing the typeclass system to automatically infer the Dedekind domain structure when an appropriate instance is declared, such as for PIDs or rings of integers.
+allowing the typeclass system to automatically infer the Dedekind domain structure when an appropriate instance is declared, such as for PIDs or for rings of integers.
 
 \subsection{Fractional ideals}\label{subsection:frac_ideals}
 The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}:
 given any integral domain $R$ with a field of fractions $F$,
 we define \lean{is\_fractional} as a predicate on $R$-submodules $J$ of $F$, informally as ``there is an $x : R$ with $x J \subseteq R$''.
 For a Dedekind domain, nonzero fractional ideals form a group under multiplication.
-As seen in Section~\ref{subsection : fields of fractions}, this notion depends on the field $F$ as well as the embedding \lean{$f$ := algebra\_map R F}.
+As seen in Section~\ref{subsection : fields of fractions}, this notion depends on the field $F$ as well as on the embedding \lean{$f$ := algebra\_map R F}.
 A more precise way of stating the above condition is then
 $f(x)J\subseteq f(R)$.
 We formalized the definition of fractional ideals of $R$ contained in $F$ as a type \lean{fractional\_ideal R F}, whose elements consist of an $R$-submodule of $F$ along with a proof of \lean{is\_fractional}.
 The structure of fractional ideals does not depend on the choice of a fraction field,
-which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between two types of fractional ideals on $R$.
+which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between two types of fractional ideals on $R$, corresponding to different fields of fractions.
 
 We defined the addition, multiplication and intersection operations on fractional ideals,
 by showing that the corresponding operations on submodules map fractional ideals to fractional ideals.
@@ -528,13 +526,13 @@ theorem fractional_ideal.mul_inv_cancel [is_dedekind_domain D]
 \end{lstlisting}
 This justifies the notation $I^{-1}=1/I$. In fact, we define this notation even for the ideal $0$, by declaring that $0^{-1}=0$. This reflects the existence of the typeclass \lean{group\_with\_zero} in \mathlib, consisting of groups endowed with an extra element \lean{0} whose inverse is again \lean{0}.
 
-Moreover, \mathlib used to define \lean{$a / b := a * b^{-1}$}, but our definition of $I^{-1} = 1 / I$ would cause circularity. This led us to a major refactor of this core definition. In particular, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib.%
-\footnote{The pull requests are available as \url{https://github.com/leanprover-community/mathlib/pull/5302} and \url{https://github.com/leanprover-community/mathlib/pull/5303}.}
+Moreover, \mathlib used to define \lean{$a / b := a * b^{-1}$}, but our definition of $I^{-1} = 1 / I$ would cause circularity. This led us to a major refactor of this core definition. In particular, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib
+\footnote{The pull requests are available as \url{https://github.com/leanprover-community/mathlib/pull/5302} and \url{https://github.com/leanprover-community/mathlib/pull/5303}.}.
 
 \subsection{Equivalence of the definitions} \label{sec:equivalence}
-We now describe how we proved and formalized that the two definitions \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} of being a Dedekind domain are equivalent. Let $D$ be a Dedekind domain, and $f\colon D\to K$ a fraction map to a field of fractions $K$ of $D$.
+We now describe how we proved and formalized that the two definitions \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} of being a Dedekind domain are equivalent. Let $D$ be a Dedekind domain, and let $f\colon D\to K$ a fraction map to a field of fractions $K$ of $D$.
 
-To show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain}, we follow the proof given by Fr\"ohlich in~\cite[Chapter 1, Section~2, Proposition~1.2.1]{frohlich}. A constant challenge that was faced while coding this proof was already mentioned in Section \ref{subsection : fields of fractions}, namely the fact that elements of the domain must be traced along the inclusion into its field of fractions.
+To show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain}, we follow the proof given by Fr\"ohlich in~\cite[Chapter 1, Section~2, Proposition~1.2.1]{frohlich}. A constant challenge that was faced while coding this proof was already mentioned in Section \ref{subsection : fields of fractions}, namely the fact that elements of the domain must be traced along the inclusion into the chosen field of fractions.
 The proofs for being integrally closed and of dimension being less than or equal to $1$ are fairly straightforward.
 
 Formalizing the Noetherian condition was the most challenging. Fr\"ohlich considers elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
@@ -550,11 +548,11 @@ finite sets $T \subset I$ and $T' \subset I\inv$ such that $1$ is contained in t
 \begin{lstlisting}
 (T' : set K) ⊆ (((I : fractional_ideal D K)⁻¹ : submodule D K) : set K)
 \end{lstlisting}
-From the existence of $T$ and $T'$ we concluded $I$ is indeed finitely generated, finishing the proof.
+From the existence of $T$ and $T'$ we concluded that~$I$ is indeed finitely generated, thus finishing the proof.
 
 The theorem \lean{fractional\_ideal.mul\_inv\_cancel} proves the converse, namely that \lean{is\_dedekind\_domain} implies \lean{is\_dedekind\_domain\_inv}. The classical proof consists of three steps: first, every maximal ideal $M\subseteq D$, seen as a fractional ideal, is invertible;
 secondly, every nonzero ideal is invertible, using that it is contained in a maximal ideal;
-thirdly, the fact that every fractional ideal $J$ satisfies $xJ\leq I$ for a suitable $x\in D$ and an ideal $I\subseteq D$ implies that every fractional ideal is invertible, concluding the proof that nonzero fractional ideals form a group.
+thirdly, the fact that every fractional ideal $J$ satisfies $xJ\leq I$ for a suitable element $x\in D$ and a suitable ideal $I\subseteq D$ implies that every fractional ideal is invertible, concluding the proof that nonzero fractional ideals form a group.
 The third step was easy, building upon the material developed for the general theory of \lean{fractional\_ideal}. Concerning the first two, we found that passing from the case where $M$ is maximal to the general case required more code than directly showing invertibility of arbitrary nonzero ideals. The formal statement reads
 \begin{lstlisting}
 lemma coe_ideal_mul_inv [is_dedekind_domain D] 
@@ -565,8 +563,8 @@ from where it becomes apparent that we had to repeatedly distinguish between \le
 
 The formal proof of this result relies on the lemma \lean{exists\_not\_mem\_one\-\_of\-\_ne\-\_bot}, which says that for every non-trivial ideal $0\subsetneq I\subsetneq D$, there exists an element in the field $K$ which is not integral (so, not in \lean{1 : fractional\_ideal D K}) but lies in $I\inv$. The proof begins by invoking that every nonzero ideal in the Noetherian ring $D$ contains a product of nonzero prime ideals. This result was not previously available in \mathlib.
 The dimension condition shows its full force when applying this lemma:
-each prime ideal in the product, being nonzero, will be maximal because the Krull dimension of $D$ is at most $1$; from this, \lean{exists\_not\_mem\_one\_of\_ne\_bot} follows easily. Having the above lemma at our disposal,
-we were able to prove that every ideal $I\ne 0$ is invertible by arguing by contradiction: if $I\ast I\inv \ne D$, we can find an element $x\in K\setminus D$ which is in $(I\ast I\inv)\inv$ thanks to \lean{exists\_not\_mem\_one\_of\_ne\_bot} and some easy algebraic manipulation will imply that $x$ is actually integral over $D$. Since $D$ is integrally closed, $x \in D$, contradicting the construction of $x$. Combining these results gives the equivalence between the two conditions for being a Dedekind domain.
+each prime ideal in the product $I\ast I^{-1}$, being nonzero, will be maximal because the Krull dimension of $D$ is at most $1$; from this, \lean{exists\_not\_mem\_one\_of\_ne\_bot} follows easily. Having the above lemma at our disposal,
+we were able to prove that every ideal $I\ne 0$ is invertible by arguing by contradiction: if $I\ast I\inv \ne D$, we can find an element $x\in K\setminus D$ which is in $(I\ast I\inv)\inv$ thanks to \lean{exists\_not\_mem\_one\_of\_ne\_bot}; some easy algebraic manipulation then implies that $x$ is actually integral over $D$. Since $D$ is integrally closed, $x \in D$, contradicting the construction of $x$. Combining these results gives the equivalence between the two conditions for being a Dedekind domain.
 
 \subsection{Unique ideal factorization}\label{subsec:unique_ideal_factorization}
 
@@ -584,7 +582,7 @@ In \mathlib, unique factorization domains are actually a special case of unique 
 A commutative monoid $R$ with an absorbing element $0$ and injective multiplication is defined to be a UFM,
 if the relation ``$x$ properly divides $y$'' is well-founded (implying that every element can be factored as a product of irreducibles) and
 an element of $R$ is prime if and only if it is irreducible (implying uniqueness of the factorization).
-Examples in \mathlib of UFMs are the unique factorization domains $\N$ and $\Z$, and for any UFM \lean{α}, the quotient of \lean{α} by the subgroup of invertible elements \lean{associates α}.
+Examples in \mathlib of UFMs are the unique factorization domains $\N$ and $\Z$ as well as, for any UFM \lean{α}, the quotient of \lean{α} by the subgroup of invertible elements \lean{associates α}.
 With much of the necessary definitions and properties already formalized, the formalization of this unique factorization result has been done in well under 100 lines of Lean code. One of the main mathematical ingredients (interesting in its own right) is that for ideals in a Dedekind domain, to divide is to contain:
 
 \begin{lstlisting}
@@ -593,7 +591,7 @@ lemma ideal.dvd_iff_le {I J : ideal D} : (I ∣ J) ↔ J ≤ I
 
 Similarly, to strictly contain is to properly divide, so the well-foundedness condition of UFMs is exactly the property that a Dedekind domain is Noetherian. In order to show that all irreducible elements of the monoid of nonzero prime ideals in $D$ are prime elements, we formalized that irreducible ideals in a Dedekind domain are maximal and therefore prime (note that prime ideals of a Dedekind domain $D$ coincide with prime elements of the monoid of its nonzero ideals); the converse holds in every monoid.
 
-We note that the unique factorization result, or actually a quick corollary thereof, is an important ingredient in our finiteness proof for the class group of rings of integers, as we will elaborate on in Section~\ref{subsec:finiteness}.
+We note that the unique factorization result, or actually an easy corollary thereof, is an important ingredient in our finiteness proof for the class group of rings of integers, as we will elaborate on in Section~\ref{subsec:finiteness}.
 
 \section{Principal ideal domains are Dedekind}
 
@@ -601,7 +599,7 @@ As an example of our definitions, we discuss in some detail our formalization of
 In the same way that unique factorization domains are generalized in \mathlib to unique factorization monoids,
 there is no explicit definition of PIDs in \mathlib, rather it is split up into multiple hypotheses.
 One uses \lean{[comm\_ring R] [is\_domain R] [is\_principal\_ideal\_ring R]} to denote a PID $R$,
-where \lean{is\_domain} is a typeclass asserting the ring is nontrivial and there are no zero divisors,
+where \lean{is\_domain} is a typeclass asserting that the ring is nontrivial and there are no zero divisors,
 where \lean{is\_principal\_\-ideal\_\-ring} is a typeclass defined for all commutative rings:
 \begin{lstlisting}
 class is_principal_ideal_ring (R : Type*) [comm_ring R] :=
@@ -620,15 +618,15 @@ instance principal_ideal_ring.to_dedekind_domain (R : Type*)
 
 The Noetherian property of a Dedekind domain followed easily by the previously defined lemma \lean{principal\_ideal\_ring.is\_noetherian\_ring}, since, by definition, each ideal in a principal ideal ring is finitely generated (by a single element).
 
-We proved the lemma \lean{dimension\_le\_one.principal\_ideal\_ring}, which is an instantiation of the existing result \lean{is\_prime.to\_maximal\_ideal}, showing a nonzero prime ideal in a PID is maximal.
+We proved the lemma \lean{dimension\_le\_one.principal\_ideal\_ring}, which is an instantiation of the existing result \lean{is\_prime.to\_maximal\_ideal}, showing that a nonzero prime ideal in a PID is maximal.
 The latter lemma uses the characterization that $I$ is a maximal ideal if and only if any strictly larger ideal $J\supsetneq I$ is the full ring $R$.
-If $I$ is a nonzero prime ideal and $J \supsetneq I$ in the PID $R$, we have that the generator $j$ of $J$ is a divisor of the generator $i$ of $I$. Since $I$ is prime, this implies that either $j \in I$, contradicting the assumption that $J \supsetneq I$, $i = 0$, contradicting that $I$ is nonzero, or that $j$ is a unit, implying $J = R$ as desired.
+If $I$ is a nonzero prime ideal and $J \supsetneq I$ in the PID $R$, we see that a generator $j$ of $J$ is a divisor of any generator $i$ of $I$. Since $I$ is prime, this implies that either $j \in I$, contradicting the assumption that $J \supsetneq I$, or $i = 0$, contradicting that $I$ is nonzero, or finally that $j$ is a unit, implying $J = R$ as desired.
 
 The final condition of a PID being integrally closed was the most challenging.
 We used the previously defined instance \lean{principal\_ideal\_ring.to\_\-unique\-\_factorization\_monoid} to deduce that a PID is a unique factorization monoid (UFM),
 to instantiate our proof that every UFM is integrally closed.
 In a PID, the Noetherian property implies that the division relation is well-founded,
-and \lean{principal\_ideal\_ring.irreducible\_iff\_prime} shows irreducible elements and prime elements coincide.
+and \lean{principal\_ideal\_ring.irreducible\_iff\_prime} shows that irreducible elements and prime elements coincide.
 To prove that an irreducible element $p$ is prime, the proof uses that prime elements generate prime ideals and irreducible elements of a PID generate maximal ideals. Since all maximal ideals are prime ideals, the ideal generated by $p$ is maximal, hence prime, thus $p$ is prime.
 We proved the lemma \lean{irreducible\_of\_prime}, which shows the converse holds in any commutative monoid with zero.
 
@@ -639,11 +637,11 @@ This gave us the required lemma \lean{unique\_factorization\_monoid.integrally\_
 
 \section{Rings of integers are Dedekind domains} \label{sec:integral-closure}
 
-An important classical result in algebraic number theory is that the ring of integers of a number field $K$, defined as the integral closure of $\Z$ in $K$, is a Dedekind domain. We formalized a stronger result: given a Dedekind domain $D$ and a field of fractions $F$, if $K$ is a finite separable extension of~$F$, then the integral closure of $D$ in $K$ is a Dedekind domain with fraction field $K$.
+An important classical result in algebraic number theory is that the ring of integers of a number field $K$, defined as the integral closure of $\Z$ in $K$, is a Dedekind domain. We formalized a stronger result: given a Dedekind domain~$D$ and a field of fractions $F$, if $K$ is a finite separable extension of~$F$, then the integral closure of $D$ in $K$ is a Dedekind domain with fraction field $K$.
 Our approach was adapted from Neukirch \cite[Theorem~3.1]{Neukirch}.
 Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$, $K$ a finite, separable field extension of~$F$ and let $S$ denote the integral closure of $D$ in $K$.
 
-The first step was to show that $K$ is a field of fractions for the integral closure, namely, there is an instance \lean{is\_fraction\_ring\_of\_finite\_extension D F K : is\_fraction\_ring S K}.
+The first step was to show that $K$ is a field of fractions for the integral closure, namely, that there is an instance \lean{is\_fraction\_ring\_of\_finite\_extension D F K : is\_fraction\_ring S K}.
 The main content of \lean{is\_fraction\_ring\_\-of\-\_finite\-\_extension} consisted of showing that all elements $x : K$ can be written as $y / z$ for elements $y \in S$, $z \in D \subseteq S$;
 the standard proof of this fact (see~\cite[Theorem~15.29]{Dummit-and-Foote}) formalized readily.
 
@@ -689,7 +687,7 @@ noncomputable def trace_form : bilin_form F K :=
 { bilin := λ x y, trace F K (x * y), .. /- proofs omitted -/ }
 \end{lstlisting}
 
-In the following, let $L / K / F$ be a tower of finite extensions of fields, namely we assumed \lean{[algebra F K] [algebra K L] [algebra F L] [is\_scalar\_tower F K L]}, as described in Section~\ref{sec:scalar_tower}.
+In the following, let $L / K / F$ be a tower of finite extensions of fields, namely we assume \lean{[algebra F K] [algebra K L] [algebra F L] [is\_scalar\_tower F K L]}, as described in Section~\ref{sec:scalar_tower}.
 
 The value of the trace depends on the choice of $F$ and $K$; we formalized this as lemmas \lean{trace\_algebra\_map x $:$ trace F K (algebra\_map F K x) = finrank F K * x} as well as \lean{trace\_trace x $:$ trace F K (trace (K L x)) = trace F L x}.
 These results followed by direct computation.
@@ -697,8 +695,8 @@ These results followed by direct computation.
 To compute $\Tr_{K/F}(x)$, it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $F$, which is the monogenic extension $F(x)$ discussed in Section \ref{sec:monogenic-field-extension}.
 There is a nice formula for the trace in $F(x)$, although the terms in this formula are elements in a larger field $L$
 (such as the \emph{splitting field} of \lean{minpoly F x}, the minimal polynomial of $x$ over $F$).
-In formalizing this formula, we first mapped the trace to $L$ using the canonical embedding $\lean{algebra\_map F L}$,
-which gave the following lemma statement:
+In formalizing this formula, we first mapped the trace to $L$ using the embedding $\lean{algebra\_map F L}$,
+which gave the following statement:
 \begin{lstlisting}
 lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis F K)
   (h : polynomial.splits (algebra_map F L) (minpoly F pb.gen)) :
@@ -709,7 +707,7 @@ We formulated the lemma in terms of the power basis, since we needed to use it f
 and for an arbitrary finite separable extension $L / K$ later in the proof.
 
 The elements of \lean{roots (map (algebra\_map F L) (minpoly F pb.gen))} are called \emph{conjugates} of $x$ in $L$.
-Each conjugate of $x$ is integral since it is a root of (the same) monic polynomial,
+Each conjugate of $x$ is integral since it is a root of the same monic polynomial,
 and integer multiples and sums of integral elements are integral.
 Combining \lean{trace\_gen\_eq\_sum\_roots} and \lean{trace\_algebra\_map} showed that the trace of $x$ is an integer multiple (namely \lean{finrank F(x) L}) of a sum of conjugate roots, hence we concluded that the trace (and trace form) of an integral element is also integral.
 
@@ -722,7 +720,7 @@ However, the two expressions did not precisely match: the left hand side is a su
 while the conclusion of \lean{trace\_gen\_eq\_sum\_roots} resulted in a sum over conjugates of $x^{i + j}$.
 
 Instead, the paper proof switched here to an equivalent definition of conjugate:
-the conjugates of $x$ in $L$ are the images (counted with multiplicity) of $x$ under each embedding $\sigma \colon F(x) \to L$ that fixes $F$. This equivalence between the two notions of conjugate was contributed to \mathlib by the Berkeley group in the week before we realized we needed it. Mapping \lean{trace\_gen\_eq\_sum\_roots} through the equivalence gave
+the conjugates of $x$ in $L$ are the images (counted with multiplicity) of~$x$ under each embedding $\sigma \colon F(x) \to L$ that fixes $F$. This equivalence between the two notions of conjugate was contributed to \mathlib by the Berkeley group in the week before we realized we needed it. Mapping \lean{trace\_gen\_eq\_sum\_roots} through the equivalence gave
 $\Tr_{K / F}(x) = \sum_{\sigma} \sigma x$.
 Since each $\sigma$ is a ring homomorphism, $\sigma\ x^{i + j} = (\sigma\ x)^{i + j}$,
 so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x$, which concluded the proof.
@@ -756,7 +754,7 @@ D=\C[X,Y]/Y^2-X^3-X-1
 \]
 has class group isomorphic to $\C/\Z^2$. However, as discussed in Section~\ref{sec math background}, the rings of integers of global fields have finite class groups.
 
-We let $K$ be a number field and $K'$ be a function field, with ring of integers $\OK$ and $\OK[K']$ (we fix a choice of a model $\Fq[q][t]$), respectively. 
+We let $K$ be a number field and let $K'$ be a function field, with ring of integers $\OK$ and $\OK[K']$ (we fix a choice of a model $\Fq[q][t]$), respectively. 
 Most proofs of the finiteness of $\Cl_{\OK}$ available in a modern textbook (see~\cite[Theorems 4.4,~5.3,~6.3]{Neukirch}) depend on Minkowski's lattice point theorem, a result from the geometry of numbers (which has been formalized in Isabelle/HOL~\cite{Minkowskis_Theorem-AFP}).
 Extending this proof to show the finiteness of $\Cl_{\OK[K']}$ is quite involved and does not result in a uniform proof for $\Cl_{\OK}$ and $\Cl_{\OK[K']}$.
 Our formalization instead adapted and generalized a classical approach to the finiteness of $\Cl_{\OK}$, where the use of Minkowski's theorem is replaced by the pigeonhole principle. 
@@ -765,7 +763,7 @@ The classical approach seems to go back to Kronecker
 and can be found, for instance, in~\cite{Ireland-Rosen}.
 We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}.
 
-Let $D$ be a Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction field $F$ of $D$, let $K$ be a finite separable field extension of~$F$.
+Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction field $F$ of $D$, let $K$ be a finite separable field extension of~$F$.
 We formalized, in the theorem \lean{class\_group.fintype\_of\_\-admissible\_\-of\_finite}, that the integral closure $S$ of $D$ in $K$ has a finite class group whenever $D$ has an ``admissible'' absolute value \lean{abs}.
 This notion originated in our project from the adaptation and generalization of the classical finiteness proof in interaction with the formalization efforts.
 Very informally, the admissibility conditions require that the remainder operator \lean{\%} produces values that are not too far apart.
@@ -781,7 +779,7 @@ structure is_admissible (abv : absolute_value D ℤ) extends is_euclidean abv :=
 \end{lstlisting}
 The \lean{is\_euclidean abv} predicate asserts that the absolute value \lean{abv $:$ D → ℤ} respects the remainder operator of the Euclidean domain $D$, in particular \lean{abv (a \% b) < abv b}.
 
-The above condition formalizes and generalizes an intermediate result in paper finiteness proofs;
+The above condition formalizes and generalizes an intermediate result in paper proofs of the finiteness of the class group;
 the different proofs for number fields and function fields (still assuming $K/F$ separable) become the same after this point.
 We used division with remainder to replace the \emph{fractional part} operator on $F$ in the classical proof, which was essential to incorporate function fields, and at the same time allowed our proof to stay entirely within $D$ to avoid coercions.
 
@@ -799,10 +797,10 @@ we show that each class in $\Cl_{K}$ contains an ideal $J$ with $M \in J$,
 where $M$ is the product of all elements of \lean{finset\_approx}, hence $M$ is nonzero.
 Since the ideals of the Dedekind domain $S$ have unique factorization,
 the nonzero ideal $\langle M \rangle$ spanned by $M$ has only finitely many divisors.
-To contain is to divide in Dedekind domains, so there are only finitely many $J$ with $M \in J$.
-Thus, we concluded that $\Cl_{K}$ is finite under the condition of an admissible absolute value.
+To contain is to divide in Dedekind domains, so there are only finitely many ideals $J$ with $M \in J$.
+Thus, we concluded that $\Cl_{K}$ is finite under the condition of the existence of an admissible absolute value.
 
-It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfills the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; we note that this was somewhat more involved to formalize.
+It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfills the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is an admissible absolute value; we note that this was somewhat more involved to formalize.
 We concluded that when $K$ is a global field, restricting to \emph{separable} extensions of $\Fq[q](t)$ in the function field case (but see the remark below), the class group is finite:
 \begin{lstlisting}
 noncomputable instance : fintype
