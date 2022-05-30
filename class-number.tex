@@ -776,13 +776,22 @@ Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dede
 We formalized, in the theorem \lean{class\_group.fintype\_of\_\-admissible\_\-of\_finite}, that the integral closure $S$ of $D$ in $K$ has a finite class group whenever $D$ has an ``admissible'' absolute value \lean{abs}.
 This notion originated in our project from the adaptation and generalization of the classical finiteness proof in interaction with the formalization efforts.
 Very informally, the admissibility conditions require that the remainder operator \lean{\%} produces values that are not too far apart.
-Formally, we defined the predicate classifying admissible absolute values \lean{abv} on $D$ as follows:
+More precisely, and in more ``ordinary'' mathematical notation, writing for instance $\operatorname{mod}$ instead of $\%$ and $x \mapsto \lvert x \rvert $ for the absolute value function $D \to \Z$, the latter is called admissible if both:
+\begin{itemize}
+\item we have a function $\operatorname{card}: \R_{>0} \to \N$;
+\item for all $n \in \N,\ \epsilon \in \R_{>0},\ b \in D-\{0\},\ \text{and}\ A \in D^n$,
+there exists a function $t : \N_{< n} \to \N_{< card(\epsilon)}$,
+such that for all indices $i_0, i_1 \in \N_{<n}$ with $t(i_0)=t(i_1)$ we have that
+\[ \lvert A_{i_1} \operatorname{mod} b - A_{i_0} \operatorname{mod} b \rvert < \epsilon \lvert b \rvert.\]
+\end{itemize}
+Formally, we translated this, making minor modifications like turning $\operatorname{card}$ into a total function on $\R$, to defining the predicate classifying admissible absolute values \lean{abv} on $D$ as follows:
+%Formally, we defined the predicate classifying admissible absolute values \lean{abv} on $D$ as follows:
 \pagebreak[3] % Hint that we want the code block on one page
 \begin{lstlisting}
 structure is_admissible (abv : absolute_value D ℤ) extends is_euclidean abv :=
 (card : ℝ → ℕ) (exists_partition' :
-  ∀ (n : ℕ) {ε : ℝ} (hε : 0 < ε) {b : R} (hb : b ≠ 0)
-  (A : fin n → R), ∃ (t : fin n → fin (card ε)),
+  ∀ (n : ℕ) {ε : ℝ} (hε : 0 < ε) {b : D} (hb : b ≠ 0)
+  (A : fin n → D), ∃ (t : fin n → fin (card ε)),
   ∀ i₀ i₁, t i₀ = t i₁ →
   (abv (A i₁ % b - A i₀ % b) : ℝ) < abv b • ε)
 \end{lstlisting}
