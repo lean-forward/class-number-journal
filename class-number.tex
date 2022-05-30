@@ -103,7 +103,7 @@ In fact, most of our results for number fields are also obtained in the more gen
 Our work is developed as part of the mathematical library \mathlib~\cite{mathlib} for the Lean 3 theorem prover~\cite{lean-prover}.
 The formal system of Lean is a dependent type theory based on the calculus of inductive constructions,
 with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop $:$ Type $:$ Type 1 $:$ \mbox{Type 2} $:$ \dots}\,; ``an arbitrary \lean{Type u}'' is abbreviated as \lean{Type*}. 
-In other words, each element has a unique type. The natural number 0 has type \lean{ℕ}, and the rational 0 has type \lean{ℚ}. One can then idenntify \lean{0 : ℕ} with \lean{0 : ℚ} using a map \lean{ℕ → ℚ} called a coercion (generally denoted by an arrow); 
+In other words, each element has a unique type. The natural number 0 has type \lean{ℕ}, and the rational 0 has type \lean{ℚ}. One can then identify \lean{0 : ℕ} with \lean{0 : ℚ} using a map \lean{ℕ → ℚ} called a coercion (generally denoted by an arrow); 
 that is, \lean{(0 : ℚ) = ↑(0 : ℕ)}. Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of typeclasses to define the hierarchy of algebraic structures.
 
 Lean uses typeclass inference to "remember" and automatically assign properties to certain objects. If we define a structure with the predicate \lean{class}, then one can prove special lemmas tagged with \lean{instance} that will automatically 
