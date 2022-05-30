@@ -83,7 +83,7 @@ This paper describes the formalization process, noting the idioms we found usefu
 
 In its basic form, number theory studies properties of the integers $\Z$
 and its fraction field, the rational numbers $\QQ$.
-Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\QQ$,
+For the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\QQ$,
 it is worthwhile to study finite extensions of $\QQ$, called \emph{number fields}, as well as their \emph{rings of integers} (Section~\ref{sec math background}),
 whose relations mirror the way $\QQ$ contains $\Z$ as a subring.
 In this paper, we describe our project aiming at formalizing these notions and some of their important properties. Our goal is not to get to the definitions and properties as quickly as possible; rather, we lay the foundations for future work, as part of a natural and more general theory.
@@ -92,7 +92,7 @@ In particular, our project resulted in formalized definitions and elementary pro
 number fields and their rings of integers (Section~\ref{sec:ring-of-integers}),
 Dedekind domains (Section~\ref{sec:Dedekind-domain}),
 and the ideal class group and class number (Section~\ref{sec:class-number}).
-Apart form the very basics concerning number fields, these concepts were not formalized before as far as we are aware of.
+Apart form the very basics concerning number fields, these concepts were not formalized before as far as we know.
 We note that our formal definition of the class number is an essential requirement for the use of theorem provers in modern number theory research.
 The main proofs that we formalized show
 that two definitions of Dedekind domains are equivalent (Section \ref{sec:equivalence}),
@@ -102,8 +102,17 @@ In fact, most of our results for number fields are also obtained in the more gen
 
 Our work is developed as part of the mathematical library \mathlib~\cite{mathlib} for the Lean 3 theorem prover~\cite{lean-prover}.
 The formal system of Lean is a dependent type theory based on the calculus of inductive constructions,
-with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop $:$ Type $:$ Type 1 $:$ \mbox{Type 2} $:$ \dots}\,; ``an arbitrary \lean{Type u}'' is abbreviated as \lean{Type*}.
-Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of typeclasses to define the hierarchy of algebraic structures.
+with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop $:$ Type $:$ Type 1 $:$ \mbox{Type 2} $:$ \dots}\,; ``an arbitrary \lean{Type u}'' is abbreviated as \lean{Type*}. 
+In other words, each element has a unique type. The natural number 0 has type \lean{ℕ}, and the rational 0 has type \lean{ℚ}. One can then idenntify \lean{0 : ℕ} with \lean{0 : ℚ} using a map \lean{ℕ → ℚ} called a coercion (generally denoted by an arrow); 
+that is, \lean{(0 : ℚ) = ↑(0 : ℕ)}. Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of typeclasses to define the hierarchy of algebraic structures.
+
+Lean uses typeclass inference to "remember" and automatically assign properties to certain objects. If we define a structure with the predicate \lean{class}, then one can prove special lemmas tagged with \lean{instance} that will automatically 
+be inferred by Lean. As an example, consider a ring $R$ with a subring $s$. The instance \lean{subring.to\_ring} says that $s$ is also a ring. Consequently, one can now use lemmas about rings for $s$ without having to invoke \lean{subring.to\_ring}. We 
+put the implicit arguments to be remembered by the typeclass system in square brackets. Other implicit arguments remain in curly brackets, while explicit arguments go in round brackets.
+
+Other useful features of Lean include a variety of tactics such as \lean{simp} (simplifies the main goal target using lemmas tagged with the attribute \lean{[simp]}), \lean{library\_search}(tries to close the current goal by applying a lemma from the library), 
+\lean{ring}(tactic for solving equations in the language of commutative (semi)rings) etc. Lean uses these to simplify the statement or to close the goal. These are very efficient when working with proofs that are calculation heavy, 
+or that follow from a small number of easy (or mathematically trivial) steps.
 
 Organizationally, \mathlib is characterized by a distributed and decentralized community of contributors, a willingness to refactor its basic definitions, and a preference for small yet complete contributions over larger projects added all at once.
 In this project, as part of the development of \mathlib, we followed this philosophy by contributing pieces of our work as they were finished.
