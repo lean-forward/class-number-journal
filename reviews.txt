@@ -36,5 +36,6 @@ Future directions: there are ongoing projects based on our formalization: adele/
 
 
 Other changes:
+-> Explained details of the admissibility proof, including informal descriptions alongside formal Lean code.
 -> typo and grammar fixes throughout
--> TODO Anne: update code samples to the latest mathlib version (let's say 2022-05-01)
+-> updated code samples to the latest mathlib version (let's say 2022-05-01)
