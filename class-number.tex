@@ -786,10 +786,10 @@ More precisely, and in more ``ordinary'' mathematical notation, writing for inst
 \begin{itemize}
 \item we have a function $\operatorname{card}: \R_{>0} \to \N$;
 \item for all $\epsilon \in \R_{>0},\ b \in D-\{0\}$, and finite subsets $A \subset D$,
-we can partition the set of remainders $A' = \{x \operatorname{mod} b \mid x \in A\}$ into $card(\epsilon)$ parts, such that for all remainders $x, y$ in the same part we have that
+we can partition the set of remainders $A' = \{x \operatorname{mod} b \mid x \in A\}$ into at most $card(\epsilon)$ parts, such that for all remainders $x, y$ in the same part we have that
 \[ \lvert x - y \rvert < \epsilon \lvert b \rvert.\]
 \end{itemize}
-Formally, we translated this, making minor modifications like turning $\operatorname{card}$ into a total function on $\R$ and turning $A$ into an $n$-tuple,
+Formally, we translated this, making minor modifications like turning $\operatorname{card}$ into a total function on $\R$ and turning $A$ into an $n$-tuple (noting that in this setting there is no need to forbid repetition of elements within the $n$-tuple),
 to defining the predicate classifying admissible absolute values \lean{abv} on $D$ as follows:
 %Formally, we defined the predicate classifying admissible absolute values \lean{abv} on $D$ as follows:
 \pagebreak[3] % Hint that we want the code block on one page
@@ -816,7 +816,7 @@ theorem exists_mem_finset_approx' (a b : S) (hb : b ≠ 0) :
   abv (algebra.norm D (r • a - q * b)) < abv (algebra.norm D b)
 \end{lstlisting}
 Translated back into more ``ordinary'' mathematical notation, this theorem tells us that, for all $a, b \in S$ with $b$ nonzero, there exist $q \in S$ and $r \in \operatorname{finset\_approx}$, such that
-\[\lvert \operatorname{Norm}_{S/D}(ra-qb)\rvert < \lvert \operatorname{Norm}_{S/D}(b) \rvert;\]
+\[\lvert \operatorname{Norm}_{S/D}(ra-qb)\rvert < \lvert \operatorname{Norm}_{S/D}(b) \rvert.\]
 
 After this, the classical approach mentioned above formalized smoothly:
 we show that each class in $\Cl_{K}$ contains an ideal $J$ with $M \in J$,
