@@ -786,8 +786,12 @@ More precisely, and in more ``ordinary'' mathematical notation, writing for inst
 \begin{itemize}
 \item we have a function $\operatorname{card}: \R_{>0} \to \N$;
 \item for all $\epsilon \in \R_{>0},\ b \in D-\{0\}$, and finite subsets $A \subset D$,
-we can partition the set of remainders $A' = \{x \operatorname{mod} b \mid x \in A\}$ into at most $card(\epsilon)$ parts, such that for all remainders $x, y$ in the same part we have that
-\[ \lvert x - y \rvert < \epsilon \lvert b \rvert.\]
+we can partition $A$
+%the set of remainders $A' = \{x \operatorname{mod} b \mid x \in A\}$
+into at most $card(\epsilon)$ parts, such that all
+%remainders
+$x, y \in A$ in the same part satisfy
+\[ \lvert x \operatorname{mod} b - y \operatorname{mod} b \rvert < \epsilon \lvert b \rvert.\]
 \end{itemize}
 Formally, we translated this, making minor modifications like turning $\operatorname{card}$ into a total function on $\R$ and turning $A$ into an $n$-tuple (noting that in this setting there is no need to forbid repetition of elements within the $n$-tuple),
 to defining the predicate classifying admissible absolute values \lean{abv} on $D$ as follows:
