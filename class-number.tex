@@ -809,8 +809,8 @@ The \lean{is\_euclidean abv} predicate asserts that the absolute value \lean{abv
 
 The above condition formalizes and generalizes an intermediate result in paper proofs of the finiteness of the class group;
 the different proofs for number fields and function fields (still assuming $K/F$ separable) become the same after this point.
-The direct consequence of admissiblity of $x \mapsto \lvert x \rvert $, applied in practice,
-is that for all $\epsilon \in \R_{>0},\ b \in D-\{0\},\ n \in \N$, and finite subsets $A \in D^n$ of cardinality $\operatorname{card}(\epsilon)^n+1$, there exist distinct $x,y \in D^n$ such that for all $i=1, \ldots, n$ we have $\lvert x_i \operatorname{mod} b - y_i \operatorname{mod}  b \rvert <\epsilon  \lvert b \rvert$.
+The direct consequence (by the pigeonhole principle) of admissibility of $x \mapsto \lvert x \rvert $, applied in practice,
+is that for all $\epsilon \in \R_{>0},\ b \in D-\{0\},\ n \in \N$, and (finite) subsets $A \in D^n$ containing more than $\operatorname{card}(\epsilon)^n$ elements, there exist distinct $x,y \in D^n$ such that for all $i=1, \ldots, n$ we have $\lvert x_i \operatorname{mod} b - y_i \operatorname{mod}  b \rvert <\epsilon  \lvert b \rvert$.
 We used division with remainder to replace the \emph{fractional part} operator on $F$ in the classical proof, which was essential to incorporate function fields, and at the same time allowed our proof to stay entirely within $D$ to avoid coercions.
 
 In a similar way to the algebra trace of Section \ref{sec:trace-form}, we defined the norm of an element \lean{x $:$ S} as the determinant of the linear map \lean{lmul x}.
