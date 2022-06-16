@@ -359,7 +359,7 @@ Only when defining a new algebra structure were we required to supply the \lean{
 
 \subsection{Rings of integers} \label{sec:ring-of-integers}
 
-When $K$ is a number field (defined as a field satifying \lean{is\_number\_field}), the ring $\OK$ of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
+When $K$ is a number field (defined as a field satisfying \lean{is\_number\_field}), the ring $\OK$ of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
 This is the subring containing those $x : K$ that are a root of a monic polynomial with coefficients in $\Z$:
 \begin{lstlisting}
 def number_field.ring_of_integers (K : Type*) [field K]
@@ -588,7 +588,7 @@ satisfying $ \sum_i a_i b_i = 1 $. Observe now that, in \mathlib, the definition
 submodule.has_mul = {mul := $\lambda$ (A B : submodule D K),
  $\sqcup$ (a : A), submodule.map ((algebra.lmul D K) a.val) B}
 \end{lstlisting}
-Unravelling this definition, we see that it defines $A\ast B$ as the smallest (\emph{i.~e.}, the infimum with respect to set-theoretic inclusion as order relation) submodule containing all submodules $a\cdot B$ for $a\in A$, where $a \cdot B$ is the range of the function \lean{$\lambda$ b : B, $a\ast b$}. However, it is quite challenging to formalize that an element of $A\ast B$ must be a \emph{finite} sum $\sum_{i} a_i*b_i$, for $a_i \in A$ and $b_i \in B$. Instead, we show that, for every element $x\in A\ast B$, there are finite sets $T\subseteq A$, $T'\subseteq B$ such that \lean{x $\in$ span (T * T')}, formalized as
+Unraveling this definition, we see that it defines $A\ast B$ as the smallest (\emph{i.~e.}, the infimum with respect to set-theoretic inclusion as order relation) submodule containing all submodules $a\cdot B$ for $a\in A$, where $a \cdot B$ is the range of the function \lean{$\lambda$ b : B, $a\ast b$}. However, it is quite challenging to formalize that an element of $A\ast B$ must be a \emph{finite} sum $\sum_{i} a_i*b_i$, for $a_i \in A$ and $b_i \in B$. Instead, we show that, for every element $x\in A\ast B$, there are finite sets $T\subseteq A$, $T'\subseteq B$ such that \lean{x $\in$ span (T * T')}, formalized as
 \lean{submodule.mem\_span\_mul\_finite\-\_of\-\_mem\-\_mul}.
 Now considering a nonzero integral ideal $I$ of the ring $D$, by definition of invertibility we can write \lean{1 $\in$ (1 $:$ fractional\_ideal D K) = I * I\inv}. Hence, we obtain 
 finite sets $T \subset I$ and $T' \subset I\inv$ such that $1$ is contained in the $D$-span of $T*T'$. We used the \lean{norm\_cast} tactic~\cite{norm_cast} to resolve most coercions, however, this tactic did not solve coercions coming from the inclusion \lean{algebra\_map D K}. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(↑I)\inv}, which reads
@@ -647,7 +647,7 @@ In the same way that unique factorization domains are generalized in \mathlib to
 there is no explicit definition of PIDs in \mathlib, rather it is split up into multiple hypotheses.
 One uses \lean{[comm\_ring R] [is\_domain R] [is\_principal\_ideal\_ring R]} to denote a PID $R$,
 where \lean{is\_domain} is a typeclass asserting that the ring is nontrivial and there are no zero divisors,
-where \lean{is\_principal\_\-ideal\_\-ring} is a typeclass defined for all commutative rings:
+and \lean{is\_principal\_\-ideal\_\-ring} is a typeclass defined for all commutative rings:
 \begin{lstlisting}
 class is_principal_ideal_ring (R : Type*) [comm_ring R] :=
 (principal : ∀ (I : ideal R), is_principal I)
