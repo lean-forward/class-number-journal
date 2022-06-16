@@ -230,7 +230,7 @@ When invoking this theorem, one must provide the explicit arguments \lean{a}, wh
 As a result, Lean can determine the value of \lean{M} through \emph{unification} and can then use the typeclass system to infer a value for \lean{[monoid M]}.
 
 The flagship general-purpose mathematical library for Lean is \mathlib; other libraries are available for more specialized purposes.
-Organizationally, \mathlib is characterized by a distributed and decentralized community of contributors, a willingness to refactor its basic definitions, and a preference for small yet complete contributions over larger projects added all at once.
+Organizationally, \mathlib is characterized by a distributed and decentralized community of contributors, a willingness to refactor its basic definitions, and a preference for small, yet complete, contributions over larger projects added all at once.
 In this project, as part of the development of \mathlib, we followed this philosophy by contributing pieces of our work as they were finished.
 In turn, we used other \mathlib contributors' results as they were made available.
 
@@ -816,7 +816,7 @@ Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dede
 We formalized, in the theorem \lean{class\_group.fintype\_of\_\-admissible\_\-of\_finite}, that the integral closure $S$ of $D$ in $K$ has a finite class group whenever $D$ has an ``admissible'' absolute value \lean{abs}.
 This notion originated in our project from the adaptation and generalization of the classical finiteness proof in interaction with the formalization efforts.
 Very informally, the admissibility conditions require that the remainder operator \lean{\%} produces values that are not too far apart.
-More precisely, and in more ``ordinary'' mathematical notation, writing for instance $\Mod$ instead of $\%$ and $x \mapsto \lvert x \rvert $ for the absolute value function $D \to \Z$, the latter is called admissible if both:
+More precisely, and in more ``ordinary'' mathematical notation, writing $\Mod$ instead of $\%$ and $x \mapsto \lvert x \rvert $ for the absolute value function $D \to \Z$, the latter is called admissible if both:
 \begin{itemize}
 \item we have a function $\card: \R_{>0} \to \N$;
 \item for all $\epsilon \in \R_{>0},\ b \in D-\{0\}$, and finite subsets $A \subset D$,
@@ -842,7 +842,7 @@ The \lean{is\_euclidean abv} predicate asserts that the absolute value \lean{abv
 The above condition formalizes and generalizes an intermediate result in paper proofs of the finiteness of the class group;
 the different proofs for number fields and function fields (still assuming $K/F$ separable) become the same after this point.
 The direct consequence (by the pigeonhole principle) of admissibility of $x \mapsto \lvert x \rvert $, applied in practice,
-is that for all $\epsilon \in \R_{>0},\ b \in D-\{0\},\ n \in \N$, and (finite) subsets $A \in D^n$ containing more than $\card(\epsilon)^n$ elements, there exist distinct $x,y \in D^n$ such that for all $i=1, \ldots, n$ we have $\lvert x_i \Mod b - y_i \Mod  b \rvert <\epsilon  \lvert b \rvert$.
+is that for all $\epsilon \in \R_{>0},\ b \in D-\{0\},\ n \in \N$, and all subsets $A \in D^n$ containing more than $\card(\epsilon)^n$ elements, there exist distinct $x,y \in D^n$ such that for all $i=1, \ldots, n$ we have $\lvert x_i \Mod b - y_i \Mod  b \rvert <\epsilon  \lvert b \rvert$.
 We used division with remainder to replace the \emph{fractional part} operator on $F$ in the classical proof, which was essential to incorporate function fields, and at the same time allowed our proof to stay entirely within $D$ to avoid coercions.
 
 In a similar way to the algebra trace of Section \ref{sec:trace-form}, we defined the norm of an element \lean{x $:$ S} as the determinant of the linear map \lean{lmul x}.
@@ -862,7 +862,7 @@ where $M$ is the product of all elements of \lean{finset\_approx}, hence $M$ is 
 Since the ideals of the Dedekind domain $S$ have unique factorization,
 the nonzero ideal $\langle M \rangle$ spanned by $M$ has only finitely many divisors.
 To contain is to divide in Dedekind domains, so there are only finitely many ideals $J$ with $M \in J$.
-Thus, we concluded that $\Cl_{K}$ is finite under the condition of the existence of an admissible absolute value.
+Thus, we concluded that $\Cl_{K}$ is finite under the condition of the existence of an admissible absolute value on $D$.
 
 It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, the usual Archimedean absolute value fulfills the requirements
 by setting $\card \epsilon$ to be $\frac{1}{\epsilon}$, rounded up.
@@ -895,7 +895,7 @@ Finally, we defined \lean{number\_field.class\_number} and \lean{function\_\-fie
 
 We remark that it is possible to get rid of the \lean{[is\_separable F K]} assumption above. 
 For instance, using that any function field $K$, given as finite extension of $\Fq[q](t)$, contains an $s \in K$ such that $K/\Fq[q](s)$ is a finite \emph{and separable} extension; see for example \cite[Corollary 4.4 in Chapter VIII]{Lang} (noting that $\Fq$ is perfect and $K$ has transcendence degree $1$ over $\Fq$).
-One then also needs to show that finiteness of the class group of the integral closure of $\Fq[q][s]$ in $K$ is preserved upon replacing $\Fq[q][s]$ by $\Fq[q][t]$.
+One then also needs to show that the finiteness of the class group of the integral closure of $\Fq[q][s]$ in $K$ is preserved upon replacing $\Fq[q][s]$ by $\Fq[q][t]$.
 A trivial way to get rid of the assumption in the statement above is to simply move it to our definition of function field.
 While this would be mathematically consistent by the result just cited, we did not opt to do this (for instance showing a finite extension of a function field is a function field
 would become nontrivial).
