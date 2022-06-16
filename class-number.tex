@@ -101,31 +101,14 @@ and that the class group of the ring of integers of a number field is finite (Se
 In fact, most of our results for number fields are also obtained in the more general setting of \emph{global fields}.
 
 Our work is developed as part of the mathematical library \mathlib~\cite{mathlib} for the Lean 3 theorem prover~\cite{lean-prover}.
-The formal system of Lean is a dependent type theory based on the calculus of inductive constructions,
-with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop $:$ Type $:$ Type 1 $:$ \mbox{Type 2} $:$ \dots}\,; ``an arbitrary \lean{Type u}'' is abbreviated as \lean{Type*}. 
-In other words, each element has a unique type. The natural number 0 has type \lean{ℕ}, and the rational 0 has type \lean{ℚ}. One can then identify \lean{0 : ℕ} with \lean{0 : ℚ} using a map \lean{ℕ → ℚ} called a coercion (generally denoted by an arrow); 
-that is, \lean{(0 : ℚ) = ↑(0 : ℕ)}. Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of typeclasses to define the hierarchy of algebraic structures.
-
-Lean uses typeclass inference to "remember" and automatically assign properties to certain objects. If we define a structure with the predicate \lean{class}, then one can prove special lemmas tagged with \lean{instance} that will automatically 
-be inferred by Lean. As an example, consider a ring $R$ with a subring $S$. The instance \lean{subring.to\_ring} says that $S$ is also a ring. Consequently, one can now use lemmas about rings for $S$ without having to invoke \lean{subring.to\_ring}. We 
-put the implicit arguments to be remembered by the typeclass system in square brackets. Other implicit arguments remain in curly brackets, while explicit arguments go in round brackets. As an example, consider 
-\begin{lstlisting}
-  theorem pow_succ : ∀ {M : Type u_2} [_inst_1 : monoid M] 
-    (a : M) (n : ℕ), a ^ (n + 1) = a * a ^ n
-\end{lstlisting}
-When invoking this theorem, one must provide the explicit arguments \lean{a}, which has type \lean{M}, and a natural number \lean{n}. As a result, Lean implicitly knows \lean{M} and can then use the typeclass system to infer \lean{[monoid M]}. 
-
-Other useful features of Lean include a variety of tactics such as \lean{simp} (simplifies the main goal target using lemmas tagged with the attribute \lean{[simp]}), \lean{library\_search}(tries to close the current goal by applying a lemma from the library), 
-\lean{ring}(tactic for solving equations in the language of commutative (semi)rings) etc. Lean uses these to simplify the statement or to close the goal. These are very efficient when working with proofs that are calculation heavy, 
-or that follow from a small number of easy (or mathematically trivial) steps.
-
-Organizationally, \mathlib is characterized by a distributed and decentralized community of contributors, a willingness to refactor its basic definitions, and a preference for small yet complete contributions over larger projects added all at once.
-In this project, as part of the development of \mathlib, we followed this philosophy by contributing pieces of our work as they were finished.
+The formal system of Lean is a dependent type theory augmented with quotient types and classical reasoning, both of which are commonly used in \mathlib~(Section~\ref{sec:lean-mathlib}).
+As we finished parts of our work, we contributed these to \mathlib.
 We, in turn, used results contributed by others after the start of the project.
 At several points, we had just merged a formalization into \mathlib that another contributor needed,
 immediately before they contributed a result that we needed.
-Due to the decentralized organization and fluid nature of contributions to \mathlib, its contents are built up of many different contributions from over 100 different authors.
-Attributing each formalization to a single set of main authors would not do justice to all others whose additions and tweaks are essential to its current use. Therefore, we will make clear whether a contribution is part of our project or not, but we will not stress who we consider to be the main authors.
+Due to the decentralized organization and fluid nature of contributions to \mathlib, its contents are built up of many different contributions from over 250 different authors.
+Attributing each formalization to a single set of main authors would not do justice to all others whose additions and tweaks are essential to its current use.
+Therefore, we will make clear whether a contribution is part of our project or not, but we will not stress who we consider to be the main authors.
 
 The source files of the formalization have been contributed to \mathlib.
 We have preserved the development branch that this paper is based on\footnote{\url{https://github.com/leanprover-community/mathlib/tree/dedekind-domain-dev}}.
@@ -138,7 +121,7 @@ This paper is an extended version of a paper published in the ITP 2021 conferenc
 \begin{itemize}
  \item Code samples throughout have been updated to reflect parts of our formalization contributed to \mathlib after the previous publication and to incorporate changes in \mathlib after contribution.
  \item Instead of only considering class groups of Dedekind domains, we briefly describe class groups for general domains; see the end of Section~\ref{sec math background} and Section~\ref{subsec:class_group}.
- \item The new Section~\ref{sec:typeclasses} gives a more detailed explanation of the use of typeclasses in \mathlib.
+ \item The new Section~\ref{sec:lean-mathlib} gives a more detailed explanation of Lean as used in \mathlib, in particular the use of typeclasses and bundling.
  \item The further evolution of fraction rings in \mathlib is discussed at the end of Section~\ref{subsection : fields of fractions}.
  \item We elaborate on unique factorization of ideals in Dedekind domains in Section~\ref{subsec:unique_ideal_factorization}.
  \item We give more details on the finiteness of the class number in Section~\ref{subsec:finiteness}.
@@ -212,7 +195,86 @@ A field which is either a number field or a function field is called a \emph{glo
 
 The concept of class group actually not only makes sense for Dedekind domains but more generally for (at least) any integral domain $R$ as follows. While the nonzero fractional ideals of $R$ in general need not be a group, they do form a commutative monoid. Hence, the invertible fractional ideals of $R$ form a group, and the class group of $R$ (denoted $\Cl_{R}$) is now defined as the quotient of this group by the image of the natural embedding of $(\Frac R)^\times$.
 
-In the next sections we will describe the formalization of the above concepts.
+In upcoming sections we will describe the formalization of the above concepts as part of \mathlib.
+
+\section{Lean and \mathlib} \label{sec:lean-mathlib}
+
+The formal system of Lean is a dependent type theory based on the calculus of inductive constructions.
+This means that each element \lean{e} has a unique type \lean{t}, written \lean{e : t}.
+The natural number 0 has type \lean{ℕ}, and the rational 0 has type \lean{ℚ}.
+One can then identify \lean{0 : ℕ} with \lean{0 : ℚ} using a map \lean{ℕ → ℚ} called a coercion (denoted by the arrow \lean{↑} or left implicit);
+that is, \lean{(0 : ℚ) = ↑(0 : ℕ)}.
+Types have types too, for example \lean{ℕ : Type}.
+The full hierarchy consists of an impredicative universe \lean{Prop} sitting at the bottom of a noncumulative chain \lean{Prop $:$ Type $:$ Type 1 $:$ \mbox{Type 2} $:$ \dots}\,;
+``an arbitrary \lean{Type u}'' is abbreviated as \lean{Type*}.
+Propositions are denoted by elements of \lean{Prop}, while a (verified) proof of the proposition \lean{P : Prop} is denoted by an element \lean{p : P}.
+In addition to these features commonly found in a dependent type theory, Lean provides proof irrelevance, quotient types and classical reasoning.
+Proof irrelevance means that for any proposition \lean{P : Prop}, any two proofs \lean{p₁ p₂ : P} are judged equal by the system.
+These features are all commonly used in \mathlib.
+
+Lean uses typeclass inference to automatically infer properties of certain objects.
+If we define a structure with the keyword \lean{class},
+then one can supply values for the class tagged with \lean{instance} that will automatically be inferred by Lean.
+As an example, consider a ring $R$ with a subring $S$.
+The instance \lean{subring.to\_ring} says that $S$ is also a ring.
+Consequently, one can now use lemmas about rings for $S$ without having to invoke \lean{subring.to\_ring}.
+We put the implicit arguments to be inferred by the typeclass system in square brackets.
+Other implicit arguments remain in curly brackets, while explicit arguments go in round brackets. As an example, consider:
+\begin{lstlisting}
+theorem pow_succ {M : Type u} [monoid M] (a : M) (n : ℕ) :
+  a ^ (n + 1) = a * a ^ n
+\end{lstlisting}
+When invoking this theorem, one must provide the explicit arguments \lean{a}, which has type \lean{M}, and a natural number \lean{n}.
+As a result, Lean can determine the value of \lean{M} through \emph{unification} and can then use the typeclass system to infer a value for \lean{[monoid M]}.
+
+The flagship general-purpose mathematical library for Lean is \mathlib; other libraries are available for more specialized purposes.
+Organizationally, \mathlib is characterized by a distributed and decentralized community of contributors, a willingness to refactor its basic definitions, and a preference for small yet complete contributions over larger projects added all at once.
+In this project, as part of the development of \mathlib, we followed this philosophy by contributing pieces of our work as they were finished.
+In turn, we used other \mathlib contributors' results as they were made available.
+
+For working with Lean, \mathlib provides a variety of tactics such as
+\lean{simp} (simplifies the main goal target using lemmas tagged with the attribute \lean{[simp]}),
+\lean{library\_search} (tries to close the current goal by applying a lemma from the library) and
+\lean{ring} (proves equality of polynomials over commutative (semi)rings).
+Lean uses these to simplify the statement or to close the goal.
+These are very efficient when working with proofs that are calculation heavy,
+or that follow from a small number of easy (or mathematically trivial) steps.
+
+\subsection{Use of typeclasses and bundling} \label{sec:typeclasses}
+Typeclasses were originally introduced in Haskell as a mechanism for operator overloading~\cite{typeclasses-haskell},
+and are used throughout Lean's core library and \mathlib to endow types with mathematical structures consisting of both operators and their properties~\cite{mathlib}.
+When the elaborator sees a function with an instance parameter being applied, such as the \lean{[monoid M]} parameter of \lean{pow\_succ a n}, a Prolog-like search is started to automatically synthesize a suitable value for this parameter.
+Each of the local parameters and the declarations marked as \lean{instance} is tested in turn to see if their type matches the expected type of the instance synthesis.
+All instance parameters of candidate instances are themselves recursively inferred, until either a suitable term is constructed or no more candidates remain; an error is raised in the latter case~\cite[Section 10]{theorem-proving-in-lean}.
+Compared to Haskell's, Lean's typeclasses have few structural restrictions: notably, classes and instances can depend on any term, instances may overlap, classes can apply to multiple types and can have functional dependencies.
+
+In our development, we followed the common practice in \mathlib of providing structure on a type,
+whenever such a structure exists canonically, through typeclasses.
+The informal notion of providing a certain mathematical structure on a type should not be confused with the \lean{structure} keyword formally declaring a \emph{structure type} whose elements are tuples.
+To confuse matters further, Lean implements typeclasses as structure types, where the instances are tuples of the typeclass's fields.
+Typeclasses provided us a way to treat uniformly situations that are informally considered the same, as we discuss in Sections \ref{sec:field_extension} and \ref{sec:scalar_tower}.
+Our reliance on typeclasses did not cause any noticeable slowness in proof checking:
+there was no instance that should be found but could not due to timeouts.
+
+A central consideration in formalizing definitions for \mathlib is choosing the appropriate amount of \emph{bundling}:
+determining whether information about an object should be carried by the object itself (bundled), or passed as a separate value (unbundled)~\cite{instance-parameters-mathlib}.
+For example, the \lean{is\_number\_field} typeclass of Section~\ref{sec:number fields} is considered to have unbundled inheritance from the \lean{field} class because instances of these classes are passed in separate parameters,
+while it has bundled inheritance from \lean{char\_zero} and \lean{finite\_dimensional} since both are included as fields of the structure.
+Similarly, the formalization of admissible absolute values discussed in Section~\ref{subsec:finiteness} features a bundled structure \lean{absolute\_value} which includes a map along with proofs stating that this map is an absolute value,
+and an unbundled structure \lean{is\_admissible} which takes the absolute value map as a separate parameter.
+
+Unbundling has an advantage in expressivity: because each property of an object is passed in a separate parameter,
+modifying one hypothesis requires modifying one parameter.
+In contrast, bundling hypotheses means that each subset of hypotheses requires its own structure declaration;
+any results proved for a given structure have to be made available for other structures manually or through automation such as typeclass inference.
+On the other hand, bundled structures result in simpler parameter lists, since fully unbundling the \lstinline{field} class would result in each of its 38 structure fields becoming a separate parameter.
+
+Technical considerations play another important role in choosing the level of bundling:
+bundled properties are easily found by automation compared to unbundled properties which require a search of the local context,
+bundled inheritance between classes can only be applied when the two classes have the same type parameters,
+while long unbundled inheritance chains cause exponentially large terms, resulting in slowdowns and high memory consumption.
+Although there is no general rule governing bundling, in general \mathlib prefers to bundle if possible,
+unbundling only when the additional properties are all \lean{Prop}-valued and are not involved in long inheritance chains.
 
 \section{Number fields, global fields and rings of integers} \label{sec:number fields}
 
@@ -244,41 +306,6 @@ We present a more detailed analysis of \lean{algebra} in Section \ref{sec:field_
 For now, we point out that there are many fields $K$ that are isomorphic to the field of rational functions $\Fq[q](t)$; we provided a theorem \lean{function\_field\_iff} that shows that the choice of $K$ does not matter.
 Note that there is no requirement that the field \lean{Fq} is finite, since this is not needed to state the conditions on \lean{F}.
 We instead add a \lean{[fintype Fq]} hypothesis only to those results that require finiteness.
-
-\subsection{Use of typeclasses and bundling} \label{sec:typeclasses}
-Typeclasses were originally introduced in Haskell as a mechanism for operator overloading~\cite{typeclasses-haskell},
-and are used throughout Lean's core library and \mathlib to endow types with mathematical structures consisting of both operators and their properties~\cite{mathlib}.
-When the elaborator sees a function with an instance parameter being applied, such as the \lean{[field K]} parameter of \lean{is\_number\_field K}, a Prolog-like search is started to automatically synthesize a suitable value for this parameter.
-Each of the local parameters and the declarations marked as \lean{instance} is tested in turn to see if their type matches the expected type of the instance synthesis.
-All instance parameters of candidate instances are themselves recursively inferred, until either a suitable term is constructed or no more candidates remain; an error is raised in the latter case~\cite[Section 10]{theorem-proving-in-lean}.
-Compared to Haskell's, Lean's typeclasses have few structural restrictions: notably, classes and instances can depend on any term, instances may overlap, classes can apply to multiple types and can have functional dependencies.
-
-In our development, we followed the common practice in \mathlib of providing structure on a type,
-whenever such a structure exists canonically, through typeclasses.
-The informal notion of providing a certain mathematical structure on a type should not be confused with the \lean{structure} keyword formally declaring a \emph{structure type} whose elements are tuples.
-To confuse matters further, Lean implements typeclasses as structure types, where the instances are tuples of the typeclass's fields.
-Typeclasses provided us a way to treat uniformly situations that are informally considered the same, as we discuss in Sections \ref{sec:field_extension} and \ref{sec:scalar_tower}.
-Our reliance on typeclasses did not cause any noticeable slowness in proof checking:
-there was no instance that should be found but could not due to timeouts.
-
-A central consideration in formalizing definitions for \mathlib is choosing the appropriate amount of \emph{bundling}:
-determining whether information about an object should be carried by the object itself (bundled), or passed as a separate value (unbundled)~\cite{instance-parameters-mathlib}.
-For example, the \lean{is\_number\_field} typeclass is considered to have unbundled inheritance from the \lean{field} class because instances of these classes are passed in separate parameters,
-while it has bundled inheritance from \lean{char\_zero} and \lean{finite\_dimensional} since both are included as fields of the structure.
-Similarly, the formalization of admissible absolute values discussed in Section~\ref{subsec:finiteness} features a bundled structure \lean{absolute\_value} which includes a map along with proofs stating that this map is an absolute value,
-and an unbundled structure \lean{is\_admissible} which takes the absolute value map as a separate parameter.
-
-Unbundling has an advantage in expressivity: because each property of an object is passed in a separate parameter,
-modifying one hypothesis requires modifying one parameter.
-In contrast, bundling hypotheses means that each subset of hypotheses requires its own structure declaration;
-any results proved for a given structure have to be made available for other structures manually or through automation such as typeclass inference.
-On the other hand, bundled structures result in simpler parameter lists, since fully unbundling the \lstinline{field} class would result in each of its 38 structure fields becoming a separate parameter.
-Technical considerations play another important role in choosing the level of bundling:
-bundled properties are easily found by automation compared to unbundled properties which require a search of the local context,
-bundled inheritance between classes can only be applied when the two classes have the same type parameters,
-while long unbundled inheritance chains cause exponentially large terms, resulting in slowdowns and high memory consumption.
-Although there is no general rule governing bundling, in general \mathlib prefers to bundle if possible,
-unbundling only when the additional properties are all \lean{Prop}-valued and are not involved in long inheritance chains.
 
 \subsection{Field extensions} \label{sec:field_extension}
 
