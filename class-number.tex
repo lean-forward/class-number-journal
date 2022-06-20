@@ -1,7 +1,7 @@
+\PassOptionsToPackage{hyphens}{url}
 \documentclass[sn-mathphys]{sn-jnl}% Math and Physical Sciences Reference Style
 
 \jyear{2022}
-
 \title[Dedekind domains and class groups]{A formalization of Dedekind domains and class groups of global fields}
 
 \author*[1]{\fnm{Anne} \sur{Baanen}}\email{t.baanen@vu.nl}
@@ -955,7 +955,7 @@ Now, an odd prime number $p$ is said to be \emph{regular} if it does not divide 
 \[
 \frac{X^p-1}{X-1}=X^{p-1}+X^{p-2}+\cdots +X+1.
 \]
-A classical result, due to Kummer's work in 1847, is that \refFLT{p} is true for every \emph{regular} prime number~$p$. This is the result Brasca and his team have begun formalizing in Lean 3 in the on-going work~\cite{Bra21}, and it evidently requires the finiteness of the class group in order to define the notion of a \emph{regular prime} as above\footnote{It is actually possible to simply \emph{define} a regular prime only in terms of divisibility of some Bernoulli numbers, instead of mentioning class groups. But this definition would at any rate need to be translated in terms of class numbers in order to implement Kummer's proof.}. Moreover, most arguments occurring in Kummer's proof pertain to the structure of the ring of integers $\Z[\zeta_p]=\OK[\QQ(\zeta_p)]$ as a Dedekind domain, and our work lies at the core of the formalization of these structures.
+A classical result, due to Kummer's work in 1847, is that \refFLT{p} is true for every \emph{regular} prime number~$p$. This is the result Brasca and his team have begun formalizing in Lean 3 in the on-going work~\cite{Bra22}, and it evidently requires the finiteness of the class group in order to define the notion of a \emph{regular prime} as above\footnote{It is actually possible to simply \emph{define} a regular prime only in terms of divisibility of some Bernoulli numbers, instead of mentioning class groups. But this definition would at any rate need to be translated in terms of class numbers in order to implement Kummer's proof.}. Moreover, most arguments occurring in Kummer's proof pertain to the structure of the ring of integers $\Z[\zeta_p]=\OK[\QQ(\zeta_p)]$ as a Dedekind domain, and our work lies at the core of the formalization of these structures.
 
 
 \subsection{Future directions}\label{sec:future_directions}
