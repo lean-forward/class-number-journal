@@ -1,6 +1,6 @@
 \documentclass[sn-mathphys]{sn-jnl}% Math and Physical Sciences Reference Style
 
-\jyear{2021}
+\jyear{2022}
 
 \title[Dedekind domains and class groups]{A formalization of Dedekind domains and class groups of global fields}
 
@@ -209,14 +209,14 @@ that is, \lean{(0 : ℚ) = ↑(0 : ℕ)}.
 Types have types too, for example \lean{ℕ : Type}.
 The full hierarchy consists of an impredicative universe \lean{Prop} sitting at the bottom of a noncumulative chain \lean{Prop $:$ Type $:$ Type 1 $:$ \mbox{Type 2} $:$ \dots}\,;
 ``an arbitrary \lean{Type u}'' is abbreviated as \lean{Type*}.
-Propositions are denoted by elements of \lean{Prop}, while a (verified) proof of the proposition \lean{P : Prop} is denoted by an element \lean{p : P}.
+Propositions correspond to elements of \lean{Prop}, while a (verified) proof of the proposition \lean{P : Prop} corresponds to an element \mbox{\lean{p : P}}.
 In addition to these features commonly found in a dependent type theory, Lean provides proof irrelevance, quotient types and classical reasoning.
-Proof irrelevance means that for any proposition \lean{P : Prop}, any two proofs \lean{p₁ p₂ : P} are judged equal by the system.
+Proof irrelevance means that for any proposition \lean{P : Prop}, any two proofs \mbox{\lean{p₁ p₂ : P}} are judged equal by the system.
 These features are all commonly used in \mathlib.
 
 Lean uses typeclass inference to automatically infer properties of certain objects.
 If we define a structure with the keyword \lean{class},
-then one can supply values for the class tagged with \lean{instance} that will automatically be inferred by Lean.
+then one can supply values for the class that Lean will automatically infer, by tagging these with \lean{instance}.
 As an example, consider a ring $R$ with a subring $S$.
 The instance \lean{subring.to\_ring} says that $S$ is also a ring.
 Consequently, one can now use lemmas about rings for $S$ without having to invoke \lean{subring.to\_ring}.
@@ -234,10 +234,10 @@ Organizationally, \mathlib is characterized by a distributed and decentralized c
 In this project, as part of the development of \mathlib, we followed this philosophy by contributing pieces of our work as they were finished.
 In turn, we used other \mathlib contributors' results as they were made available.
 
-For working with Lean, \mathlib provides a variety of tactics such as
+There is a variety of tactics available in \mathlib such as
 \lean{simp} (simplifies the main goal target using lemmas tagged with the attribute \lean{[simp]}),
 \lean{library\_search} (tries to close the current goal by applying a lemma from the library) and
-\lean{ring} (proves equality of polynomials over commutative (semi)rings).
+\lean{ring} (proves equality of polynomial expressions over commutative (semi)rings).
 Lean uses these to simplify the statement or to close the goal.
 These are very efficient when working with proofs that are calculation heavy,
 or that follow from a small number of easy (or mathematically trivial) steps.
