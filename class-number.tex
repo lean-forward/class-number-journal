@@ -566,7 +566,7 @@ lemma submodule.mem_div_iff_forall_mul_mem {x : A}
   {I J : submodule R A} :
   x ∈ I / J ↔ ∀ y ∈ J, x * y ∈ I
 \end{lstlisting}
-Beware that the notation $1/I$ might be misleading here: indeed, for general integral domains, the equality $I\ast 1/I=1$ might not hold. As an example, one can consider the ideal $(X,Y)$ in $\C[X,Y]$: by definition, $(X, Y)^{-1}$ consists of the elements $f=\frac{p}{q} \colon \Frac \bigl(\C[X,Y]\bigr)$ with the property that $f \ast h \in \C[X,Y]$ for all $h \in (X,Y)$. This last condition is equivalent to requiring that both $f \ast X$ and $f \ast Y$ are in $\C[X,Y]$ and thus the denominator $q$ of $f$ must be divisible both by $X$ and by $Y$, so actually $q\in\C^\times$. It follows that $(X,Y)^{-1}=\C[X,Y]$, and in particular $(X,Y)\ast (X,Y)^{-1}=(X,Y)\subsetneq 1=\C[X,Y]$.
+Beware that the notation $1/I$ might be misleading here: indeed, for general integral domains, the equality $I\ast 1/I=1$ might not hold. As an example, one can consider the ideal $(X,Y)$ in $\C[X,Y]$, which is not a Dedekind domain: by definition, $(X, Y)^{-1}$ consists of the elements $a=\frac{p}{q} \colon \Frac \bigl(\C[X,Y]\bigr)$ with the property that $a \ast b \in \C[X,Y]$ for all $b \in (X,Y)$. This last condition is equivalent to requiring that both $a \ast X$ and $a \ast Y$ are in $\C[X,Y]$ and thus the denominator $q$ of $a$ must be divisible both by $X$ and by $Y$, so actually $q\in\C^\times$. It follows that $(X,Y)^{-1}=\C[X,Y]$, and in particular $(X,Y)\ast (X,Y)^{-1}=(X,Y)\subsetneq 1=\C[X,Y]$.
 
 On the other hand, we formalized that the equality $I\ast 1/I=1$ holds for Dedekind domains (Section~\ref{sec:equivalence}) as the following lemma:
 \begin{lstlisting}
