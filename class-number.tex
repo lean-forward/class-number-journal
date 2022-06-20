@@ -871,11 +871,11 @@ Since remainders mod $b$ can be chosen to lie in the interval $[0, b[$, partitio
 For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is an admissible absolute value.
 Fix a polynomial $b \in \Fq[q][t]$ and a set $A' \subset \Fq[q][t]$ of remainders modulo $b$.
 Since the coefficients of polynomials in $\Fq[q][t]$ are elements of a finite set of cardinality $q$,
-and the degree of each $f \in A'$ is less than $\deg b$,
-for each $c$ there are only $q^c$ distinct values for the leading $c$ coefficients $\deg b - c$, \dots, $\deg b - 1$.
-If the leading $c$ coefficients of $f, g \in A'$ coincide, then $\lvert (f-g) \rvert_{\deg} < q^{\deg b - c} = q^{-c} \lvert b \rvert_{\deg}$.
-By setting $\card \epsilon = \left\lceil{-\log_{q} \epsilon}\right\rceil$ so that $q^{- \card \epsilon} < \epsilon$,
-we can partition $A'$ into $\card \epsilon$ subsets based on leading coefficients,
+and the degree of each $f \in A'$ is strictly less than $\deg b$,
+for each $c$ there are only $q^c$ distinct values for the $c$ coefficients of the monomials of degree $\deg b - c$ up to $\deg b - 1$.
+If the highest coefficients of $f, g \in A'$ coincide, then $\lvert (f-g) \rvert_{\deg} < q^{\deg b - c} = q^{-c} \lvert b \rvert_{\deg}$.
+By setting $\card \epsilon = \left\lceil{-\log_{q} \epsilon}\right\rceil$ so that $q^{- \card \epsilon} \le \epsilon$,
+we can partition $A'$ into $\card \epsilon$ subsets based on highest coefficients,
 so that elements of each partition are within distance $\epsilon \lvert b \rvert_{\deg}$ as desired.
 
 We concluded that when $K$ is a global field, restricting to \emph{separable} extensions of $\Fq[q](t)$ in the function field case (but see the remark below), the class group is finite:
