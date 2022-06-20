@@ -119,15 +119,17 @@ repository%
 \footnote{\url{https://github.com/lean-forward/class-number-journal}}
 containing the source code referred to in this paper.
 
-This paper is an extended version of a paper published in the ITP 2021 conference proceedings~\cite{ClassGroupsITP2021}. The additions to this paper, apart from several small local changes throughout the text, mainly concern the following.
+This paper is an extended version of a paper published in the ITP 2021 conference proceedings~\cite{ClassGroupsITP2021}.
+The additions to this paper, apart from several clarifications and enhancements throughout the text, mainly concern the following.
 \begin{itemize}
  \item Code samples throughout have been updated to reflect parts of our formalization contributed to \mathlib after the previous publication and to incorporate changes in \mathlib after contribution.
  \item Instead of only considering class groups of Dedekind domains, we briefly describe class groups for general domains; see the end of Section~\ref{sec math background} and Section~\ref{subsec:class_group}.
  \item The new Section~\ref{sec:lean-mathlib} gives a more detailed explanation of Lean as used in \mathlib, in particular the use of typeclasses and bundling.
+ \item We discuss \emph{definitional equality} in Lean in the context of overlapping typeclass instances in Section~\ref{sec:field_extension}.
  \item The further evolution of fraction rings in \mathlib is discussed at the end of Section~\ref{subsection : fields of fractions}.
- \item We elaborate on unique factorization of ideals in Dedekind domains in Section~\ref{subsec:unique_ideal_factorization}.
- \item We give more details on the finiteness of the class number in Section~\ref{subsec:finiteness}.
- \item We elaborate on future directions in Section~\ref{sec:future_directions}.
+ \item We elaborate on invertibility and unique factorization of ideals in Dedekind domains in Sections~\ref{subsection:frac_ideals} and \ref{subsec:unique_ideal_factorization}.
+ \item We give more details on the proof of finiteness of the class group and its formalization in Section~\ref{subsec:finiteness}.
+ \item We elaborate on future directions in Section~\ref{sec:future_directions}, including research relying on the formalization described here.
 \end{itemize}
 
 \section{Mathematical background}\label{sec math background}

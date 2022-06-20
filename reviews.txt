@@ -12,24 +12,22 @@ p 16 l 21: UFMs: it's a nice generalization. What are the other applications in 
 
 p 21 l 36: don't make me read the formal definition! Can you tell me what it says? The appearance of 'card' on line 40 was especially confusing, since I didn't notice it as an argument at first.
 p 21 l 58: same comment: it would help to use words and an ordinary mathematical explanation.
--> TODO Sander
+-> We have expanded our explanation.
 
 My main concern is how much the present submission extends the author's previous ITP article. As far
 as I can see, most of the text is the same, and the new sections that were added (as described by
 the authors) are concerned mainly with giving some more details on particular aspects of the same
 formalization. The exception is Section 3.6, which describes work that was done after the previous
 publication. I am not sure that this is enough to warrant a journal publication.
--> We have added Section 3.1 that gives a more detailed explanation of typeclasses, including the choice between bundled and unbundled representations of mathematical structures.
--> (TODO: we have extended the introductory sections with a more comprehensive explanation of Lean and mathlib.)
+-> We have added a new Section 3 that gives a more comprehensive explanation of Lean and mathlib.
+   In particular, Section 3.1 provides a detailed explanation of typeclasses, including the choice between bundled and unbundled representations of mathematical structures.
 
 An additional comment is that some familiarity with Lean is required in order to follow the
 presentation; this should be mentioned explicitly - alternatively, the authors could consider
 expanding their short presentation of the system (p.2, l.34-41). Likewise, it would be nice to have
 a short introduction to the matlib library that is used throughout. However, these are minor
 issues.
-
--> TODO Ashvni: send some of this material, turn this into a short section before Section 2
--> TODO Anne: help out
+  This is also addressed in Section 3.
 
 Future directions: there are ongoing projects based on our formalization: adele/idele and FLT-regular.
 -> Expanded section 8.1 by mentioning FLT regular, which builds on our work.
