@@ -253,7 +253,7 @@ Compared to Haskell's, Lean's typeclasses have few structural restrictions: nota
 In our development, we followed the common practice in \mathlib of providing structure on a type,
 whenever such a structure exists canonically, through typeclasses.
 The informal notion of providing a certain mathematical structure on a type should not be confused with the \lean{structure} keyword formally declaring a \emph{structure type} whose elements are tuples.
-To confuse matters further, Lean implements typeclasses as structure types, where the instances are tuples of the typeclass's fields.
+To confuse matters further, Lean implements typeclasses as structure types, where the typeclass instances are tuples of the typeclass's fields.
 Typeclasses provided us a way to treat uniformly situations that are informally considered the same, as we discuss in Sections \ref{sec:field_extension} and \ref{sec:scalar_tower}.
 Our reliance on typeclasses did not cause any noticeable slowness in proof checking:
 there was no instance that should be found but could not due to timeouts.
@@ -269,7 +269,7 @@ Unbundling has an advantage in expressivity: because each property of an object 
 modifying one hypothesis requires modifying one parameter.
 In contrast, bundling hypotheses means that each subset of hypotheses requires its own structure declaration;
 any results proved for a given structure have to be made available for other structures manually or through automation such as typeclass inference.
-On the other hand, bundled structures result in simpler parameter lists, since fully unbundling the \lstinline{field} class would result in each of its 38 structure fields becoming a separate parameter.
+The advantage here is that bundled structures result in simpler parameter lists, since fully unbundling the \lstinline{field} class would result in each of its 38 structure fields becoming a separate parameter.
 
 Technical considerations play another important role in choosing the level of bundling:
 bundled properties are easily found by automation compared to unbundled properties which require a search of the local context,
