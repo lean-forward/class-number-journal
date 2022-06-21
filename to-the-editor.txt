@@ -57,7 +57,7 @@ Corrected.
 	p 21 l 58: same comment: it would help to use words and an ordinary mathematical explanation.
 We have reworked this Section to include an explanation in English along with the Lean code.
 
-We have also made some minor spelling and style improvement, and updated the Lean code to the situation of May 1st 2022.
+We have also made some minor spelling and style improvements, and updated the Lean code to the situation of May 1st 2022.
 
 Sincerely,
 
