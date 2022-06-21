@@ -1,0 +1,67 @@
+Dear dr. Cohen,
+
+We would like to submit a revised version of our manuscript "A formalization of Dedekind domains and class groups of global fields". We are thankful to the reviewers for their insights and detailed suggestions, and hope that in the revised version we have found a suitable way to address their concerns.
+
+First we would like to address what we understand as the reviewers' two main concerns. The first concern, as named by Reviewer #3, is "how much the present submission extends the author's previous ITP article". We agree that in the formalization the only change beyond minor renaming or rephrasing is a new definition of fraction rings, discussed in Section 4.5 of the revised manuscript (Section 3.6 of the original submission). However, we feel that the new discussion of the existing formalization in the article is sufficient to warrant publication. In particular, we added a new Section 3 on Lean, mathlib, typeclasses and bundling; and substantially expanded:
+ * Section 2: additionally discussing the class group of an arbitrary integral domain
+ * Section 4.1 (originally 3.2): new explanation of definitional equality
+ * Section 5.2 and 5.4 (originally 4.2 and 4.4): more discussion of invertibility and unique factorization of ideals)
+ * Section 8.2 (originally 7.2): sketching the proof in words in addition to the formal code
+ * Section 9.1 (originally 8.1): detailing how our formalization is being used by newer projects
+
+The second concern is that we required the reader to understand the Lean code samples. This is especially problematic without a good introduction to Lean and mathlib. We have addressed this concern in two ways: the new Section 3 provides an explanation of the fundamentals of Lean as used by mathlib. Throughout the paper, especially in Section 8 (originally 7), we have added an English-language explanation along with the Lean code.
+
+We will now describe how we addressed the reviewers' detailed comments.
+
+	p 2 l 26: "our formal definition" -> "a formal definition" (a formal definition is an essential requirement, but maybe not yours).
+	p 4 l 32: I would use two sentences rather than a colon
+	p 4 l 37: I would replace the colon by a semicolon
+Corrected.
+
+	p 4 l 55: The authors use * for multiplication throughout. I would have preferred a dot, but it's not a big deal.
+We have decided not to change the notation, since it matches the notation used by Lean.
+
+	p 4 l 14: "that of *a* Dedekind domain", and here I would replace the colon with a period and use two sentences
+Corrected.
+
+	p 7 l 46: "definitionally equal": I think this is the first time this phrase was used. You should explain what it means for the non-experts.
+We have added a paragraph to the end of Section 4.1 explaining definitional equality.
+
+	p 7 l 54: "maps commute": I guess the word "commute" is used in the same sense as saying that diagrams commute, but is this a standard usage?
+This is standard usage.
+
+	p 7 l 59: "map Q -> K depends": shouldn't it be "the definition of the map Q -> K depends"?
+	p 9 l 16: "provide similar benefits as" -> "provide benefits similar to those of"
+	p 12 l 18: I'd end with "equivalence of two definitions." since "of Dedekind domains" is implied (and repetitive)
+	p 14 l 18: "this reflects": the word "reflects" doesn't sound right. Maybe "this makes use of" or "this explains"?
+Corrected.
+
+	p 14 l 42-44: "However, it is quite challenging ...": this confused me. What is challenging about it? How is the product of submodules defined? Is it a matter of the difference between finite sets and finite sequences?
+We have rewritten this explanation. The difficulty lies in choosing the finite sequence of coeffients.
+
+	p 14 l 51: "however, this tactic" -> "but this tactic" ("however" introduces a new sentence)
+	p 15 l 17 and after: I'd change "first ... secondly ... thirdly ...." to "first ... second ... third ..." (which is better than "firstly ... secondly ... thirdly ...")
+Corrected.
+
+	p 16 l 21: UFMs: it's a nice generalization. What are the other applications in mathlib? Anything other than nat and int?
+Apart from instances for unique factorization *domains*, mathlib contains two instances for non-rings: `associates α` (the quotient of a monoid by the subgroup of invertible elements) and `ideal D` for a Dedekind domain `D` (and indeed if `D` is a principal ideal domain these two are isomorphic). We have added these examples in section 4.4.
+
+	p 16 l 51: "rather it is split up" -> "Rather, it is split up" ("rather" starts a new sentence)
+	p 17 l 36: "every UFM is integrally closed": isn't it more correct to say "every ring that is a UFM is integrally closed"? (On line 45, it would then be o.k. to use the shorter phrase.)
+	p 19 l 25: have you said what 'finrank' is?
+	p 20 l 17: "sigma x": on the next line, there is a space after the sigma, so it probably makes sense to use one in the summation.
+	p 21 l 20: it looks funny to have a long url in the text. I'd put it in the references, or at least in a footnote.
+Corrected.
+
+	p 21 l 36: don't make me read the formal definition! Can you tell me what it says? The appearance of 'card' on line 40 was especially confusing, since I didn't notice it as an argument at first.
+	p 21 l 58: same comment: it would help to use words and an ordinary mathematical explanation.
+We have reworked this Section to include an explanation in English along with the Lean code.
+
+We have also made some minor spelling and style improvement, and updated the Lean code to the situation of May 1st 2022.
+
+Sincerely,
+
+Anne Baanen
+Sander R. Dahmen
+Ashvni Narayanan
+Filippo A. E. Nuccio Mortarino Majno di Capriglio
