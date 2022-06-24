@@ -1,11 +1,11 @@
 Dear dr. Cohen,
 
-We would like to submit a revised version of our manuscript "A formalization of Dedekind domains and class groups of global fields". We are thankful to the reviewers for their insights and detailed suggestions, and hope that in the revised version we have found a suitable way to address their concerns.
+We would like to submit a revised version of our manuscript "A formalization of Dedekind domains and class groups of global fields". We are thankful to the reviewers for their insights and detailed suggestions, and believe that in the revised version we have found a suitable way to address their concerns.
 
 First we would like to address what we understand as the reviewers' two main concerns. The first concern, as named by Reviewer #3, is "how much the present submission extends the author's previous ITP article". We agree that in the formalization the only change beyond minor renaming or rephrasing is a new definition of fraction rings, discussed in Section 4.5 of the revised manuscript (Section 3.6 of the original submission). However, we feel that the new discussion of the existing formalization in the article is sufficient to warrant publication. In particular, we added a new Section 3 on Lean, mathlib, typeclasses and bundling; and substantially expanded:
  * Section 2: additionally discussing the class group of an arbitrary integral domain
  * Section 4.1 (originally 3.2): new explanation of definitional equality
- * Section 5.2 and 5.4 (originally 4.2 and 4.4): more discussion of invertibility and unique factorization of ideals)
+ * Section 5.2 and 5.4 (originally 4.2 and 4.4): more discussion of invertibility and unique factorization of ideals
  * Section 8.2 (originally 7.2): sketching the proof in words in addition to the formal code
  * Section 9.1 (originally 8.1): detailing how our formalization is being used by newer projects
 
